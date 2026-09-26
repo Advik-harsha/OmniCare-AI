@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniCare AI — On-Device Clinical Diagnostic Workstation | Snapdragon® X Elite</title>
+  <meta name="description" content="OmniCare AI is an on-device multimodal clinical diagnostic workstation engineered for Snapdragon-powered HP PCs with a 45 TOPS Qualcomm Hexagon NPU.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cockpit.css">
+</head>
+<body>
+  <!-- ==================== TOP NAVIGATION & TELEMETRY HUD ==================== -->
+  <header class="hud-header">
+    <div class="hud-brand">
+      <div class="brand-logo-mark">
+        <svg viewBox="0 0 24 24" class="pulse-icon" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-title">OmniCare <span class="cyan-accent">AI</span></h1>
+        <span class="brand-subtitle">Snapdragon® X Elite • 45 TOPS Hexagon NPU</span>
+      </div>
+    </div>
+
+    <!-- Live Telemetry HUD Bar -->
+    <div class="hud-telemetry" id="telemetryBar">
+      <div class="telemetry-pill">
+        <span class="pill-dot green-pulse"></span>
+        <span class="pill-label">NPU PEAK:</span>
+        <span class="pill-val cyan-glow" id="npuTopsVal">45.0 TOPS</span>
+      </div>
+      <div class="telemetry-pill">
+        <span class="pill-label">INFERENCE:</span>
+        <span class="pill-val" id="npuLatencyVal">11.2 ms</span>
+      </div>
+      <div class="telemetry-pill">
+        <span class="pill-label">BATTERY:</span>
+        <span class="pill-val" id="batteryVal">26h Off-Grid</span>
+      </div>
+      <div class="telemetry-pill">
+        <span class="pill-label">ACOUSTICS:</span>
+        <span class="pill-val" id="fanAcousticsVal">&lt; 20 dBA</span>
+      </div>
+      <div class="telemetry-pill privacy-badge">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>DPDP ACT 2023 ZERO CLOUD EGRESS</span>
+      </div>
+    </div>
+
+    <!-- Controls: Governor, Patient Selector & Links -->
+    <div class="hud-controls">
+      <div class="control-group">
+        <label for="smartSenseSelect" class="control-label">HP Smart Sense:</label>
+        <select id="smartSenseSelect" class="hud-select" aria-label="HP Smart Sense Governor Profile">
+          <option value="performance" selected>Performance (45 TOPS)</option>
+          <option value="balanced">Balanced (32 TOPS)</option>
+          <option value="eco">Eco Saver (20 TOPS, 26h)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="patientPresetSelect" class="control-label">Patient Profile:</label>
+        <select id="patientPresetSelect" class="hud-select" aria-label="Select Patient Demographic Preset">
+          <option value="aarav" selected>Aarav Sharma (52M - Chest Pain / STEMI)</option>
+          <option value="sunita">Sunita Devi (46F - COPD / Stridor)</option>
+          <option value="rajesh">Rajesh Patel (68M - Diabetic Retinopathy)</option>
+        </select>
+      </div>
+
+      <div class="nav-links">
+        <a href="../showcase/index.html" class="hud-btn btn-showcase" target="_blank">Judge Showcase</a>
+        <a href="../showcase/pitch-deck.html" class="hud-btn btn-deck" target="_blank">Pitch Deck</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CLINICAL COCKPIT GRID ==================== -->
+  <main class="cockpit-container">
+    
+    <!-- PATIENT BANNER -->
+    <section class="patient-banner" id="patientBanner">
+      <div class="patient-id-chip">
+        <span class="chip-label">ABHA ID:</span>
+        <span class="chip-val" id="patAbhaId">ABHA-9821-4432-8710</span>
+      </div>
+      <div class="patient-vital-summary">
+        <span class="vital-item">Name: <strong id="patName">Aarav Sharma</strong></span>
+        <span class="vital-item">Demographics: <span id="patAgeGender">52 Y / Male</span></span>
+        <span class="vital-item">Chief Complaint: <em id="patComplaint">Acute retrosternal crushing chest pain, diaphoresis</em></span>
+        <span class="vital-item">Triage Status: <span class="badge badge-emergency" id="patTriageStatus">PRIORITY 1 - EMERGENCY</span></span>
+      </div>
+    </section>
+
+    <!-- 6 MODALITY PANELS GRID -->
+    <div class="modalities-grid">
+
+      <!-- ================= MODALITY 1: DERMATOLOGY & RETINA ================= -->
+      <article class="modality-card" id="cardDerm">
+        <div class="card-header">
+          <div class="modality-tag">
+            <span class="tag-num">01</span>
+            <span class="tag-title">Dermatology & Retinal Vision</span>
+          </div>
+          <span class="engine-badge">YOLOv8-Seg + ResNet-50 INT8</span>
+        </div>
+        <div class="card-body">
+          <div class="vision-preview-container">
+            <div class="vision-img-frame">
+              <div class="vision-canvas-wrapper" id="dermCanvasWrapper">
+                <div class="simulated-lesion" id="dermVisual">
+                  <div class="lesion-core" id="lesionCore"></div>
+                  <div class="gradcam-overlay" id="gradCamOverlay"></div>
+                  <div class="bounding-box" id="dermBBox"><span class="bbox-label">Melanoma Suspect 94.2%</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="vision-controls">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="mstSlider">Monk Skin Tone Calibration:</label>
+                  <span class="slider-val" id="mstVal">MST 5 (Wheatish)</span>
+                </div>
+                <input type="range" id="mstSlider" min="1" max="10" value="5" class="hud-range">
+                <span class="melanin-bias-note">Epidermal Melanin Bias Corrected (-0.02% error across MST 1-10)</span>
+              </div>
+              <div class="button-toggle-group">
+                <button type="button" class="mini-btn active" id="btnToggleGradCam">Grad-CAM Saliency</button>
+                <button type="button" class="mini-btn" id="btnToggleRetina">Switch to Retinal Fundus</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="derm-metrics-grid">
+            <div class="metric-box">
+              <span class="metric-label">Stolz TDS Score</span>
+              <span class="metric-value text-red" id="tdsScoreVal">5.85</span>
+              <span class="metric-sub text-red" id="tdsVerdict">MELANOMA SUSPECT (&gt;5.45)</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">ABCD Breakdown</span>
+              <span class="metric-value font-mono" id="abcdVal">A:1.8 B:1.2 C:1.6 D:1.25</span>
+              <span class="metric-sub">Asymmetry • Border • Color • Diam</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Optical IQA</span>
+              <span class="metric-value text-green" id="iqaScoreVal">96.4%</span>
+              <span class="metric-sub">Glare: 0.01 • Blur: 0.04 (Passed)</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="action-btn" id="btnRunDermAnalysis">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Analyze Lesion (QNN INT8)
+          </button>
+        </div>
+      </article>
+
+      <!-- ================= MODALITY 2: PULMONARY STETHOSCOPY ================= -->
+      <article class="modality-card" id="cardPulm">
+        <div class="card-header">
+          <div class="modality-tag">
+            <span class="tag-num">02</span>
+            <span class="tag-title">HP Poly Studio Pulmonary Stethoscopy</span>
+          </div>
+          <span class="engine-badge">YAMNet INT8 • 38.4 dB Suppression</span>
+        </div>
+        <div class="card-body">
+          <div class="acoustic-visualizer">
+            <div class="audio-spectrum-bars" id="spectrumBars">
+              <!-- Rendered via JS -->
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+            <div class="acoustic-metadata">
+              <div class="badge badge-cyan">Poly Studio Dual-Mic Friction Gated</div>
+              <div class="badge badge-amber" id="phaseGatingBadge">Late-Inspiratory Phase Window (65-90%)</div>
+            </div>
+          </div>
+
+          <div class="pulm-controls-row">
+            <select id="pulmPresetSelect" class="hud-select" aria-label="Stethoscopy Preset">
+              <option value="pneumonia_crackles" selected>Pneumonia Fine Crackles</option>
+              <option value="copd_wheezes">Asthma / COPD Expiratory Wheezes</option>
+              <option value="croup_stridor">Upper Airway Stridor</option>
+              <option value="normal_vesicular">Normal Vesicular Air Entry</option>
+            </select>
+            <button type="button" class="sound-playback-btn" id="btnPlayStethAudio">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Play Stethoscope Sound
+            </button>
+          </div>
+
+          <div class="acoustic-readout">
+            <div class="metric-box">
+              <span class="metric-label">Detected Acoustic Phenomenon</span>
+              <span class="metric-value text-amber" id="pulmClassification">Late-Inspiratory Crackles</span>
+              <span class="metric-sub" id="pulmConfidence">Confidence: 94.8%</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Clinical Indication</span>
+              <span class="metric-sub" id="pulmRecommendation">Alveolar consolidation; prompt chest imaging and empirical antibiotics.</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="action-btn" id="btnAnalyzeStethoscopy">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            Auscultate & Classify (INT8)
+          </button>
+        </div>
+      </article>
+
+      <!-- ================= MODALITY 3: CLINICAL VOICE DICTATION ================= -->
+      <article class="modality-card" id="cardDict">
+        <div class="card-header">
+          <div class="modality-tag">
+            <span class="tag-num">03</span>
+            <span class="tag-title">Multilingual Clinical Voice Dictation</span>
+          </div>
+          <span class="engine-badge">Whisper-Small INT8 • Multi-Dialect</span>
+        </div>
+        <div class="card-body">
+          <div class="dictation-toolbar">
+            <div class="mic-status-indicator">
+              <span class="mic-dot"></span>
+              <span class="mic-label" id="micStatusLabel">HP Dual Beamforming Mic Active</span>
+            </div>
+            <select id="dictPresetSelect" class="hud-select" aria-label="Consultation Audio Preset">
+              <option value="stemi_consultation" selected>Acute Cardiac Chest Pain (English/Hindi)</option>
+              <option value="copd_consultation">COPD Exacerbation Consultation</option>
+              <option value="diabetic_consultation">Diabetic Peripheral Neuropathy</option>
+            </select>
+          </div>
+
+          <div class="transcript-editor-container">
+            <label for="dictationTranscript" class="sr-only">Consultation Transcript</label>
+            <textarea id="dictationTranscript" class="transcript-textarea" rows="4">"Doctor, patient Aarav Sharma, 52-year-old male, presents with acute crushing retrosternal chest pain radiating to left arm and jaw for past 2 hours. Accompanied by diaphoresis and shortness of breath. History of hypertension, smoker. SpO2 93% on room air, BP 90/60 mmHg, pulse 115 bpm. Suspect acute coronary syndrome."</textarea>
+          </div>
+
+          <div class="dictation-tags">
+            <span class="dict-chip">✓ Indian Clinical Accent Robust</span>
+            <span class="dict-chip">✓ Medical Vocabulary Boosted</span>
+            <span class="dict-chip">✓ Sub-15ms Latency</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="action-btn" id="btnRunDictation">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            Transcribe Consultation (Whisper INT8)
+          </button>
+        </div>
+      </article>
+
+      <!-- ================= MODALITY 4: CLINICAL SOAP SCRIBE ================= -->
+      <article class="modality-card" id="cardScribe">
+        <div class="card-header">
+          <div class="modality-tag">
+            <span class="tag-num">04</span>
+            <span class="tag-title">Clinical SOAP Scribe & ICD-10 Engine</span>
+          </div>
+          <span class="engine-badge">Llama-3.2-3B INT4 • 34.2 tok/s</span>
+        </div>
+        <div class="card-body">
+          <div class="soap-sections-grid">
+            <div class="soap-card">
+              <span class="soap-letter">S</span>
+              <div class="soap-content">
+                <strong>Subjective</strong>
+                <p id="soapS">52M presenting with sudden-onset crushing substernal chest pain radiating to left arm and jaw. Diaphoresis, dyspnea. Known hypertensive.</p>
+              </div>
+            </div>
+            <div class="soap-card">
+              <span class="soap-letter">O</span>
+              <div class="soap-content">
+                <strong>Objective</strong>
+                <p id="soapO">HR 115 bpm, BP 90/60 mmHg, SpO2 93%, Shock Index 1.28. ECG: Hyper-acute ST elevation in Leads V1-V4.</p>
+              </div>
+            </div>
+            <div class="soap-card">
+              <span class="soap-letter">A</span>
+              <div class="soap-content">
+                <strong>Assessment</strong>
+                <p id="soapA">Acute Anteroseptal ST-Elevation Myocardial Infarction (STEMI). Cardiogenic shock warning.</p>
+              </div>
+            </div>
+            <div class="soap-card">
+              <span class="soap-letter">P</span>
+              <div class="soap-content">
+                <strong>Plan</strong>
+                <p id="soapP">STAT Cath Lab activation. Aspirin 300mg + Clopidogrel 300mg loading. High-flow O2. PMBJP Jan Aushadhi generic substitution.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="icd10-bar">
+            <span class="icd10-label">Mapped WHO ICD-10-CM:</span>
+            <div class="icd10-chips" id="icd10Chips">
+              <span class="icd-chip">I21.0 (STEMI Anterolateral)</span>
+              <span class="icd-chip">I10 (Essential Hypertension)</span>
+              <span class="icd-chip">R07.9 (Chest Pain Unspecified)</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="action-btn" id="btnGenerateSoap">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Generate Structured SOAP (34.2 tok/s)
+          </button>
+        </div>
+      </article>
+
+      <!-- ================= MODALITY 5: CONTACTLESS CAMERA rPPG VITALS ================= -->
+      <article class="modality-card" id="cardRppg">
+        <div class="card-header">
+          <div class="modality-tag">
+            <span class="tag-num">05</span>
+            <span class="tag-title">Contactless Camera rPPG Vitals</span>
+          </div>
+          <span class="engine-badge">POS-Net INT8 • 8.2ms Latency</span>
+        </div>
+        <div class="card-body">
+          <div class="rppg-stream-container">
+            <div class="camera-roi-simulation">
+              <div class="face-wireframe">
+                <div class="roi-box green-border">
+                  <span class="roi-tag">HP 5MP Facial ROI Tracking</span>
+                </div>
+              </div>
+            </div>
+            <!-- Live Animated Cyan PPG Waveform Canvas -->
+            <div class="canvas-box">
+              <canvas id="ppgCanvas" width="340" height="110" aria-label="Live animated PPG pulse wave"></canvas>
+              <div class="canvas-overlay-stat">
+                <span class="canvas-fps">60 FPS • Cyan Photoplethysmogram</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="vitals-kpi-grid">
+            <div class="vital-kpi">
+              <span class="kpi-icon">❤️</span>
+              <span class="kpi-title">Heart Rate</span>
+              <span class="kpi-val text-cyan" id="rppgHrVal">115 <small>bpm</small></span>
+              <span class="kpi-sub text-amber">Tachycardia</span>
+            </div>
+            <div class="vital-kpi">
+              <span class="kpi-icon">🫁</span>
+              <span class="kpi-title">SpO2 Oxygen</span>
+              <span class="kpi-val text-amber" id="rppgSpo2Val">93 <small>%</small></span>
+              <span class="kpi-sub text-amber">Hypoxemia</span>
+            </div>
+            <div class="vital-kpi">
+              <span class="kpi-icon">💨</span>
+              <span class="kpi-title">Resp Rate</span>
+              <span class="kpi-val text-red" id="rppgRrVal">24 <small>br/min</small></span>
+              <span class="kpi-sub text-red">Tachypneic</span>
+            </div>
+            <div class="vital-kpi">
+              <span class="kpi-icon">⚡</span>
+              <span class="kpi-title">Shock Index</span>
+              <span class="kpi-val text-red" id="rppgSiVal">1.28</span>
+              <span class="kpi-sub text-red">Critical &gt;0.9</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="action-btn" id="btnRefreshRppg">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Extract Contactless Vitals (8.2ms)
+          </button>
+        </div>
+      </article>
+
+      <!-- ================= MODALITY 6: 12-LEAD PAPER ECG DIGITIZER ================= -->
+      <article class="modality-card" id="cardEcg">
+        <div class="card-header">
+          <div class="modality-tag">
+            <span class="tag-num">06</span>
+            <span class="tag-title">12-Lead Paper ECG Digitizer</span>
+          </div>
+          <span class="engine-badge">PTB-XL INT8 • 6.8ms Latency</span>
+        </div>
+        <div class="card-body">
+          <div class="ecg-strip-toolbar">
+            <select id="ecgPresetSelect" class="hud-select" aria-label="ECG Strip Preset">
+              <option value="stemi_anterior" selected>Acute STEMI Anterolateral (Lead II / V2-V4)</option>
+              <option value="atrial_fibrillation">Atrial Fibrillation (Irregular R-R)</option>
+              <option value="pvc_bigeminy">Ventricular Bigeminy (PVC)</option>
+              <option value="normal_sinus">Normal Sinus Rhythm</option>
+            </select>
+            <div class="badge badge-green">98.4% Grid Suppressed</div>
+          </div>
+
+          <!-- Live Pink/Red Millimeter Grid ECG Canvas -->
+          <div class="ecg-canvas-container">
+            <canvas id="ecgCanvas" width="480" height="120" aria-label="Calibrated Millimeter Grid Lead II ECG"></canvas>
+            <div class="ecg-calibration-label">25 mm/sec • 10 mm/mV • Lead II</div>
+          </div>
+
+          <div class="ecg-intervals-row">
+            <div class="interval-pill">
+              <span class="int-label">PR:</span>
+              <span class="int-val" id="ecgPrVal">158 ms</span>
+            </div>
+            <div class="interval-pill">
+              <span class="int-label">QRS:</span>
+              <span class="int-val" id="ecgQrsVal">92 ms</span>
+            </div>
+            <div class="interval-pill">
+              <span class="int-label">Bazett QTc:</span>
+              <span class="int-val" id="ecgQtcVal">424 ms</span>
+            </div>
+            <div class="interval-pill badge-emergency" id="ecgDiagnosisPill">
+              <span>STEMI (ACUTE MI) 98.2%</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="action-btn" id="btnDigitizeEcg">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Digitize Paper Strip & Classify (6.8ms)
+          </button>
+        </div>
+      </article>
+
+    </div><!-- /modalities-grid -->
+
+    <!-- ==================== BOTTOM ADVANCED CLINICAL BAR ==================== -->
+    <section class="adv-actions-bar">
+      <div class="adv-bar-title">
+        <span class="cyan-accent">✦ Edge Clinical Intelligence Services:</span>
+      </div>
+      <div class="adv-btn-row">
+        <button type="button" class="adv-btn" id="btnOpenNews2Modal">
+          <span class="btn-icon">🚨</span> NEWS2 Score & Escalation
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenCouncilModal">
+          <span class="btn-icon">🩺</span> Council of AI Specialists
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenJanAushadhiModal">
+          <span class="btn-icon">💊</span> Jan Aushadhi (82.9% Savings)
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenPocusModal">
+          <span class="btn-icon">🩻</span> POCUS Ultrasound AI
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenCounselorModal">
+          <span class="btn-icon">🗣️</span> Regional Counselor (8 Langs)
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenPacsModal">
+          <span class="btn-icon">🖼️</span> DICOM 3.0 Web-PACS
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenFhirModal">
+          <span class="btn-icon">📋</span> ABDM FHIR R4 Bundle
+        </button>
+        <button type="button" class="adv-btn" id="btnOpenWolfVaultModal">
+          <span class="btn-icon">🛡️</span> HP Wolf Security Vault
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL DIALOGS ==================== -->
+
+  <!-- MODAL 1: NEWS2 CALCULATOR -->
+  <dialog id="modalNews2" class="clinical-modal" aria-labelledby="news2Title">
+    <div class="modal-dialog-content">
+      <div class="modal-header">
+        <h2 id="news2Title">Royal College of Physicians NEWS2 Score Breakdown</h2>
+        <button type="button" class="modal-close-btn" data-close="modalNews2">&times;</button>
+      </div>
+      <div class="modal-body" id="news2Body">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalNews2">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 2: COUNCIL OF SPECIALISTS -->
+  <dialog id="modalCouncil" class="clinical-modal" aria-labelledby="councilTitle">
+    <div class="modal-dialog-content modal-wide">
+      <div class="modal-header">
+        <h2 id="councilTitle">Autonomous Council of AI Specialists & CMO Arbitration</h2>
+        <button type="button" class="modal-close-btn" data-close="modalCouncil">&times;</button>
+      </div>
+      <div class="modal-body" id="councilBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalCouncil">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 3: PMBJP JAN AUSHADHI & CYP450 DDI -->
+  <dialog id="modalJanAushadhi" class="clinical-modal" aria-labelledby="janaushadhiTitle">
+    <div class="modal-dialog-content modal-wide">
+      <div class="modal-header">
+        <h2 id="janaushadhiTitle">PMBJP Jan Aushadhi Generic Substitution & CYP450 DDI Engine</h2>
+        <button type="button" class="modal-close-btn" data-close="modalJanAushadhi">&times;</button>
+      </div>
+      <div class="modal-body" id="janaushadhiBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalJanAushadhi">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 4: HANDHELD POCUS ULTRASOUND -->
+  <dialog id="modalPocus" class="clinical-modal" aria-labelledby="pocusTitle">
+    <div class="modal-dialog-content">
+      <div class="modal-header">
+        <h2 id="pocusTitle">Point-of-Care Ultrasound (POCUS) AI Evaluation</h2>
+        <button type="button" class="modal-close-btn" data-close="modalPocus">&times;</button>
+      </div>
+      <div class="modal-body" id="pocusBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalPocus">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 5: REGIONAL SPEECH COUNSELOR -->
+  <dialog id="modalCounselor" class="clinical-modal" aria-labelledby="counselorTitle">
+    <div class="modal-dialog-content">
+      <div class="modal-header">
+        <h2 id="counselorTitle">Multilingual Patient Counselor (8 Indian Languages)</h2>
+        <button type="button" class="modal-close-btn" data-close="modalCounselor">&times;</button>
+      </div>
+      <div class="modal-body" id="counselorBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalCounselor">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 6: DICOM 3.0 WEB-PACS -->
+  <dialog id="modalPacs" class="clinical-modal" aria-labelledby="pacsTitle">
+    <div class="modal-dialog-content modal-wide">
+      <div class="modal-header">
+        <h2 id="pacsTitle">On-Device DICOM 3.0 Web-PACS Micro-Server</h2>
+        <button type="button" class="modal-close-btn" data-close="modalPacs">&times;</button>
+      </div>
+      <div class="modal-body" id="pacsBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalPacs">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 7: ABDM FHIR R4 JSON BUNDLE -->
+  <dialog id="modalFhir" class="clinical-modal" aria-labelledby="fhirTitle">
+    <div class="modal-dialog-content modal-wide">
+      <div class="modal-header">
+        <h2 id="fhirTitle">NRCeS India ABDM / ABHA FHIR R4 Clinical Bundle</h2>
+        <button type="button" class="modal-close-btn" data-close="modalFhir">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre class="json-code-box" id="fhirJsonBox">Loading ABDM FHIR bundle...</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" id="btnCopyFhirJson">Copy JSON</button>
+        <button type="button" class="hud-btn" data-close="modalFhir">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL 8: HP WOLF SECURITY ENCLAVE -->
+  <dialog id="modalWolfVault" class="clinical-modal" aria-labelledby="wolfTitle">
+    <div class="modal-dialog-content modal-wide">
+      <div class="modal-header">
+        <h2 id="wolfTitle">HP Wolf Security Hardware Vault & Merkle Audit Trail</h2>
+        <button type="button" class="modal-close-btn" data-close="modalWolfVault">&times;</button>
+      </div>
+      <div class="modal-body" id="wolfBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="hud-btn" data-close="modalWolfVault">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- JavaScript Modules -->
+  <script src="js/audio_synth.js"></script>
+  <script src="js/cockpit.js"></script>
+</body>
+</html>

@@ -74,11 +74,11 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### Futuristic Clinical Cockpit UI & Judge Showcase
 
-- [ ] **UI-01**: Real-time Futuristic Clinical Cockpit (`frontend/index.html`) featuring HP/Qualcomm Cyan & Cobalt dark theme, glassmorphic HUD telemetry, and 6 modality panels.
-- [ ] **UI-02**: Interactive modals for NEWS2 score breakdown, Council of Specialists deliberation, Jan Aushadhi generic savings, POCUS ultrasound, ABDM FHIR JSON, and HP Wolf Vault audit log.
-- [ ] **UI-03**: 100% offline fallback resilience: every JavaScript fetch wrapped in `try/catch` with rich fallback data so static file inspection works with 0 backend dependencies.
-- [ ] **UI-04**: Standalone Judge Showcase Portal (`showcase/index.html`) tailored for zero-setup 1-click evaluation by Qualcomm & HP judges.
-- [ ] **UI-05**: 11-slide executive pitch deck (`showcase/pitch-deck.html`) covering all 10 edge advancements, market metrics, and NPU benchmarks.
+- [x] **UI-01**: Real-time Futuristic Clinical Cockpit (`frontend/index.html`) featuring HP/Qualcomm Cyan & Cobalt dark theme, glassmorphic HUD telemetry, and 6 modality panels.
+- [x] **UI-02**: Interactive modals for NEWS2 score breakdown, Council of Specialists deliberation, Jan Aushadhi generic savings, POCUS ultrasound, ABDM FHIR JSON, and HP Wolf Vault audit log.
+- [x] **UI-03**: 100% offline fallback resilience: every JavaScript fetch wrapped in `try/catch` with rich fallback data so static file inspection works with 0 backend dependencies.
+- [x] **UI-04**: Standalone Judge Showcase Portal (`showcase/index.html`) tailored for zero-setup 1-click evaluation by Qualcomm & HP judges.
+- [x] **UI-05**: 11-slide executive pitch deck (`showcase/pitch-deck.html`) covering all 10 edge advancements, market metrics, and NPU benchmarks.
 
 ### Verification, Submissions & Autonomous Harness
 
@@ -148,11 +148,11 @@ Deferred to post-challenge roadmap.
 | ADV-06 | Phase 4 | Complete |
 | ADV-07 | Phase 4 | Complete |
 | ADV-08 | Phase 4 | Complete |
-| UI-01 | Phase 5 | Pending |
-| UI-02 | Phase 5 | Pending |
-| UI-03 | Phase 5 | Pending |
-| UI-04 | Phase 5 | Pending |
-| UI-05 | Phase 5 | Pending |
+| UI-01 | Phase 5 | Complete |
+| UI-02 | Phase 5 | Complete |
+| UI-03 | Phase 5 | Complete |
+| UI-04 | Phase 5 | Complete |
+| UI-05 | Phase 5 | Complete |
 | VERIF-01 | Phase 6 | Pending |
 | VERIF-02 | Phase 6 | Pending |
 

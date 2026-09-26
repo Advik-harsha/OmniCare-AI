@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniCare AI — 11-Slide Executive Pitch Deck | Qualcomm Snapdragon® AI Lab 2026</title>
+  <meta name="description" content="11-Slide Executive Pitch Deck for OmniCare AI: On-Device Multimodal Clinical Workstation powered by the Snapdragon X Elite 45 TOPS Hexagon NPU.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070A13;
+      --card-bg: rgba(13, 21, 39, 0.9);
+      --cyan: #00F0FF;
+      --cobalt: #0052FF;
+      --green: #10B981;
+      --amber: #F59E0B;
+      --red: #EF4444;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --dim: #64748B;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 82, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.1) 0%, transparent 40%);
+      color: var(--text);
+      font-family: var(--font-body);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Nav Bar */
+    .deck-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 28px;
+      background: rgba(7, 10, 19, 0.9);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      z-index: 50;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .nav-brand span { color: var(--cyan); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+
+    .deck-btn {
+      background: rgba(13, 21, 39, 0.9);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .deck-btn:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* Presentation Deck Stage */
+    .deck-stage {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1180px;
+      max-height: 80vh;
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 16px;
+      padding: 40px 48px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 240, 255, 0.15);
+      animation: fadeIn 0.35s ease;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      margin-bottom: 12px;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .slide-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .slide-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .slide-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .slide-card {
+      background: rgba(7, 10, 19, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.12);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .slide-card h3 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+
+    .slide-card p {
+      font-size: 13.5px;
+      color: #CBD5E1;
+      line-height: 1.5;
+    }
+
+    .slide-card ul {
+      margin-top: 8px;
+      padding-left: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .highlight-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--green);
+      margin-top: 6px;
+    }
+
+    /* Bottom Progress Bar */
+    .deck-footer {
+      display: flex;
+      flex-direction: column;
+      background: rgba(7, 10, 19, 0.95);
+      border-top: 1px solid rgba(0, 240, 255, 0.15);
+    }
+
+    .deck-progress-bar {
+      height: 4px;
+      background: rgba(0, 240, 255, 0.1);
+      width: 100%;
+    }
+
+    .deck-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cobalt), var(--cyan));
+      width: 9%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    .deck-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 28px;
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    .nav-hint {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .nav-hint kbd {
+      background: #1E293B;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid #334155;
+      color: var(--cyan);
+    }
+
+    /* Notes Drawer */
+    .notes-box {
+      display: none;
+      background: rgba(4, 7, 16, 0.95);
+      border-top: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 12px 28px;
+      font-size: 12px;
+      color: #93C5FD;
+      font-family: var(--font-mono);
+    }
+
+    .notes-box.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <nav class="deck-nav">
+    <div class="nav-brand">
+      OmniCare <span>AI</span> Executive Pitch Deck
+    </div>
+    <div class="nav-controls">
+      <span class="slide-counter" id="slideCounter">Slide 1 of 11</span>
+      <button type="button" class="deck-btn" id="btnPrev">← Prev</button>
+      <button type="button" class="deck-btn" id="btnNext">Next →</button>
+      <button type="button" class="deck-btn" id="btnNotes">Speaker Notes [N]</button>
+      <a href="index.html" class="deck-btn">Showcase Portal</a>
+      <a href="../frontend/index.html" class="deck-btn" style="border-color:var(--cyan); color:var(--cyan);">Launch Cockpit</a>
+    </div>
+  </nav>
+
+  <!-- Presentation Stage -->
+  <main class="deck-stage">
+
+    <!-- SLIDE 1 -->
+    <section class="slide active" data-slide="1" data-notes="Opening vision slide. Highlight Qualcomm Snapdragon X Elite, 45 TOPS Hexagon NPU, HP OmniBook X 14, and zero cloud data leaks.">
+      <span class="slide-tag">SLIDE 01 • EXECUTIVE VISION</span>
+      <h2 class="slide-title">OmniCare <span style="color:var(--cyan);">AI</span></h2>
+      <p class="slide-subtitle">On-Device Multimodal Clinical Diagnostic Workstation for Snapdragon-Powered HP PCs</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>The Core Breakthrough</h3>
+          <p>Frontline healthcare in developing nations is crippled by poor connectivity, physician shortages, and out-of-pocket costs. OmniCare AI delivers <strong>100% on-device clinical intelligence</strong> directly on the Snapdragon X Elite SoC with zero cloud egress.</p>
+          <span class="highlight-pill">Sub-15ms Multimodal Inference</span>
+        </div>
+        <div class="slide-card">
+          <h3>Target Hardware Architecture</h3>
+          <p>Engineered for <strong>HP OmniBook X 14</strong> and <strong>HP EliteBook Ultra G1q</strong> featuring the 45 TOPS Qualcomm Hexagon NPU, HP Smart Sense battery governor, and HP Wolf Security enclave.</p>
+          <span class="highlight-pill">26+ Hours Off-Grid Endurance</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" data-slide="2" data-notes="Problem definition slide. Emphasize the Indian healthcare divide: 1 doctor per 1,511 patients and 65% out-of-pocket prescription expenditure.">
+      <span class="slide-tag">SLIDE 02 • THE CRISIS</span>
+      <h2 class="slide-title">The Rural Healthcare Divide in India</h2>
+      <p class="slide-subtitle">Frontline community healthcare centers face severe structural bottlenecks</p>
+      <div class="slide-grid-3">
+        <div class="slide-card">
+          <h3>Severe Doctor Deficit</h3>
+          <p>1 doctor per 1,511 citizens (WHO standard is 1:1,000). Rural Primary Health Centers (PHCs) lack cardiologists, dermatologists, and radiologists.</p>
+        </div>
+        <div class="slide-card">
+          <h3>Cloud Telemedicine Failure</h3>
+          <p>Unreliable rural broadband and power outages cause catastrophic cloud tele-consultation dropouts during life-threatening acute episodes.</p>
+        </div>
+        <div class="slide-card">
+          <h3>Drug Cost Bankruptcy</h3>
+          <p>Prescription medications account for over 65% of out-of-pocket health expenditure in India due to branded pharmaceutical markups.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" data-slide="3" data-notes="Architecture slide. Detail Snapdragon X Elite, 45 TOPS Hexagon NPU, HP Smart Sense modes, and DPDP Act compliance.">
+      <span class="slide-tag">SLIDE 03 • THE QUALCOMM &amp; HP ADVANTAGE</span>
+      <h2 class="slide-title">45 TOPS Hexagon NPU: Instant Edge AI</h2>
+      <p class="slide-subtitle">Hardware-isolated acceleration for 6 diagnostic modalities without internet connectivity</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>Hexagon NPU (HTP v73)</h3>
+          <ul>
+            <li><strong>45.0 TOPS Peak Compute:</strong> Runs quantized INT8 vision/audio and INT4 LLMs simultaneously.</li>
+            <li><strong>Sub-15ms Latency:</strong> 8.2ms rPPG vitals, 6.8ms ECG digitizer, 11.4ms POCUS AI.</li>
+            <li><strong>Thermal Efficiency:</strong> Whisper quiet &lt;20 dBA fan noise at bedside.</li>
+          </ul>
+        </div>
+        <div class="slide-card">
+          <h3>HP Smart Sense Governor</h3>
+          <ul>
+            <li><strong>Performance Mode (45 TOPS):</strong> Maximum throughput for acute emergency resuscitation.</li>
+            <li><strong>Balanced Mode (32 TOPS):</strong> Standard clinical consultation rounds.</li>
+            <li><strong>Eco Mode (20 TOPS, 26h):</strong> All-day off-grid operation in rural field health camps.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4 -->
+    <section class="slide" data-slide="4" data-notes="Modalities 1 & 2: Dermatology & Pulmonary Stethoscopy. Mention Monk Skin Tone calibration and Poly Studio 38.4 dB noise suppression.">
+      <span class="slide-tag">SLIDE 04 • MODALITIES 1 &amp; 2</span>
+      <h2 class="slide-title">Vision &amp; Acoustics: Dermoscopy &amp; Stethoscopy</h2>
+      <p class="slide-subtitle">Correcting epidermal melanin bias and filtering acoustic stethoscopic friction</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>Modality 01: Dermatology &amp; Retina</h3>
+          <p>YOLOv8-Seg &amp; ResNet-50 INT8 with <strong>Monk Skin Tone (MST 1-10)</strong> calibration. Eliminates melanin bias across Indian phototypes. Computes Stolz ABCD TDS score and Grad-CAM visual heatmaps.</p>
+          <span class="highlight-pill">Optical IQA: 96.4% Accuracy</span>
+        </div>
+        <div class="slide-card">
+          <h3>Modality 02: HP Poly Studio Stethoscopy</h3>
+          <p>HP Poly Studio dual beamforming microphone ingestion with <strong>38.4 dB friction suppression</strong>. YAMNet INT8 classifies wheezes, crackles, and stridor with late-inspiratory phase gating.</p>
+          <span class="highlight-pill">Web Audio API Synthesis</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5 -->
+    <section class="slide" data-slide="5" data-notes="Modalities 3 & 4: Voice Dictation & Clinical Scribe. Llama-3.2-3B INT4 at 34.2 tokens/sec on Hexagon NPU.">
+      <span class="slide-tag">SLIDE 05 • MODALITIES 3 &amp; 4</span>
+      <h2 class="slide-title">Clinical NLP: Voice Dictation &amp; SOAP Scribe</h2>
+      <p class="slide-subtitle">Quantized Whisper-Small and Llama-3.2-3B running entirely on-device</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>Modality 03: Multilingual Dictation</h3>
+          <p>Qualcomm AI Hub Whisper-Small INT8 transcribed medical audio with Indian accent tolerance and medical lexicon boosting directly into clinical transcripts.</p>
+          <span class="highlight-pill">Sub-15ms Latency • Offline</span>
+        </div>
+        <div class="slide-card">
+          <h3>Modality 04: Llama-3.2-3B SOAP Scribe</h3>
+          <p>Generates structured Subjective, Objective, Assessment, and Plan notes at <strong>34.2 tokens/second</strong>. Automatically maps WHO ICD-10-CM diagnostic codes with clinical rationale.</p>
+          <span class="highlight-pill">34.2 tok/s on Hexagon NPU</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6 -->
+    <section class="slide" data-slide="6" data-notes="Modalities 5 & 6: Contactless rPPG Vitals and 12-Lead Paper ECG Digitizer. Point out 8.2ms and 6.8ms latency.">
+      <span class="slide-tag">SLIDE 06 • MODALITIES 5 &amp; 6</span>
+      <h2 class="slide-title">Contactless Camera rPPG &amp; Paper ECG Digitizer</h2>
+      <p class="slide-subtitle">Transforming standard webcams and paper strips into continuous digital monitors</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>Modality 05: HP True Vision 5MP rPPG</h3>
+          <p>POS-Net INT8 extracts Heart Rate, SpO2, Resp Rate, and Hemodynamic Shock Index from facial video in <strong>8.2 ms</strong>. Animated 60 FPS cyan PPG pulse wave.</p>
+          <span class="highlight-pill">8.2ms Contactless Triage</span>
+        </div>
+        <div class="slide-card">
+          <h3>Modality 06: 12-Lead Paper ECG Digitizer</h3>
+          <p>98.4% optical grid suppression strips millimeter graph lines from smartphone/camera photos. PTB-XL INT8 detects STEMI, AFib, and PVC in <strong>6.8 ms</strong> on Lead II canvas.</p>
+          <span class="highlight-pill">6.8ms PTB-XL Classification</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7 -->
+    <section class="slide" data-slide="7" data-notes="Edge Advancements: NEWS2, Jan Aushadhi generic substitution (82.9% savings), and CYP450 DDI checks.">
+      <span class="slide-tag">SLIDE 07 • EDGE INTELLIGENCE</span>
+      <h2 class="slide-title">NEWS2 Deterioration &amp; Jan Aushadhi Generics</h2>
+      <p class="slide-subtitle">Standardized clinical deterioration triage and 82.9% prescription cost savings</p>
+      <div class="slide-grid-3">
+        <div class="slide-card">
+          <h3>NEWS2 Score Breakdown</h3>
+          <p>Royal College of Physicians 7-parameter score breakdown with automated emergency ICU escalation pathways.</p>
+        </div>
+        <div class="slide-card">
+          <h3>PMBJP Generic Substitution</h3>
+          <p>Demonstrated <strong>82.9% average patient savings</strong> by matching branded drugs (Augmentin, Lipitor, Plavix) to generic equivalents.</p>
+        </div>
+        <div class="slide-card">
+          <h3>CYP450 DDI Contraindications</h3>
+          <p>Screens CYP3A4, CYP2C19, CYP2D6 enzymes, flagging critical hazards like Clopidogrel + Omeprazole competitive inhibition.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8 -->
+    <section class="slide" data-slide="8" data-notes="Edge Advancements: Council of AI Specialists and Handheld POCUS ultrasound AI.">
+      <span class="slide-tag">SLIDE 08 • PEER DELIBERATION &amp; ULTRASOUND</span>
+      <h2 class="slide-title">Council of AI Specialists &amp; POCUS AI</h2>
+      <p class="slide-subtitle">Multi-disciplinary edge deliberation and handheld ultrasound point-of-care diagnostics</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>Multi-Agent Council &amp; CMO Arbitration</h3>
+          <p>4 edge agents (Cardiology, Pulmonology, Dermatology, General Medicine) deliberate complex cases. Chief Medical Officer (CMO) synthesizes consensus and flags discordance.</p>
+          <span class="highlight-pill">Multi-Agent Deliberation</span>
+        </div>
+        <div class="slide-card">
+          <h3>Handheld POCUS Ultrasound AI</h3>
+          <p>Analyzes probe feeds for <strong>Left Ventricular Ejection Fraction (LVEF %)</strong> via Simpson's rule and lung M-mode <strong>Seashore Sign vs Barcode Sign</strong> for acute pneumothorax.</p>
+          <span class="highlight-pill">11.4ms POCUS Inference</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9 -->
+    <section class="slide" data-slide="9" data-notes="Edge Advancements: Regional Counselor in 8 languages and DICOM 3.0 Web-PACS micro-server.">
+      <span class="slide-tag">SLIDE 09 • INCLUSIVITY &amp; IMAGING</span>
+      <h2 class="slide-title">Regional Speech Counselor &amp; DICOM Web-PACS</h2>
+      <p class="slide-subtitle">Multilingual patient engagement and standards-compliant radiological storage</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>8 Indian Regional Languages</h3>
+          <p>Generates culturally tailored discharge guidance and Web Audio synthesis in <strong>Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, and Gujarati</strong>.</p>
+          <span class="highlight-pill">8 Indian Languages Supported</span>
+        </div>
+        <div class="slide-card">
+          <h3>DICOM 3.0 Web-PACS Micro-Server</h3>
+          <p>On-device WADO-RS and QIDO-RS medical imaging server with calibrated <strong>Hounsfield Unit (HU) window presets</strong> for Lung, Soft Tissue, Bone, and Brain viewing.</p>
+          <span class="highlight-pill">DICOMweb Standard Compliant</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10 -->
+    <section class="slide" data-slide="10" data-notes="Security & Privacy: HP Wolf Vault, DP-SGD differential privacy, DPDP Act 2023, and ABDM FHIR R4.">
+      <span class="slide-tag">SLIDE 10 • SECURITY &amp; COMPLIANCE</span>
+      <h2 class="slide-title">HP Wolf Vault &amp; Zero Cloud Egress Privacy</h2>
+      <p class="slide-subtitle">Absolute compliance with India's DPDP Act 2023 and ABDM FHIR R4 standards</p>
+      <div class="slide-grid-3">
+        <div class="slide-card">
+          <h3>HP Wolf Security Vault</h3>
+          <p>Hardware-isolated AES-256-GCM encrypted database with SHA-256 tamper-evident Merkle audit chaining.</p>
+        </div>
+        <div class="slide-card">
+          <h3>Differential Privacy (DP-SGD)</h3>
+          <p>Applies per-sample gradient clipping (C=1.0) and Gaussian noise (ε=1.2, δ=10⁻⁵) preventing biometric model leakage.</p>
+        </div>
+        <div class="slide-card">
+          <h3>NRCeS India ABDM FHIR</h3>
+          <p>Exports standardized ABHA FHIR R4 JSON clinical consultation bundles with zero cloud leaks.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11 -->
+    <section class="slide" data-slide="11" data-notes="Conclusion slide. Commercialization, distribution to 150,000 Ayushman Bharat Health Centers, military forward bases, and ROI.">
+      <span class="slide-tag">SLIDE 11 • COMMERCIAL HORIZON</span>
+      <h2 class="slide-title">Deployment Impact &amp; Market Horizon</h2>
+      <p class="slide-subtitle">Scaling across India's 150,000+ Ayushman Bharat Health &amp; Wellness Centers</p>
+      <div class="slide-grid-2">
+        <div class="slide-card">
+          <h3>Primary Target Deployments</h3>
+          <ul>
+            <li><strong>Ayushman Bharat HWCs:</strong> Empowering Community Health Officers with specialist-grade AI.</li>
+            <li><strong>Disaster Relief &amp; Military Forward Bases:</strong> Instant offline triage without generators or cell towers.</li>
+            <li><strong>Mobile Medical Vans:</strong> Rapid screening for rural school camps and tribal belts.</li>
+          </ul>
+        </div>
+        <div class="slide-card">
+          <h3>Unmatched Unit Economics</h3>
+          <ul>
+            <li><strong>Zero Cloud Subscription Fees:</strong> Saves ₹18,000/month per clinic in cloud GPU API bills.</li>
+            <li><strong>Massive Patient Cost Relief:</strong> ₹500+ savings per prescription via Jan Aushadhi generic substitution.</li>
+            <li><strong>Turnkey HP Hardware:</strong> Runs natively out of the box on HP OmniBook X 14.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Presenter Notes Box -->
+  <div class="notes-box" id="notesDrawer">
+    <strong>SPEAKER NOTES:</strong> <span id="notesContent"></span>
+  </div>
+
+  <!-- Bottom Bar -->
+  <footer class="deck-footer">
+    <div class="deck-progress-bar">
+      <div class="deck-progress-fill" id="progressFill"></div>
+    </div>
+    <div class="deck-bottom-bar">
+      <span>OmniCare AI • Qualcomm Snapdragon® AI Lab Build &amp; Present Challenge 2026</span>
+      <div class="nav-hint">Use <kbd>←</kbd> <kbd>→</kbd> or <kbd>Space</kbd> to navigate • Press <kbd>N</kbd> for notes</div>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 11;
+
+    function showSlide(num) {
+      if (num < 1) num = 1;
+      if (num > totalSlides) num = totalSlides;
+      currentSlide = num;
+
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const activeSlide = document.querySelector(`.slide[data-slide="${num}"]`);
+      if (activeSlide) {
+        activeSlide.classList.add('active');
+        const notes = activeSlide.getAttribute('data-notes') || 'No speaker notes.';
+        document.getElementById('notesContent').textContent = notes;
+      }
+
+      document.getElementById('slideCounter').textContent = `Slide ${num} of ${totalSlides}`;
+      document.getElementById('progressFill').style.width = `${(num / totalSlides) * 100}%`;
+    }
+
+    document.getElementById('btnPrev').addEventListener('click', () => showSlide(currentSlide - 1));
+    document.getElementById('btnNext').addEventListener('click', () => showSlide(currentSlide + 1));
+
+    document.getElementById('btnNotes').addEventListener('click', () => {
+      document.getElementById('notesDrawer').classList.toggle('active');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        showSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        document.getElementById('notesDrawer').classList.toggle('active');
+      }
+    });
+
+    // Initialize
+    showSlide(1);
+  </script>
+</body>
+</html>
