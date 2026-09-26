@@ -62,8 +62,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Contactless rPPG vital signs engine with POS-Net INT8 and hemodynamic shock index prediction.
-- [ ] 03-02: 12-Lead paper ECG digitizer, PTB-XL arrhythmia classifier, and electrophysiological interval calculator.
+- [x] 03-01: Contactless rPPG vital signs engine with POS-Net INT8 and hemodynamic shock index prediction.
+- [x] 03-02: 12-Lead paper ECG digitizer, PTB-XL arrhythmia classifier, and electrophysiological interval calculator.
 
 ### Phase 4: Advanced Clinical Intelligence & Distributed Edge Services
 **Goal**: Implement 8 advanced edge engines: NEWS2 early warning scoring, PMBJP Jan Aushadhi generic substitution (82.9% savings) + CYP450 DDI checks, Autonomous Multi-Agent Council of AI Specialists with CMO arbitration, Handheld POCUS ultrasound (LVEF % & Pleural sliding), Multilingual speech synthesizer (8 Indian languages), DICOM 3.0 Web-PACS micro-server, and Differential Privacy (DP-SGD) federated learning.  
@@ -126,7 +126,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Core Architecture, Hardware Governor, Security & Harness | 3/3 | Complete | 2026-09-26 |
 | 2. Diagnostic Audio, Vision & NLP Engines | 3/3 | Complete | 2026-09-26 |
-| 3. Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer | 0/2 | Not started | - |
+| 3. Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer | 2/2 | Complete | 2026-09-26 |
 | 4. Advanced Clinical Intelligence & Distributed Edge Services | 0/3 | Not started | - |
 | 5. Futuristic Clinical Cockpit UI & Standalone Judge Showcase | 0/2 | Not started | - |
 | 6. Automated Verification, Submission Package & Code Review | 0/2 | Not started | - |

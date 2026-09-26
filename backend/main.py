@@ -20,6 +20,8 @@ try:
     from engine.qnn_audio import analyze_pulmonary_sound, get_stethoscopy_presets
     from engine.qnn_transcribe import transcribe_medical_audio, get_dictation_presets
     from engine.clinical_scribe import generate_soap_note
+    from engine.qnn_rppg import extract_rppg_vitals
+    from engine.cardiac_ecg import analyze_cardiac_ecg, digitize_paper_ecg, get_ecg_presets
     from security.wolf_vault import get_vault
     from security.offline_sync_engine import get_sync_engine
 except ImportError:
@@ -33,6 +35,8 @@ except ImportError:
     from backend.engine.qnn_audio import analyze_pulmonary_sound, get_stethoscopy_presets
     from backend.engine.qnn_transcribe import transcribe_medical_audio, get_dictation_presets
     from backend.engine.clinical_scribe import generate_soap_note
+    from backend.engine.qnn_rppg import extract_rppg_vitals
+    from backend.engine.cardiac_ecg import analyze_cardiac_ecg, digitize_paper_ecg, get_ecg_presets
     from backend.security.wolf_vault import get_vault
     from backend.security.offline_sync_engine import get_sync_engine
 
@@ -80,6 +84,13 @@ class SoapGenerationRequest(BaseModel):
     consultation_text: Optional[str] = ""
     vitals: Optional[Dict[str, Any]] = None
     modality_findings: Optional[Dict[str, Any]] = None
+
+class RPPGAnalysisRequest(BaseModel):
+    patient_state: Optional[str] = "normal"
+    sbp: Optional[int] = 120
+
+class ECGAnalysisRequest(BaseModel):
+    preset_strip: Optional[str] = "stemi_anterior"
 
 @app.get("/")
 def read_root():
@@ -241,6 +252,30 @@ def generate_soap_endpoint(req: SoapGenerationRequest = Body(default=SoapGenerat
         vitals=req.vitals,
         modality_findings=req.modality_findings
     )
+
+# ----------------- Modality 5: Contactless Camera rPPG Vitals -----------------
+
+@app.get("/api/vitals/rppg/live")
+def get_live_rppg_endpoint(state: str = Query("normal", description="Patient physiological state"), sbp: int = Query(120)):
+    return extract_rppg_vitals(patient_state=state, sbp=sbp)
+
+@app.post("/api/vitals/rppg/analyze")
+def analyze_rppg_endpoint(req: RPPGAnalysisRequest = Body(default=RPPGAnalysisRequest())):
+    return extract_rppg_vitals(patient_state=req.patient_state, sbp=req.sbp)
+
+# ----------------- Modality 6: 12-Lead Paper ECG Digitizer -----------------
+
+@app.get("/api/cardiac/ecg/presets")
+def get_ecg_presets_endpoint():
+    return get_ecg_presets()
+
+@app.post("/api/cardiac/ecg/digitize")
+def digitize_ecg_endpoint(req: ECGAnalysisRequest = Body(default=ECGAnalysisRequest())):
+    return digitize_paper_ecg(preset_strip=req.preset_strip)
+
+@app.post("/api/cardiac/ecg/analyze")
+def analyze_ecg_endpoint(req: ECGAnalysisRequest = Body(default=ECGAnalysisRequest())):
+    return analyze_cardiac_ecg(preset_strip=req.preset_strip)
 
 if __name__ == "__main__":
     import uvicorn

@@ -41,11 +41,11 @@
       "id": "phase-03",
       "number": 3,
       "name": "Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer",
-      "status": "pending",
+      "status": "completed",
       "requirements": ["RPPG-01", "RPPG-02", "RPPG-03", "RPPG-04", "ECG-01", "ECG-02", "ECG-03", "ECG-04"],
       "tasks": [
-        {"id": "03-01", "title": "HP True Vision 5MP Contactless rPPG Vitals (8.2ms)", "status": "pending"},
-        {"id": "03-02", "title": "12-Lead Paper ECG Digitizer & PTB-XL Arrhythmia AI (6.8ms)", "status": "pending"}
+        {"id": "03-01", "title": "HP True Vision 5MP Contactless rPPG Vitals (8.2ms)", "status": "completed"},
+        {"id": "03-02", "title": "12-Lead Paper ECG Digitizer & PTB-XL Arrhythmia AI (6.8ms)", "status": "completed"}
       ]
     },
     {

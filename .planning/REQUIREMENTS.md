@@ -43,17 +43,17 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### Modality 5: Contactless Camera rPPG Vitals
 
-- [ ] **RPPG-01**: HP True Vision 5MP camera facial ROI tracking with Plane-Orthogonal-to-Skin (POS-Net INT8) algorithm.
-- [ ] **RPPG-02**: Contactless vitals extraction delivering Heart Rate (HR bpm), Oxygen Saturation (SpO2 %), Respiratory Rate (RR), and Heart Rate Variability (HRV ms) in 8.2ms.
-- [ ] **RPPG-03**: Hemodynamic shock index prediction and triage categorization (Normal, Caution, Critical).
-- [ ] **RPPG-04**: Real-time animated cyan photoplethysmogram (PPG) pulse waveform rendered on an HTML5 canvas.
+- [x] **RPPG-01**: HP True Vision 5MP camera facial ROI tracking with Plane-Orthogonal-to-Skin (POS-Net INT8) algorithm.
+- [x] **RPPG-02**: Contactless vitals extraction delivering Heart Rate (HR bpm), Oxygen Saturation (SpO2 %), Respiratory Rate (RR), and Heart Rate Variability (HRV ms) in 8.2ms.
+- [x] **RPPG-03**: Hemodynamic shock index prediction and triage categorization (Normal, Caution, Critical).
+- [x] **RPPG-04**: Real-time animated cyan photoplethysmogram (PPG) pulse waveform rendered on an HTML5 canvas.
 
 ### Modality 6: 12-Lead Paper ECG Digitizer
 
-- [ ] **ECG-01**: Computer vision optical grid removal (98.4% grid suppression) extracting raw 1D voltage traces from photographed paper ECG strips.
-- [ ] **ECG-02**: PTB-XL INT8 classification engine detecting STEMI (Myocardial Infarction), Atrial Fibrillation (AFib), and Premature Ventricular Contractions (PVC) in 6.8ms.
-- [ ] **ECG-03**: Automated clinical electrophysiological interval measurements (PR interval, QRS duration, QTc interval).
-- [ ] **ECG-04**: Interactive Lead II ECG tracing rendering on a calibrated pink/red millimeter grid canvas.
+- [x] **ECG-01**: Computer vision optical grid removal (98.4% grid suppression) extracting raw 1D voltage traces from photographed paper ECG strips.
+- [x] **ECG-02**: PTB-XL INT8 classification engine detecting STEMI (Myocardial Infarction), Atrial Fibrillation (AFib), and Premature Ventricular Contractions (PVC) in 6.8ms.
+- [x] **ECG-03**: Automated clinical electrophysiological interval measurements (PR interval, QRS duration, QTc interval).
+- [x] **ECG-04**: Interactive Lead II ECG tracing rendering on a calibrated pink/red millimeter grid canvas.
 
 ### 10 Major Edge Advancements
 
@@ -132,14 +132,14 @@ Deferred to post-challenge roadmap.
 | SCRIBE-01 | Phase 2 | Complete |
 | SCRIBE-02 | Phase 2 | Complete |
 | SCRIBE-03 | Phase 2 | Complete |
-| RPPG-01 | Phase 3 | Pending |
-| RPPG-02 | Phase 3 | Pending |
-| RPPG-03 | Phase 3 | Pending |
-| RPPG-04 | Phase 3 | Pending |
-| ECG-01 | Phase 3 | Pending |
-| ECG-02 | Phase 3 | Pending |
-| ECG-03 | Phase 3 | Pending |
-| ECG-04 | Phase 3 | Pending |
+| RPPG-01 | Phase 3 | Complete |
+| RPPG-02 | Phase 3 | Complete |
+| RPPG-03 | Phase 3 | Complete |
+| RPPG-04 | Phase 3 | Complete |
+| ECG-01 | Phase 3 | Complete |
+| ECG-02 | Phase 3 | Complete |
+| ECG-03 | Phase 3 | Complete |
+| ECG-04 | Phase 3 | Complete |
 | ADV-01 | Phase 4 | Pending |
 | ADV-02 | Phase 4 | Pending |
 | ADV-03 | Phase 4 | Pending |
