@@ -1,0 +1,86 @@
+{
+  "project": "OmniCare AI",
+  "version": "1.0.0",
+  "challenge": "Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026",
+  "hardware_target": "Snapdragon-Powered HP PCs (HP OmniBook X 14 / HP EliteBook Ultra G1q)",
+  "npu": "45 TOPS Qualcomm Hexagon NPU (HTP v73)",
+  "compliance": "India DPDP Act 2023 (100% Zero Cloud Egress) & ABDM FHIR R4",
+  "golden_rules": [
+    "Zero cloud egress: 100% on-device local execution",
+    "Offline fallback resilience for all frontend fetch operations",
+    "Automated test verification: all 25 tests in backend/test_endpoints.py must pass",
+    "Dual import path portability in backend/engine/*.py",
+    "Submission integrity: sync .docx, .pptx, and .pdf artifacts"
+  ],
+  "phases": [
+    {
+      "id": "phase-01",
+      "number": 1,
+      "name": "Core Architecture, Hardware Governor, Security & Harness",
+      "status": "completed",
+      "requirements": ["CORE-01", "CORE-02", "CORE-03", "CORE-04", "CORE-05", "SEC-01", "SEC-02", "SEC-03", "HARN-01", "HARN-02"],
+      "tasks": [
+        {"id": "01-01", "title": "Scaffold FastAPI, NPU Telemetry & HP Smart Sense Governor", "status": "completed"},
+        {"id": "01-02", "title": "Implement HP Wolf Security Vault & ABDM FHIR Exporter", "status": "completed"},
+        {"id": "01-03", "title": "Configure Ralph Loop Task Runner & CodeRabbit AI Reviews", "status": "completed"}
+      ]
+    },
+    {
+      "id": "phase-02",
+      "number": 2,
+      "name": "Diagnostic Audio, Vision & NLP Engines",
+      "status": "pending",
+      "requirements": ["DERM-01", "DERM-02", "DERM-03", "DERM-04", "PULM-01", "PULM-02", "PULM-03", "PULM-04", "DICT-01", "DICT-02", "DICT-03", "SCRIBE-01", "SCRIBE-02", "SCRIBE-03"],
+      "tasks": [
+        {"id": "02-01", "title": "Dermatology & Retinal YOLOv8-Seg/ResNet-50 + Monk Skin Tone", "status": "pending"},
+        {"id": "02-02", "title": "HP Poly Studio YAMNet Pulmonary Stethoscopy", "status": "pending"},
+        {"id": "02-03", "title": "Whisper-Small Dictation & Llama-3.2-3B SOAP Scribe", "status": "pending"}
+      ]
+    },
+    {
+      "id": "phase-03",
+      "number": 3,
+      "name": "Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer",
+      "status": "pending",
+      "requirements": ["RPPG-01", "RPPG-02", "RPPG-03", "RPPG-04", "ECG-01", "ECG-02", "ECG-03", "ECG-04"],
+      "tasks": [
+        {"id": "03-01", "title": "HP True Vision 5MP Contactless rPPG Vitals (8.2ms)", "status": "pending"},
+        {"id": "03-02", "title": "12-Lead Paper ECG Digitizer & PTB-XL Arrhythmia AI (6.8ms)", "status": "pending"}
+      ]
+    },
+    {
+      "id": "phase-04",
+      "number": 4,
+      "name": "Advanced Clinical Intelligence & Distributed Edge Services",
+      "status": "pending",
+      "requirements": ["ADV-01", "ADV-02", "ADV-03", "ADV-04", "ADV-05", "ADV-06", "ADV-07", "ADV-08"],
+      "tasks": [
+        {"id": "04-01", "title": "NEWS2 Score, Jan Aushadhi Generic Substitutions & DDIs", "status": "pending"},
+        {"id": "04-02", "title": "Multi-Agent Council of AI Specialists & Handheld POCUS", "status": "pending"},
+        {"id": "04-03", "title": "8-Language Speech Counselor, DICOM Web-PACS & Federated DP-SGD", "status": "pending"}
+      ]
+    },
+    {
+      "id": "phase-05",
+      "number": 5,
+      "name": "Futuristic Clinical Cockpit UI & Standalone Judge Showcase",
+      "status": "pending",
+      "requirements": ["UI-01", "UI-02", "UI-03", "UI-04", "UI-05"],
+      "tasks": [
+        {"id": "05-01", "title": "Clinical Cockpit UI with Cyan/Cobalt Theme & Live Canvases", "status": "pending"},
+        {"id": "05-02", "title": "Standalone Judge Showcase Portal & 11-Slide Pitch Deck", "status": "pending"}
+      ]
+    },
+    {
+      "id": "phase-06",
+      "number": 6,
+      "name": "Automated Verification, Submission Package & Code Review",
+      "status": "pending",
+      "requirements": ["VERIF-01", "VERIF-02"],
+      "tasks": [
+        {"id": "06-01", "title": "Pass 25/25 Automated Backend Tests in test_endpoints.py", "status": "pending"},
+        {"id": "06-02", "title": "Generate Submission Artifacts (.docx, .pptx, .pdf) in submission_files/", "status": "pending"}
+      ]
+    }
+  ]
+}

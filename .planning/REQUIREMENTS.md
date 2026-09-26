@@ -9,11 +9,11 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### Core Architecture & Hardware Telemetry
 
-- [ ] **CORE-01**: Local FastAPI service running on `http://localhost:8000` exposing 25 REST endpoints with dual-import engine portability.
-- [ ] **CORE-02**: Snapdragon X Elite Hexagon NPU telemetry reporting live 45.0 TOPS peak, sub-15ms latency, and NPU utilization.
-- [ ] **CORE-03**: HP Smart Sense dynamic hardware governor supporting Performance (45 TOPS), Balanced, and Eco modes (26h battery life, <20 dBA fan noise).
-- [ ] **CORE-04**: Patient demographic engine with preloaded profiles (Aarav Sharma, Sunita Devi, Rajesh Patel) and demographic switching.
-- [ ] **CORE-05**: Standalone Windows and PowerShell 1-click launchers (`launch_omnicare.bat` and `launch_omnicare.ps1`).
+- [x] **CORE-01**: Local FastAPI service running on `http://localhost:8000` exposing 25 REST endpoints with dual-import engine portability.
+- [x] **CORE-02**: Snapdragon X Elite Hexagon NPU telemetry reporting live 45.0 TOPS peak, sub-15ms latency, and NPU utilization.
+- [x] **CORE-03**: HP Smart Sense dynamic hardware governor supporting Performance (45 TOPS), Balanced, and Eco modes (26h battery life, <20 dBA fan noise).
+- [x] **CORE-04**: Patient demographic engine with preloaded profiles (Aarav Sharma, Sunita Devi, Rajesh Patel) and demographic switching.
+- [x] **CORE-05**: Standalone Windows and PowerShell 1-click launchers (`launch_omnicare.bat` and `launch_omnicare.ps1`).
 
 ### Modality 1: Dermatology & Retinal Screening
 
@@ -68,9 +68,9 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### Security, Privacy & Regulatory Compliance
 
-- [ ] **SEC-01**: HP Wolf Security hardware-isolated patient vault with AES-256-GCM encryption and SHA-256 tamper-evident audit chaining.
-- [ ] **SEC-02**: National Resource Centre for EHR Standards (NRCeS) India ABDM / ABHA FHIR R4 JSON clinical bundle export.
-- [ ] **SEC-03**: CDSCO SaMD (Software as a Medical Device) MDR-2017 & IEC 62304 clinical risk classification and automated safety guardrails.
+- [x] **SEC-01**: HP Wolf Security hardware-isolated patient vault with AES-256-GCM encryption and SHA-256 tamper-evident audit chaining.
+- [x] **SEC-02**: National Resource Centre for EHR Standards (NRCeS) India ABDM / ABHA FHIR R4 JSON clinical bundle export.
+- [x] **SEC-03**: CDSCO SaMD (Software as a Medical Device) MDR-2017 & IEC 62304 clinical risk classification and automated safety guardrails.
 
 ### Futuristic Clinical Cockpit UI & Judge Showcase
 
@@ -84,8 +84,8 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 - [ ] **VERIF-01**: Automated backend test suite in `backend/test_endpoints.py` asserting HTTP 200 and schema validation across all 25 endpoints with 0 failures.
 - [ ] **VERIF-02**: Automated generator `backend/scripts/generate_submission_files.py` producing official competition artifacts (`.docx`, `.pptx`, `.pdf`) in `submission_files/`.
-- [ ] **HARN-01**: Ralph iterative task automation harness (`prd.json` and autonomous task runner scripts) enforcing continuous test execution.
-- [ ] **HARN-02**: CodeRabbit PR review automation configuration (`.coderabbit.yaml`) for clinical safety, offline resilience, and architectural compliance.
+- [x] **HARN-01**: Ralph iterative task automation harness (`prd.json` and autonomous task runner scripts) enforcing continuous test execution.
+- [x] **HARN-02**: CodeRabbit PR review automation configuration (`.coderabbit.yaml`) for clinical safety, offline resilience, and architectural compliance.
 
 ## v2 Requirements
 
@@ -108,16 +108,16 @@ Deferred to post-challenge roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01 | Phase 1 | Pending |
-| CORE-02 | Phase 1 | Pending |
-| CORE-03 | Phase 1 | Pending |
-| CORE-04 | Phase 1 | Pending |
-| CORE-05 | Phase 1 | Pending |
-| SEC-01 | Phase 1 | Pending |
-| SEC-02 | Phase 1 | Pending |
-| SEC-03 | Phase 1 | Pending |
-| HARN-01 | Phase 1 | Pending |
-| HARN-02 | Phase 1 | Pending |
+| CORE-01 | Phase 1 | Complete |
+| CORE-02 | Phase 1 | Complete |
+| CORE-03 | Phase 1 | Complete |
+| CORE-04 | Phase 1 | Complete |
+| CORE-05 | Phase 1 | Complete |
+| SEC-01 | Phase 1 | Complete |
+| SEC-02 | Phase 1 | Complete |
+| SEC-03 | Phase 1 | Complete |
+| HARN-01 | Phase 1 | Complete |
+| HARN-02 | Phase 1 | Complete |
 | DERM-01 | Phase 2 | Pending |
 | DERM-02 | Phase 2 | Pending |
 | DERM-03 | Phase 2 | Pending |

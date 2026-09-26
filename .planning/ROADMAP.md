@@ -29,9 +29,9 @@ OmniCare AI is an on-device, multimodal clinical diagnostic workstation engineer
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Backend core infrastructure, config, launcher scripts, and Hexagon NPU telemetry governor.
-- [ ] 01-02: HP Wolf Security encrypted patient vault, ABDM FHIR R4 exporter, and patient preset demographics.
-- [ ] 01-03: Ralph autonomous loop harness (`prd.json`, loop scripts) and CodeRabbit review configuration (`.coderabbit.yaml`).
+- [x] 01-01: Backend core infrastructure, config, launcher scripts, and Hexagon NPU telemetry governor.
+- [x] 01-02: HP Wolf Security encrypted patient vault, ABDM FHIR R4 exporter, and patient preset demographics.
+- [x] 01-03: Ralph autonomous loop harness (`prd.json`, loop scripts) and CodeRabbit review configuration (`.coderabbit.yaml`).
 
 ### Phase 2: Diagnostic Audio, Vision & NLP Engines
 **Goal**: Build on-device multimodal diagnostic AI modules for Dermatology/Retinal screening (YOLOv8/ResNet-50 INT8 + Monk Skin Tone + ABCD/Grad-CAM), Pulmonary Stethoscopy (HP Poly Studio + YAMNet INT8), Multilingual Voice Dictation (Whisper-Small INT8), and Clinical SOAP Scribing (Llama-3.2-3B INT4 + ICD-10).  
@@ -124,7 +124,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Architecture, Hardware Governor, Security & Harness | 0/3 | Not started | - |
+| 1. Core Architecture, Hardware Governor, Security & Harness | 3/3 | Complete | 2026-09-26 |
 | 2. Diagnostic Audio, Vision & NLP Engines | 0/3 | Not started | - |
 | 3. Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer | 0/2 | Not started | - |
 | 4. Advanced Clinical Intelligence & Distributed Edge Services | 0/3 | Not started | - |

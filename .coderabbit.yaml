@@ -1,0 +1,51 @@
+# =====================================================================
+# CodeRabbit AI Review Configuration — OmniCare AI
+# Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026
+# =====================================================================
+
+language: "en-US"
+tone_instructions: "Rigorous clinical engineering, edge AI efficiency, and privacy compliance auditor."
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+      - "gsd/*"
+
+  path_filters:
+    - "!submission_files/**"
+    - "!*.min.js"
+    - "!*.min.css"
+
+  path_instructions:
+    - path: "backend/engine/**"
+      instructions: |
+        CRITICAL RULES FOR BACKEND ENGINE:
+        1. Zero Cloud Egress (DPDP Act 2023): Strictly flag any external network or HTTP requests to cloud LLMs/APIs (OpenAI, AWS, Anthropic, GCP). All inference must run on-device.
+        2. Dual Import Portability: Ensure all imports within `backend/engine/` use the try/except dual import pattern:
+           `try: from engine.x import ... except ImportError: from backend.engine.x import ...`
+        3. Snapdragon NPU Benchmarks: Preserve sub-15ms inference latency and 45.0 TOPS Qualcomm Hexagon NPU hardware assertions.
+        4. Safety Guardrails: Enforce CDSCO SaMD MDR-2017 & IEC 62304 clinical decision support constraints.
+
+    - path: "frontend/**"
+      instructions: |
+        CRITICAL RULES FOR FRONTEND & SHOWCASE:
+        1. Offline Fallback Resilience: EVERY `fetch()` call MUST be wrapped in a try/catch or have an immediate fallback returning realistic mock data so judges opening HTML files statically via file:// or without a running Python backend experience a 100% interactive, responsive UI.
+        2. Vanilla Tech Stack: Avoid introducing complex external bundle requirements or heavy node dependencies. Keep UI pure Vanilla HTML5/CSS3/ES6 Canvas.
+        3. Futuristic Clinical Aesthetics: Maintain Qualcomm/HP cyan & cobalt dark theme with responsive telemetry HUD.
+
+    - path: "backend/security/**"
+      instructions: |
+        SECURITY & ENCLAVE INTEGRITY:
+        1. Wolf Security Enclave: Confirm AES-256-GCM symmetric encryption with 96-bit random nonce and 128-bit authentication tag.
+        2. Audit Chain: Ensure SHA-256 tamper-evident Merkle hash chaining on all patient record accesses.
+
+chat:
+  auto_reply: true
