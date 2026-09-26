@@ -15,6 +15,11 @@ try:
     from engine.hardware_governor import get_governor_status, set_governor_profile
     from engine.fhir_exporter import export_abdm_fhir_bundle, PATIENT_PRESETS
     from engine.safety_guardrails import get_safety_engine
+    from engine.qnn_vision import analyze_dermatology_lesion, screen_retinal_fundus
+    from engine.xai_abcd import evaluate_abcd_rule, compute_optical_iqa
+    from engine.qnn_audio import analyze_pulmonary_sound, get_stethoscopy_presets
+    from engine.qnn_transcribe import transcribe_medical_audio, get_dictation_presets
+    from engine.clinical_scribe import generate_soap_note
     from security.wolf_vault import get_vault
     from security.offline_sync_engine import get_sync_engine
 except ImportError:
@@ -23,6 +28,11 @@ except ImportError:
     from backend.engine.hardware_governor import get_governor_status, set_governor_profile
     from backend.engine.fhir_exporter import export_abdm_fhir_bundle, PATIENT_PRESETS
     from backend.engine.safety_guardrails import get_safety_engine
+    from backend.engine.qnn_vision import analyze_dermatology_lesion, screen_retinal_fundus
+    from backend.engine.xai_abcd import evaluate_abcd_rule, compute_optical_iqa
+    from backend.engine.qnn_audio import analyze_pulmonary_sound, get_stethoscopy_presets
+    from backend.engine.qnn_transcribe import transcribe_medical_audio, get_dictation_presets
+    from backend.engine.clinical_scribe import generate_soap_note
     from backend.security.wolf_vault import get_vault
     from backend.security.offline_sync_engine import get_sync_engine
 
@@ -52,6 +62,24 @@ class TriageEvaluationRequest(BaseModel):
     news2_score: int
     shock_index: float
     arrhythmia_type: Optional[str] = "NORMAL"
+
+class DermAnalysisRequest(BaseModel):
+    preset_lesion: Optional[str] = "melanoma_suspect"
+    custom_mst: Optional[int] = None
+
+class RetinaAnalysisRequest(BaseModel):
+    preset_fundus: Optional[str] = "moderate_npdr"
+
+class StethoscopyAnalysisRequest(BaseModel):
+    preset_audio: Optional[str] = "pneumonia_crackles"
+
+class DictationRequest(BaseModel):
+    preset_audio: Optional[str] = "copd_consultation"
+
+class SoapGenerationRequest(BaseModel):
+    consultation_text: Optional[str] = ""
+    vitals: Optional[Dict[str, Any]] = None
+    modality_findings: Optional[Dict[str, Any]] = None
 
 @app.get("/")
 def read_root():
@@ -172,6 +200,46 @@ def evaluate_safety_endpoint(req: TriageEvaluationRequest):
         news2_score=req.news2_score,
         shock_index=req.shock_index,
         arrhythmia_type=req.arrhythmia_type
+    )
+
+# ----------------- Modality 1: Dermatology & Retina Vision -----------------
+
+@app.post("/api/vision/dermatology/analyze")
+def analyze_dermatology_endpoint(req: DermAnalysisRequest = Body(default=DermAnalysisRequest())):
+    return analyze_dermatology_lesion(preset_lesion=req.preset_lesion, custom_mst=req.custom_mst)
+
+@app.post("/api/vision/retina/screen")
+def screen_retina_endpoint(req: RetinaAnalysisRequest = Body(default=RetinaAnalysisRequest())):
+    return screen_retinal_fundus(preset_fundus=req.preset_fundus)
+
+# ----------------- Modality 2: Pulmonary Stethoscopy -----------------
+
+@app.get("/api/audio/stethoscopy/presets")
+def get_stethoscopy_presets_endpoint():
+    return get_stethoscopy_presets()
+
+@app.post("/api/audio/stethoscopy/analyze")
+def analyze_stethoscopy_endpoint(req: StethoscopyAnalysisRequest = Body(default=StethoscopyAnalysisRequest())):
+    return analyze_pulmonary_sound(preset_key=req.preset_audio)
+
+# ----------------- Modality 3: Clinical Voice Dictation -----------------
+
+@app.get("/api/transcribe/presets")
+def get_dictation_presets_endpoint():
+    return get_dictation_presets()
+
+@app.post("/api/transcribe/dictation")
+def transcribe_dictation_endpoint(req: DictationRequest = Body(default=DictationRequest())):
+    return transcribe_medical_audio(preset_key=req.preset_audio)
+
+# ----------------- Modality 4: Clinical SOAP Scribe & ICD-10 -----------------
+
+@app.post("/api/scribe/soap/generate")
+def generate_soap_endpoint(req: SoapGenerationRequest = Body(default=SoapGenerationRequest())):
+    return generate_soap_note(
+        consultation_text=req.consultation_text,
+        vitals=req.vitals,
+        modality_findings=req.modality_findings
     )
 
 if __name__ == "__main__":

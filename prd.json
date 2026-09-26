@@ -29,12 +29,12 @@
       "id": "phase-02",
       "number": 2,
       "name": "Diagnostic Audio, Vision & NLP Engines",
-      "status": "pending",
+      "status": "completed",
       "requirements": ["DERM-01", "DERM-02", "DERM-03", "DERM-04", "PULM-01", "PULM-02", "PULM-03", "PULM-04", "DICT-01", "DICT-02", "DICT-03", "SCRIBE-01", "SCRIBE-02", "SCRIBE-03"],
       "tasks": [
-        {"id": "02-01", "title": "Dermatology & Retinal YOLOv8-Seg/ResNet-50 + Monk Skin Tone", "status": "pending"},
-        {"id": "02-02", "title": "HP Poly Studio YAMNet Pulmonary Stethoscopy", "status": "pending"},
-        {"id": "02-03", "title": "Whisper-Small Dictation & Llama-3.2-3B SOAP Scribe", "status": "pending"}
+        {"id": "02-01", "title": "Dermatology & Retinal YOLOv8-Seg/ResNet-50 + Monk Skin Tone", "status": "completed"},
+        {"id": "02-02", "title": "HP Poly Studio YAMNet Pulmonary Stethoscopy", "status": "completed"},
+        {"id": "02-03", "title": "Whisper-Small Dictation & Llama-3.2-3B SOAP Scribe", "status": "completed"}
       ]
     },
     {

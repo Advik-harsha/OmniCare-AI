@@ -17,29 +17,29 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### Modality 1: Dermatology & Retinal Screening
 
-- [ ] **DERM-01**: Lesion segmentation and classification via YOLOv8-Seg INT8 and ResNet-50 INT8 on Qualcomm AI Hub QNN execution provider.
-- [ ] **DERM-02**: Monk Skin Tone (MST 1-10) calibration correcting epidermal melanin bias across diverse Indian demographic skin phototypes.
-- [ ] **DERM-03**: Optical Image Quality Assessment (IQA) checking blur, glare, and resolution before inference.
-- [ ] **DERM-04**: Explainable AI ABCD rule evaluation (Asymmetry, Border, Color, Diameter) and Grad-CAM visual saliency heatmap overlay.
+- [x] **DERM-01**: Lesion segmentation and classification via YOLOv8-Seg INT8 and ResNet-50 INT8 on Qualcomm AI Hub QNN execution provider.
+- [x] **DERM-02**: Monk Skin Tone (MST 1-10) calibration correcting epidermal melanin bias across diverse Indian demographic skin phototypes.
+- [x] **DERM-03**: Optical Image Quality Assessment (IQA) checking blur, glare, and resolution before inference.
+- [x] **DERM-04**: Explainable AI ABCD rule evaluation (Asymmetry, Border, Color, Diameter) and Grad-CAM visual saliency heatmap overlay.
 
 ### Modality 2: Pulmonary Stethoscopy
 
-- [ ] **PULM-01**: HP Poly Studio dual beamforming microphone acoustic ingestion with environmental and friction noise suppression.
-- [ ] **PULM-02**: YAMNet INT8 acoustic classification identifying Wheezes, Fine/Coarse Crackles, Stridor, and Normal vesicular breath sounds.
-- [ ] **PULM-03**: Late-inspiratory phase gating isolating critical diagnostic respiratory windows.
-- [ ] **PULM-04**: Interactive Web Audio API acoustic playback synthesizer in the clinical frontend.
+- [x] **PULM-01**: HP Poly Studio dual beamforming microphone acoustic ingestion with environmental and friction noise suppression.
+- [x] **PULM-02**: YAMNet INT8 acoustic classification identifying Wheezes, Fine/Coarse Crackles, Stridor, and Normal vesicular breath sounds.
+- [x] **PULM-03**: Late-inspiratory phase gating isolating critical diagnostic respiratory windows.
+- [x] **PULM-04**: Interactive Web Audio API acoustic playback synthesizer in the clinical frontend.
 
 ### Modality 3: Clinical Voice Dictation
 
-- [ ] **DICT-01**: Qualcomm AI Hub Whisper-Small INT8 on-device speech-to-text transcription engine.
-- [ ] **DICT-02**: Medical vocabulary normalization and accent tolerance for multilingual Indian clinical consultations.
-- [ ] **DICT-03**: Instant consultation transcript generation feeding directly into the SOAP note engine.
+- [x] **DICT-01**: Qualcomm AI Hub Whisper-Small INT8 on-device speech-to-text transcription engine.
+- [x] **DICT-02**: Medical vocabulary normalization and accent tolerance for multilingual Indian clinical consultations.
+- [x] **DICT-03**: Instant consultation transcript generation feeding directly into the SOAP note engine.
 
 ### Modality 4: Clinical SOAP Scribing
 
-- [ ] **SCRIBE-01**: Quantized Llama-3.2-3B INT4 on-device LLM running at 34.2 tok/s on Qualcomm Hexagon NPU.
-- [ ] **SCRIBE-02**: Automated Subjective, Objective, Assessment, Plan (SOAP) clinical note structuring from clinical inputs.
-- [ ] **SCRIBE-03**: Automated WHO ICD-10-CM diagnostic code mapping with clinical rationale.
+- [x] **SCRIBE-01**: Quantized Llama-3.2-3B INT4 on-device LLM running at 34.2 tok/s on Qualcomm Hexagon NPU.
+- [x] **SCRIBE-02**: Automated Subjective, Objective, Assessment, Plan (SOAP) clinical note structuring from clinical inputs.
+- [x] **SCRIBE-03**: Automated WHO ICD-10-CM diagnostic code mapping with clinical rationale.
 
 ### Modality 5: Contactless Camera rPPG Vitals
 
@@ -118,20 +118,20 @@ Deferred to post-challenge roadmap.
 | SEC-03 | Phase 1 | Complete |
 | HARN-01 | Phase 1 | Complete |
 | HARN-02 | Phase 1 | Complete |
-| DERM-01 | Phase 2 | Pending |
-| DERM-02 | Phase 2 | Pending |
-| DERM-03 | Phase 2 | Pending |
-| DERM-04 | Phase 2 | Pending |
-| PULM-01 | Phase 2 | Pending |
-| PULM-02 | Phase 2 | Pending |
-| PULM-03 | Phase 2 | Pending |
-| PULM-04 | Phase 2 | Pending |
-| DICT-01 | Phase 2 | Pending |
-| DICT-02 | Phase 2 | Pending |
-| DICT-03 | Phase 2 | Pending |
-| SCRIBE-01 | Phase 2 | Pending |
-| SCRIBE-02 | Phase 2 | Pending |
-| SCRIBE-03 | Phase 2 | Pending |
+| DERM-01 | Phase 2 | Complete |
+| DERM-02 | Phase 2 | Complete |
+| DERM-03 | Phase 2 | Complete |
+| DERM-04 | Phase 2 | Complete |
+| PULM-01 | Phase 2 | Complete |
+| PULM-02 | Phase 2 | Complete |
+| PULM-03 | Phase 2 | Complete |
+| PULM-04 | Phase 2 | Complete |
+| DICT-01 | Phase 2 | Complete |
+| DICT-02 | Phase 2 | Complete |
+| DICT-03 | Phase 2 | Complete |
+| SCRIBE-01 | Phase 2 | Complete |
+| SCRIBE-02 | Phase 2 | Complete |
+| SCRIBE-03 | Phase 2 | Complete |
 | RPPG-01 | Phase 3 | Pending |
 | RPPG-02 | Phase 3 | Pending |
 | RPPG-03 | Phase 3 | Pending |

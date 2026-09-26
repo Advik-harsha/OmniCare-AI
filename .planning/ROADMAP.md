@@ -46,9 +46,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Dermatology and retinal screening engine with Monk Skin Tone calibration, optical IQA, and ABCD/Grad-CAM explainability.
-- [ ] 02-02: HP Poly Studio pulmonary stethoscopy engine with YAMNet INT8 classification and late-inspiratory phase gating.
-- [ ] 02-03: Whisper-Small INT8 multilingual voice dictation and Llama-3.2-3B INT4 clinical SOAP & ICD-10 scribing engine.
+- [x] 02-01: Dermatology and retinal screening engine with Monk Skin Tone calibration, optical IQA, and ABCD/Grad-CAM explainability.
+- [x] 02-02: HP Poly Studio pulmonary stethoscopy engine with YAMNet INT8 classification and late-inspiratory phase gating.
+- [x] 02-03: Whisper-Small INT8 multilingual voice dictation and Llama-3.2-3B INT4 clinical SOAP & ICD-10 scribing engine.
 
 ### Phase 3: Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer
 **Goal**: Implement contactless camera photoplethysmography (POS-Net INT8) delivering real-time vitals (HR, SpO2, RR, HRV) and 12-lead paper ECG digitizer with 98.4% optical grid suppression and PTB-XL INT8 arrhythmia detection.  
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Architecture, Hardware Governor, Security & Harness | 3/3 | Complete | 2026-09-26 |
-| 2. Diagnostic Audio, Vision & NLP Engines | 0/3 | Not started | - |
+| 2. Diagnostic Audio, Vision & NLP Engines | 3/3 | Complete | 2026-09-26 |
 | 3. Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer | 0/2 | Not started | - |
 | 4. Advanced Clinical Intelligence & Distributed Edge Services | 0/3 | Not started | - |
 | 5. Futuristic Clinical Cockpit UI & Standalone Judge Showcase | 0/2 | Not started | - |
