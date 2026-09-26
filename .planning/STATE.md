@@ -22,8 +22,8 @@ See: .planning/PROJECT.md (updated 2026-09-26)
 
 Phase: 3 of 6 (Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer)  
 Plan: 0 of 2 in current phase  
-Status: Ready to plan  
-Last activity: 2026-09-26 — Phase 2 executed and verified; transitioned to Phase 3.
+Status: Ready to execute  
+Last activity: 2026-09-26 — Phase 3 planned with 2 hemodynamic & cardiac plans.
 
 Progress: [====--------] 40%
 
