@@ -52,12 +52,12 @@
       "id": "phase-04",
       "number": 4,
       "name": "Advanced Clinical Intelligence & Distributed Edge Services",
-      "status": "pending",
+      "status": "completed",
       "requirements": ["ADV-01", "ADV-02", "ADV-03", "ADV-04", "ADV-05", "ADV-06", "ADV-07", "ADV-08"],
       "tasks": [
-        {"id": "04-01", "title": "NEWS2 Score, Jan Aushadhi Generic Substitutions & DDIs", "status": "pending"},
-        {"id": "04-02", "title": "Multi-Agent Council of AI Specialists & Handheld POCUS", "status": "pending"},
-        {"id": "04-03", "title": "8-Language Speech Counselor, DICOM Web-PACS & Federated DP-SGD", "status": "pending"}
+        {"id": "04-01", "title": "NEWS2 Score, Jan Aushadhi Generic Substitutions & DDIs", "status": "completed"},
+        {"id": "04-02", "title": "Multi-Agent Council of AI Specialists & Handheld POCUS", "status": "completed"},
+        {"id": "04-03", "title": "8-Language Speech Counselor, DICOM Web-PACS & Federated DP-SGD", "status": "completed"}
       ]
     },
     {

@@ -80,9 +80,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: NEWS2 calculator, PMBJP Jan Aushadhi generic substitution, and CYP450 drug interaction checker.
-- [ ] 04-02: Council of AI Specialists multi-agent deliberation panel and Handheld POCUS ultrasound AI engine.
-- [ ] 04-03: Multilingual regional speech synthesizer, DICOM 3.0 Web-PACS server, and federated DP-SGD privacy engine.
+- [x] 04-01: NEWS2 calculator, PMBJP Jan Aushadhi generic substitution, and CYP450 drug interaction checker.
+- [x] 04-02: Council of AI Specialists multi-agent deliberation panel and Handheld POCUS ultrasound AI engine.
+- [x] 04-03: Multilingual regional speech synthesizer, DICOM 3.0 Web-PACS server, and federated DP-SGD privacy engine.
 
 ### Phase 5: Futuristic Clinical Cockpit UI & Standalone Judge Showcase
 **Goal**: Construct futuristic clinical cockpit dashboard and offline Judge Showcase Portal & pitch deck with 100% offline fallback resilience and live canvases.  
@@ -127,6 +127,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Core Architecture, Hardware Governor, Security & Harness | 3/3 | Complete | 2026-09-26 |
 | 2. Diagnostic Audio, Vision & NLP Engines | 3/3 | Complete | 2026-09-26 |
 | 3. Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer | 2/2 | Complete | 2026-09-26 |
-| 4. Advanced Clinical Intelligence & Distributed Edge Services | 0/3 | Not started | - |
+| 4. Advanced Clinical Intelligence & Distributed Edge Services | 3/3 | Complete | 2026-09-26 |
 | 5. Futuristic Clinical Cockpit UI & Standalone Judge Showcase | 0/2 | Not started | - |
 | 6. Automated Verification, Submission Package & Code Review | 0/2 | Not started | - |

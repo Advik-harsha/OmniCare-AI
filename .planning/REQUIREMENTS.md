@@ -57,14 +57,14 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### 10 Major Edge Advancements
 
-- [ ] **ADV-01**: Automated Royal College of Physicians NEWS2 Early Warning Score breakdown across 7 vital sign parameters.
-- [ ] **ADV-02**: PMBJP Jan Aushadhi generic drug substitution engine matching branded drugs to generic equivalents with 82.9% average cost savings.
-- [ ] **ADV-03**: Cytochrome P450 (CYP450) drug-drug interaction (DDI) checker flagging contraindicated co-prescriptions.
-- [ ] **ADV-04**: Autonomous Multi-Agent Council of AI Specialists (Cardiologist, Pulmonologist, Dermatologist, General Physician) with Chief Medical Officer (CMO) consensus arbitration.
-- [ ] **ADV-05**: Point-of-Care Ultrasound (POCUS) AI analyzing handheld probe feeds for Cardiac Left Ventricular Ejection Fraction (LVEF %) and Pleural Sliding (Seashore vs Barcode sign for pneumothorax).
-- [ ] **ADV-06**: On-device multilingual text-to-speech patient counseling in 8 Indian languages (Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati).
-- [ ] **ADV-07**: On-device DICOM 3.0 Web-PACS micro-server supporting WADO-RS / QIDO-RS, Hounsfield Unit windowing presets, and browser viewing.
-- [ ] **ADV-08**: Differential Privacy (DP-SGD ε=1.2, δ=10⁻⁵) federated edge model update aggregation preventing patient biometric leakage.
+- [x] **ADV-01**: Automated Royal College of Physicians NEWS2 Early Warning Score breakdown across 7 vital sign parameters.
+- [x] **ADV-02**: PMBJP Jan Aushadhi generic drug substitution engine matching branded drugs to generic equivalents with 82.9% average cost savings.
+- [x] **ADV-03**: Cytochrome P450 (CYP450) drug-drug interaction (DDI) checker flagging contraindicated co-prescriptions.
+- [x] **ADV-04**: Autonomous Multi-Agent Council of AI Specialists (Cardiologist, Pulmonologist, Dermatologist, General Physician) with Chief Medical Officer (CMO) consensus arbitration.
+- [x] **ADV-05**: Point-of-Care Ultrasound (POCUS) AI analyzing handheld probe feeds for Cardiac Left Ventricular Ejection Fraction (LVEF %) and Pleural Sliding (Seashore vs Barcode sign for pneumothorax).
+- [x] **ADV-06**: On-device multilingual text-to-speech patient counseling in 8 Indian languages (Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Malayalam, Gujarati).
+- [x] **ADV-07**: On-device DICOM 3.0 Web-PACS micro-server supporting WADO-RS / QIDO-RS, Hounsfield Unit windowing presets, and browser viewing.
+- [x] **ADV-08**: Differential Privacy (DP-SGD ε=1.2, δ=10⁻⁵) federated edge model update aggregation preventing patient biometric leakage.
 
 ### Security, Privacy & Regulatory Compliance
 
@@ -140,14 +140,14 @@ Deferred to post-challenge roadmap.
 | ECG-02 | Phase 3 | Complete |
 | ECG-03 | Phase 3 | Complete |
 | ECG-04 | Phase 3 | Complete |
-| ADV-01 | Phase 4 | Pending |
-| ADV-02 | Phase 4 | Pending |
-| ADV-03 | Phase 4 | Pending |
-| ADV-04 | Phase 4 | Pending |
-| ADV-05 | Phase 4 | Pending |
-| ADV-06 | Phase 4 | Pending |
-| ADV-07 | Phase 4 | Pending |
-| ADV-08 | Phase 4 | Pending |
+| ADV-01 | Phase 4 | Complete |
+| ADV-02 | Phase 4 | Complete |
+| ADV-03 | Phase 4 | Complete |
+| ADV-04 | Phase 4 | Complete |
+| ADV-05 | Phase 4 | Complete |
+| ADV-06 | Phase 4 | Complete |
+| ADV-07 | Phase 4 | Complete |
+| ADV-08 | Phase 4 | Complete |
 | UI-01 | Phase 5 | Pending |
 | UI-02 | Phase 5 | Pending |
 | UI-03 | Phase 5 | Pending |
