@@ -17,6 +17,7 @@ Write-Host "`n[1/2] Verifying Python requirements..." -ForegroundColor Gray
 python -m pip install -q -r backend/requirements.txt
 
 Write-Host "`n[2/2] Starting OmniCare AI Diagnostic Workstation on http://localhost:8000..." -ForegroundColor Cyan
-Start-Process "http://localhost:8000"
+Write-Host "Opening Clinical Cockpit UI at http://localhost:8000/cockpit/..." -ForegroundColor Green
+Start-Process "http://localhost:8000/cockpit/"
 
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload

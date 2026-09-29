@@ -21,9 +21,10 @@ python -m pip install -q -r backend/requirements.txt
 echo.
 echo [2/2] Launching OmniCare AI FastAPI Diagnostic Engine...
 echo Server starting at http://localhost:8000
+echo Clinical Cockpit UI at http://localhost:8000/cockpit/
 echo Offline Showcase available at showcase/index.html
 echo.
 
-start "" "http://localhost:8000"
+start "" "http://localhost:8000/cockpit/"
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 pause

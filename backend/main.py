@@ -4,8 +4,10 @@ FastAPI REST Service on Snapdragon® X Elite (45 TOPS Qualcomm Hexagon NPU)
 Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026
 """
 
+import os
 from fastapi import FastAPI, HTTPException, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 
@@ -68,6 +70,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static directories for interactive Cockpit UI & Judge Showcase Portal
+_frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
+_showcase_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "showcase"))
+
+if os.path.exists(_frontend_dir):
+    app.mount("/cockpit", StaticFiles(directory=_frontend_dir, html=True), name="cockpit")
+    app.mount("/frontend", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
+
+if os.path.exists(_showcase_dir):
+    app.mount("/showcase", StaticFiles(directory=_showcase_dir, html=True), name="showcase")
+
 
 class GovernorRequest(BaseModel):
     profile: str
@@ -156,6 +170,8 @@ def read_root():
         "target_soc": CONFIG.hardware.soc,
         "npu_tops": CONFIG.hardware.npu_peak_tops,
         "privacy": "Zero Cloud Egress (DPDP Act 2023 Compliant)",
+        "cockpit_ui": "/cockpit",
+        "showcase_portal": "/showcase",
         "docs_url": "/docs"
     }
 

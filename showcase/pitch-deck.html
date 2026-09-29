@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniCare AI — 11-Slide Executive Pitch Deck | Qualcomm Snapdragon® AI Lab 2026</title>
-  <meta name="description" content="11-Slide Executive Pitch Deck for OmniCare AI: On-Device Multimodal Clinical Workstation powered by the Snapdragon X Elite 45 TOPS Hexagon NPU.">
+  <title>OmniCare AI — 12-Slide Executive Pitch Deck | Qualcomm Snapdragon® AI Lab 2026</title>
+  <meta name="description" content="12-Slide Executive Pitch Deck for OmniCare AI: On-Device Multimodal Clinical Workstation powered by the Snapdragon X Elite 45 TOPS Hexagon NPU.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -215,6 +215,51 @@
       margin-top: 6px;
     }
 
+    .slide-table-wrapper {
+      overflow-x: auto;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .slide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    .slide-table th {
+      background: rgba(0, 82, 255, 0.35);
+      color: #FFFFFF;
+      padding: 10px 14px;
+      text-align: left;
+      font-family: var(--font-display);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .slide-table th:last-child {
+      background: rgba(0, 240, 255, 0.25);
+      color: var(--cyan);
+    }
+
+    .slide-table td {
+      padding: 8px 14px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+      color: var(--muted);
+      background: rgba(7, 10, 19, 0.5);
+    }
+
+    .slide-table td:last-child {
+      color: #FFFFFF;
+      font-weight: 600;
+      background: rgba(0, 240, 255, 0.08);
+      border-left: 2px solid var(--cyan);
+    }
+
+    .slide-table tr:hover td {
+      background: rgba(0, 240, 255, 0.12);
+    }
+
     /* Bottom Progress Bar */
     .deck-footer {
       display: flex;
@@ -282,7 +327,7 @@
       OmniCare <span>AI</span> Executive Pitch Deck
     </div>
     <div class="nav-controls">
-      <span class="slide-counter" id="slideCounter">Slide 1 of 11</span>
+      <span class="slide-counter" id="slideCounter">Slide 1 of 12</span>
       <button type="button" class="deck-btn" id="btnPrev">← Prev</button>
       <button type="button" class="deck-btn" id="btnNext">Next →</button>
       <button type="button" class="deck-btn" id="btnNotes">Speaker Notes [N]</button>
@@ -497,8 +542,71 @@
     </section>
 
     <!-- SLIDE 11 -->
-    <section class="slide" data-slide="11" data-notes="Conclusion slide. Commercialization, distribution to 150,000 Ayushman Bharat Health Centers, military forward bases, and ROI.">
-      <span class="slide-tag">SLIDE 11 • COMMERCIAL HORIZON</span>
+    <section class="slide" data-slide="11" data-notes="Competitive advantage matrix slide. Highlight why Snapdragon X Elite destroys cloud telemedicine in latency, privacy, and off-grid endurance, and replaces $15,000 of legacy hardware.">
+      <span class="slide-tag">SLIDE 11 • COMPETITIVE ADVANTAGE MATRIX</span>
+      <h2 class="slide-title">Why Snapdragon Edge AI Wins</h2>
+      <p class="slide-subtitle">OmniCare AI on Snapdragon X Elite vs Cloud Telemedicine vs Legacy Monitors</p>
+      <div class="slide-table-wrapper">
+        <table class="slide-table">
+          <thead>
+            <tr>
+              <th>Evaluation Metric</th>
+              <th>Legacy Hospital Devices</th>
+              <th>Cloud Telehealth (AWS/GCP)</th>
+              <th>OmniCare AI on Snapdragon X Elite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Edge AI Compute</strong></td>
+              <td>None (Fixed microcontrollers)</td>
+              <td>None (Client is dumb display)</td>
+              <td><strong>45.0 TOPS Qualcomm Hexagon NPU</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Diagnostic Latency</strong></td>
+              <td>Display only (no AI diagnosis)</td>
+              <td>800ms - 2,500ms roundtrip lag</td>
+              <td><strong>Sub-15ms multimodal inference</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Network Resilience</strong></td>
+              <td>100% Offline (Manual readouts)</td>
+              <td>Fails completely without 4G/5G</td>
+              <td><strong>100% Zero Cloud Egress Offline</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Hardware Investment</strong></td>
+              <td>$15,000+ (Multiple bulky carts)</td>
+              <td>$1,200 tablet + $50/mo cloud API</td>
+              <td><strong>1 single HP PC replaces $15k hardware</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Off-Grid Battery</strong></td>
+              <td>1-2 hours / AC power required</td>
+              <td>4-6 hours (tablets / iPads)</td>
+              <td><strong>26+ Hours (HP Smart Sense Eco)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Data Sovereignty</strong></td>
+              <td>Paper records (loss hazards)</td>
+              <td>High risk of cloud leakage</td>
+              <td><strong>Hardware Wolf Vault (DPDP Act 2023)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Drug Cost Savings</strong></td>
+              <td>None (Out-of-pocket burden)</td>
+              <td>None (Static prescription PDFs)</td>
+              <td><strong>82.9% generic savings via PMBJP AI</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SLIDE 12 -->
+    <section class="slide" data-slide="12" data-notes="Conclusion slide. Commercialization, distribution to 150,000 Ayushman Bharat Health Centers, military forward bases, and ROI.">
+      <span class="slide-tag">SLIDE 12 • COMMERCIAL HORIZON</span>
       <h2 class="slide-title">Deployment Impact &amp; Market Horizon</h2>
       <p class="slide-subtitle">Scaling across India's 150,000+ Ayushman Bharat Health &amp; Wellness Centers</p>
       <div class="slide-grid-2">
@@ -541,7 +649,7 @@
 
   <script>
     let currentSlide = 1;
-    const totalSlides = 11;
+    const totalSlides = 12;
 
     function showSlide(num) {
       if (num < 1) num = 1;

@@ -24,9 +24,9 @@
 | Artifact | Location | Format | Description |
 |:---|:---|:---|:---|
 | **Technical Whitepaper** | `submission_files/OmniCare_AI_Technical_Whitepaper.docx` | DOCX | 6-section comprehensive technical architecture, clinical models, and NPU benchmarks |
-| **Executive Presentation** | `submission_files/OmniCare_AI_Executive_Presentation.pptx` | PPTX | 11 widescreen slides with dark cobalt/cyan theme, architecture diagrams, and clinical impact |
+| **Executive Presentation** | `submission_files/OmniCare_AI_Executive_Presentation.pptx` | PPTX | 12 widescreen slides with dark cobalt/cyan theme, architecture diagrams, and clinical impact |
 | **Executive Summary PDF** | `submission_files/OmniCare_AI_Executive_Summary.pdf` | PDF | Printable executive brief with KPI matrix and CDSCO SaMD regulatory seal |
-| **Interactive Pitch Deck** | `showcase/pitch-deck.html` | HTML5 / JS | 11-slide standalone interactive presentation engine with keyboard navigation and speaker notes |
+| **Interactive Pitch Deck** | `showcase/pitch-deck.html` | HTML5 / JS | 12-slide standalone interactive presentation engine with keyboard navigation and speaker notes |
 | **Judge Showcase Portal** | `showcase/index.html` | HTML5 / JS | 1-click clinical scenario demonstrator with 100% offline fallback resilience |
 | **Clinical Cockpit UI** | `frontend/index.html` | HTML5 / CSS / JS | Real-time cockpit dashboard with 45 TOPS HUD, 60 FPS PPG canvas, calibrated ECG grid, and Web Audio synth |
 | **Automated Test Suite** | `backend/test_endpoints.py` | Python (FastAPI TestClient) | 25/25 automated regression tests validating all endpoints with exit code 0 |
@@ -43,7 +43,7 @@ OmniCare AI is designed for immediate, zero-friction inspection by Qualcomm and 
 2. Experience 100% interactive responsiveness:
    - Click any of the **4 Clinical Demonstration Scenarios** (Acute STEMI, Pneumonia, Melanin-Calibrated Dermoscopy, POCUS Ultrasound).
    - Inspect live hardware telemetry, architectural flows, and regulatory compliance matrices.
-3. Open `showcase/pitch-deck.html` to review the interactive 11-slide executive presentation (press `Arrow Keys` or `Space` to navigate, `N` for speaker notes).
+3. Open `showcase/pitch-deck.html` to review the interactive 12-slide executive presentation (press `Arrow Keys` or `Space` to navigate, `N` for speaker notes).
 *Guaranteed 100% offline fallback resilience: All frontend operations execute without requiring a running backend server.*
 
 ### Option B: Full Stack Workstation Execution (FastAPI + Cockpit)

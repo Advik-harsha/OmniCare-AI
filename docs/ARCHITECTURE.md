@@ -20,7 +20,7 @@ OmniCare AI is structured as a high-performance, modular edge workstation runnin
 |  |                 PRESENTATION TIER (100% Standalone & Offline Fallback Resilient)             |  |
 |  |   - Clinical Cockpit (frontend/index.html)     - Judge Showcase Portal (showcase/index.html)  |  |
 |  |   - 60 FPS Canvas PPG Waveform                 - Calibrated 1mm Lead II ECG Canvas           |  |
-|  |   - Web Audio Stethoscope Synthesizer          - 11-Slide Executive Pitch Deck               |  |
+|  |   - Web Audio Stethoscope Synthesizer          - 12-Slide Executive Pitch Deck               |  |
 |  +----------------------------------------------------------------------------------------------+  |
 |                                                  | Local HTTP / In-Memory Fallbacks                |
 |  +----------------------------------------------------------------------------------------------+  |

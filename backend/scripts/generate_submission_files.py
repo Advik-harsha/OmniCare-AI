@@ -155,6 +155,31 @@ SLIDES_DATA = [
         "footer": "Security & Regulatory: Wolf Vault + ABDM FHIR R4 + CDSCO SaMD + DPDP Act 2023"
     },
     {
+        "title": "Why Snapdragon Edge AI Wins (Competitive Advantage)",
+        "subtitle": "OmniCare AI on Snapdragon X Elite vs Cloud Telemedicine vs Legacy Monitors",
+        "bullets": [
+            "Edge AI Compute: 45.0 TOPS Qualcomm Hexagon NPU (HTP v73) vs Zero compute on legacy/cloud clients",
+            "Inference Latency: Sub-15ms on-device response vs 800-2,500ms roundtrip cellular latency spikes",
+            "Hardware Replacement: 1 single HP PC replaces $15,000+ of bulky, fragmented hospital monitors",
+            "Off-Grid Battery: 26+ Hours endurance vs 4-6 hours on tablets or AC mains reliance on legacy carts",
+            "Data Sovereignty: 100% Zero Cloud Egress (DPDP Act 2023) vs severe cloud data breach liability",
+            "Drug Economics: 82.9% savings via PMBJP Jan Aushadhi generic substitution AI built-in"
+        ],
+        "table": {
+            "headers": ["Metric", "Legacy Hospital Devices", "Cloud Telehealth (AWS/GCP)", "OmniCare AI on Snapdragon"],
+            "rows": [
+                ["Edge AI Compute", "None (Fixed microcontrollers)", "None (Client is dumb display)", "45.0 TOPS Qualcomm Hexagon NPU"],
+                ["Diagnostic Latency", "Waveform display only (no AI)", "800ms - 2,500ms roundtrip lag", "Sub-15ms multimodal inference"],
+                ["Network Resilience", "100% Offline (Manual readouts)", "Fails completely without 4G/5G", "100% Zero Cloud Egress Offline"],
+                ["Hardware Investment", "$15,000+ (Multiple carts)", "$1,200 tablet + $50/mo cloud API", "1 single HP PC replaces $15k hardware"],
+                ["Off-Grid Battery", "1-2 hours / AC power required", "4-6 hours (tablets / iPads)", "26+ Hours (HP Smart Sense Eco)"],
+                ["Data Sovereignty", "Paper records (loss hazards)", "High risk of cloud leakage", "Hardware Wolf Vault (DPDP Act 2023)"],
+                ["Drug Cost Savings", "None (Out-of-pocket burden)", "None (Static prescription PDFs)", "82.9% generic savings via PMBJP"]
+            ]
+        },
+        "footer": "Competitive Moat: Why Snapdragon X Elite is Uniquely Positioned to Dominate Edge Healthcare"
+    },
+    {
         "title": "Deployment Horizon: 150,000 Health & Wellness Centres",
         "subtitle": "Transforming Rural India's Healthcare Backbone with HP & Qualcomm",
         "bullets": [
@@ -475,26 +500,64 @@ def generate_pptx_deck(output_path: str):
         p_sub.font.size = Pt(13)
         p_sub.font.color.rgb = cyan
 
-        # Card container for bullets
-        card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(2.1), Inches(11.733), Inches(4.5))
-        card.fill.solid()
-        card.fill.fore_color.rgb = card_bg
-        card.line.color.rgb = RGBColor(0, 82, 255)
-        card.line.width = Pt(1.5)
+        if "table" in data:
+            tbl_info = data["table"]
+            headers = tbl_info["headers"]
+            rows = tbl_info["rows"]
+            num_rows = len(rows) + 1
+            num_cols = len(headers)
 
-        # Bullets inside Card
-        bullet_box = slide.shapes.add_textbox(Inches(1.1), Inches(2.3), Inches(11.133), Inches(4.1))
-        btf = bullet_box.text_frame
-        btf.word_wrap = True
+            table_shape = slide.shapes.add_table(num_rows, num_cols, Inches(0.8), Inches(2.05), Inches(11.733), Inches(4.55))
+            table = table_shape.table
+            table.columns[0].width = Inches(2.2)
+            table.columns[1].width = Inches(2.7)
+            table.columns[2].width = Inches(2.9)
+            table.columns[3].width = Inches(3.933)
 
-        for i, bullet in enumerate(data["bullets"]):
-            bp = btf.paragraphs[0] if i == 0 else btf.add_paragraph()
-            bp.text = f"•  {bullet}"
-            bp.font.name = "Arial"
-            bp.font.size = Pt(15)
-            bp.font.color.rgb = white
-            bp.space_before = Pt(8)
-            bp.space_after = Pt(8)
+            for col_idx, header_text in enumerate(headers):
+                cell = table.cell(0, col_idx)
+                cell.text = header_text
+                cell.fill.solid()
+                cell.fill.fore_color.rgb = RGBColor(0, 82, 255) if col_idx < 3 else RGBColor(0, 160, 220)
+                p = cell.text_frame.paragraphs[0]
+                p.font.name = "Arial"
+                p.font.size = Pt(11)
+                p.font.bold = True
+                p.font.color.rgb = white
+
+            for row_idx, row_data in enumerate(rows):
+                for col_idx, cell_text in enumerate(row_data):
+                    cell = table.cell(row_idx + 1, col_idx)
+                    cell.text = cell_text
+                    cell.fill.solid()
+                    cell.fill.fore_color.rgb = RGBColor(16, 28, 64) if row_idx % 2 == 0 else RGBColor(22, 38, 80)
+                    p = cell.text_frame.paragraphs[0]
+                    p.font.name = "Arial"
+                    p.font.size = Pt(10)
+                    p.font.color.rgb = cyan if col_idx == 3 else white
+                    if col_idx == 3:
+                        p.font.bold = True
+        else:
+            # Card container for bullets
+            card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(2.1), Inches(11.733), Inches(4.5))
+            card.fill.solid()
+            card.fill.fore_color.rgb = card_bg
+            card.line.color.rgb = RGBColor(0, 82, 255)
+            card.line.width = Pt(1.5)
+
+            # Bullets inside Card
+            bullet_box = slide.shapes.add_textbox(Inches(1.1), Inches(2.3), Inches(11.133), Inches(4.1))
+            btf = bullet_box.text_frame
+            btf.word_wrap = True
+
+            for i, bullet in enumerate(data["bullets"]):
+                bp = btf.paragraphs[0] if i == 0 else btf.add_paragraph()
+                bp.text = f"•  {bullet}"
+                bp.font.name = "Arial"
+                bp.font.size = Pt(15)
+                bp.font.color.rgb = white
+                bp.space_before = Pt(8)
+                bp.space_after = Pt(8)
 
         # Footer
         ft_box = slide.shapes.add_textbox(Inches(0.8), Inches(6.8), Inches(11.733), Inches(0.4))
@@ -585,24 +648,57 @@ def generate_pitch_slides_pdf(output_path: str):
         story.append(Paragraph(slide["subtitle"].replace("\n", " — "), slide_sub_style))
         story.append(Spacer(1, 8))
 
-        # Bullet Card Table
-        card_content = []
-        for bullet in slide["bullets"]:
-            card_content.append([Paragraph(f"• &nbsp; {bullet}", bullet_style)])
+        if "table" in slide:
+            tbl_info = slide["table"]
+            headers = tbl_info["headers"]
+            rows = tbl_info["rows"]
 
-        card_table = Table(card_content, colWidths=[w - 1.8 * inch])
-        card_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#101C40')),
-            ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#0052FF')),
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#1E2A55')),
-            ('TOPPADDING', (0, 0), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('LEFTPADDING', (0, 0), (-1, -1), 16),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 16),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ]))
-        story.append(card_table)
-        story.append(Spacer(1, 16))
+            tbl_content = []
+            hdr_cells = [Paragraph(f"<b>{h}</b>", ParagraphStyle('TH', fontName='Helvetica-Bold', fontSize=10, leading=12, textColor=colors.white)) for h in headers]
+            tbl_content.append(hdr_cells)
+
+            for r_idx, r_data in enumerate(rows):
+                r_cells = []
+                for c_idx, cell_text in enumerate(r_data):
+                    col_color = '#00F0FF' if c_idx == 3 else '#FFFFFF'
+                    col_bold = 'Helvetica-Bold' if c_idx == 3 else 'Helvetica'
+                    r_cells.append(Paragraph(cell_text, ParagraphStyle('TD', fontName=col_bold, fontSize=8.5, leading=11, textColor=colors.HexColor(col_color))))
+                tbl_content.append(r_cells)
+
+            card_table = Table(tbl_content, colWidths=[2.2 * inch, 2.7 * inch, 3.0 * inch, 3.833 * inch])
+            card_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0052FF')),
+                ('BACKGROUND', (3, 0), (3, 0), colors.HexColor('#0088CC')),
+                ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#0052FF')),
+                ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#1E2A55')),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#101C40'), colors.HexColor('#162650')]),
+                ('TOPPADDING', (0, 0), (-1, -1), 5),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                ('LEFTPADDING', (0, 0), (-1, -1), 8),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ]))
+            story.append(card_table)
+            story.append(Spacer(1, 14))
+        else:
+            # Bullet Card Table
+            card_content = []
+            for bullet in slide["bullets"]:
+                card_content.append([Paragraph(f"• &nbsp; {bullet}", bullet_style)])
+
+            card_table = Table(card_content, colWidths=[w - 1.8 * inch])
+            card_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#101C40')),
+                ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#0052FF')),
+                ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#1E2A55')),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 16),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 16),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ]))
+            story.append(card_table)
+            story.append(Spacer(1, 16))
 
         story.append(Paragraph(f"Slide {idx + 1} of {len(SLIDES_DATA)} &nbsp;|&nbsp; {slide['footer']}", footer_style))
 

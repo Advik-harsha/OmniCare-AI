@@ -66,7 +66,7 @@ India represents over 1.4 billion people, with **68% of the population residing 
 |  |                 PRESENTATION TIER (100% Standalone & Offline Fallback Resilient)             |  |
 |  |   - Clinical Cockpit (frontend/index.html)     - Judge Showcase Portal (showcase/index.html)  |  |
 |  |   - 60 FPS Canvas PPG Waveform                 - Calibrated 1mm Lead II ECG Canvas           |  |
-|  |   - Web Audio Stethoscope Synthesizer          - 11-Slide Executive Pitch Deck               |  |
+|  |   - Web Audio Stethoscope Synthesizer          - 12-Slide Executive Pitch Deck               |  |
 |  +----------------------------------------------------------------------------------------------+  |
 |                                                  | Local HTTP / In-Memory Fallbacks                |
 |  +----------------------------------------------------------------------------------------------+  |
@@ -214,7 +214,7 @@ OmniCare AI offers 3 intuitive pathways for challenge judges:
 *No Python, Node.js, or backend servers required!*
 - Double-click [`showcase/index.html`](file:///e:/Sage_drama/Snapdragon/showcase/index.html) in Chrome or Edge.
 - Test the **4 interactive clinical scenarios** (STEMI, Pneumonia, Melanin Dermoscopy, POCUS).
-- Open [`showcase/pitch-deck.html`](file:///e:/Sage_drama/Snapdragon/showcase/pitch-deck.html) to view the **11-slide interactive presentation** (`Arrow Keys` / `Space` to navigate, `N` for speaker notes).
+- Open [`showcase/pitch-deck.html`](file:///e:/Sage_drama/Snapdragon/showcase/pitch-deck.html) to view the **12-slide interactive presentation** (`Arrow Keys` / `Space` to navigate, `N` for speaker notes).
 
 ### 2. Full-Stack Clinical Cockpit
 - Launch the workstation:
@@ -276,7 +276,7 @@ OmniCare-AI/
 │       └── cockpit.js                # Live 60 FPS PPG canvas, ECG canvas & 100% fallbacks
 ├── showcase/
 │   ├── index.html                    # Standalone Judge Showcase Portal (100% offline)
-│   ├── pitch-deck.html               # 11-slide interactive executive presentation engine
+│   ├── pitch-deck.html               # 12-slide interactive executive presentation engine
 │   ├── css/showcase.css              # Executive dark presentation styling
 │   └── js/showcase.js                # 1-click clinical scenario demonstrator logic
 ├── submission_files/
