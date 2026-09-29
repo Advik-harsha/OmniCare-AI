@@ -114,8 +114,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: 25-endpoint comprehensive automated test suite and regression runner in `backend/test_endpoints.py`.
-- [ ] 06-02: Automated submission document generator script and competition documentation package in `docs/`.
+- [x] 06-01: 25-endpoint comprehensive automated test suite and regression runner in `backend/test_endpoints.py`.
+- [x] 06-02: Automated submission document generator script and competition documentation package in `submission_files/`.
 
 ## Progress
 
@@ -129,4 +129,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Contactless rPPG Vitals & 12-Lead Paper ECG Digitizer | 2/2 | Complete | 2026-09-26 |
 | 4. Advanced Clinical Intelligence & Distributed Edge Services | 3/3 | Complete | 2026-09-26 |
 | 5. Futuristic Clinical Cockpit UI & Standalone Judge Showcase | 2/2 | Complete | 2026-09-26 |
-| 6. Automated Verification, Submission Package & Code Review | 0/2 | Not started | - |
+| 6. Automated Verification, Submission Package & Code Review | 2/2 | Complete | 2026-09-29 |

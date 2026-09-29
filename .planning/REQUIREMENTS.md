@@ -82,8 +82,8 @@ Requirements for initial release of OmniCare AI for the Qualcomm Snapdragon® AI
 
 ### Verification, Submissions & Autonomous Harness
 
-- [ ] **VERIF-01**: Automated backend test suite in `backend/test_endpoints.py` asserting HTTP 200 and schema validation across all 25 endpoints with 0 failures.
-- [ ] **VERIF-02**: Automated generator `backend/scripts/generate_submission_files.py` producing official competition artifacts (`.docx`, `.pptx`, `.pdf`) in `submission_files/`.
+- [x] **VERIF-01**: Automated backend test suite in `backend/test_endpoints.py` asserting HTTP 200 and schema validation across all 25 endpoints with 0 failures.
+- [x] **VERIF-02**: Automated generator `backend/scripts/generate_submission_files.py` producing official competition artifacts (`.docx`, `.pptx`, `.pdf`) in `submission_files/`.
 - [x] **HARN-01**: Ralph iterative task automation harness (`prd.json` and autonomous task runner scripts) enforcing continuous test execution.
 - [x] **HARN-02**: CodeRabbit PR review automation configuration (`.coderabbit.yaml`) for clinical safety, offline resilience, and architectural compliance.
 
@@ -153,8 +153,8 @@ Deferred to post-challenge roadmap.
 | UI-03 | Phase 5 | Complete |
 | UI-04 | Phase 5 | Complete |
 | UI-05 | Phase 5 | Complete |
-| VERIF-01 | Phase 6 | Pending |
-| VERIF-02 | Phase 6 | Pending |
+| VERIF-01 | Phase 6 | Complete |
+| VERIF-02 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 47 total
