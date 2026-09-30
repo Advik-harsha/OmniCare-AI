@@ -1753,19 +1753,27 @@ def generate_pptx(output_path):
             r_t.font.color.rgb = C["TEXT_MAIN"]
 
             chips = [
-                ("✓ Sub-15ms Multimodal Latency", "✓ 26+ Hours Off-Grid Battery"),
-                ("✓ DPDP Act 2023 Compliant",      "✓ 82.9% Jan Aushadhi Savings"),
-                ("✓ 35/35 Quality Gates PASS",     "✓ 100% Offline Standalone Resilience"),
+                ("Sub-15ms Multimodal Latency", "26+ Hours Off-Grid Battery"),
+                ("DPDP Act 2023 Compliant",     "82.9% Jan Aushadhi Savings"),
+                ("35/35 Quality Gates PASS",    "100% Offline Standalone Resilience"),
             ]
             for c_left, c_right in chips:
                 p_chip = tf_b.add_paragraph()
-                p_chip.space_before = Pt(6)
+                p_chip.space_before = Pt(5)
+                r_tag = p_chip.add_run()
+                r_tag.text = "[PASS] "
+                r_tag.font.name = FONT
+                r_tag.font.bold = True
+                r_tag.font.size = Pt(9.5)
+                r_tag.font.color.rgb = C["GREEN"]
+
                 r_l = p_chip.add_run()
-                r_l.text = f"{c_left:<38}"
+                r_l.text = c_left + "   •   "
                 r_l.font.name = FONT
                 r_l.font.bold = True
                 r_l.font.size = Pt(9.5)
-                r_l.font.color.rgb = C["GREEN"]
+                r_l.font.color.rgb = C["TEXT_MAIN"]
+
                 r_r = p_chip.add_run()
                 r_r.text = c_right
                 r_r.font.name = FONT
@@ -1813,8 +1821,8 @@ def generate_pptx(output_path):
                 r_hw1.font.color.rgb = C["CYAN"]
 
                 for hw_line, hw_color in [
-                    ("⚡ Qualcomm Snapdragon® X Elite (12-Core Oryon) • 45.0 TOPS Hexagon NPU", "WHITE"),
-                    ("🔒 HP Wolf Security Hardware Enclave (AES-256-GCM) • 26+ Hours Battery", "GREEN"),
+                    ("• Qualcomm Snapdragon® X Elite (12-Core Oryon) • 45.0 TOPS Hexagon NPU", "WHITE"),
+                    ("• HP Wolf Security Hardware Enclave (AES-256-GCM) • 26+ Hours Battery", "GREEN"),
                 ]:
                     p_l = tf_hw.add_paragraph()
                     p_l.space_before = Pt(4)
@@ -2143,21 +2151,25 @@ def generate_pptx(output_path):
                     p = tf_b.paragraphs[0]
                     colon = b.find(":")
                     if 0 < colon < 50:
-                        r1 = p.add_run()
-                        r1.text = b[: colon + 1] + "\n"
+                        p1 = tf_b.paragraphs[0]
+                        p1.text = b[: colon + 1]
+                        r1 = p1.runs[0]
                         r1.font.name = FONT
                         r1.font.bold = True
                         r1.font.size = Pt(11)
                         r1.font.color.rgb = C["CYAN"] if bi % 2 == 0 else C["GREEN"]
 
-                        r2 = p.add_run()
-                        r2.text = b[colon + 1 :].strip()
+                        p2 = tf_b.add_paragraph()
+                        p2.space_before = Pt(2)
+                        p2.text = b[colon + 1 :].strip()
+                        r2 = p2.runs[0]
                         r2.font.name = FONT
                         r2.font.size = Pt(9.5)
                         r2.font.color.rgb = C["TEXT_MAIN"]
                     else:
-                        r = p.add_run()
-                        r.text = b
+                        p = tf_b.paragraphs[0]
+                        p.text = b
+                        r = p.runs[0]
                         r.font.name = FONT
                         r.font.size = Pt(10)
                         r.font.color.rgb = C["TEXT_MAIN"]
@@ -2301,10 +2313,10 @@ def generate_pptx(output_path):
                 p = tf_v.add_paragraph()
                 p.space_before = Pt(8)
                 r_bullet = p.add_run()
-                r_bullet.text = "✓ "
+                r_bullet.text = "• "
                 r_bullet.font.name = FONT
                 r_bullet.font.bold = True
-                r_bullet.font.size = Pt(10)
+                r_bullet.font.size = Pt(11)
                 r_bullet.font.color.rgb = C["GREEN"]
                 r_text = p.add_run()
                 clean_text = line.lstrip("•").strip()
@@ -2435,6 +2447,9 @@ def generate_pptx(output_path):
                     if ci == 3:
                         r.font.bold = True
                         r.font.color.rgb = C["CYAN"]
+                    elif ci == 0:
+                        r.font.bold = True
+                        r.font.color.rgb = C["WHITE"]
                     else:
                         r.font.color.rgb = C["TEXT_MAIN"]
 
@@ -2513,13 +2528,15 @@ def generate_pptx(output_path):
                 r1.font.bold = True
                 r1.font.size = Pt(11.5)
                 r1.font.color.rgb = C["CYAN"]
-                p2 = tf_p.add_paragraph()
-                p2.space_before = Pt(4)
-                p2.text = p_desc
-                r2 = p2.runs[0]
-                r2.font.name = FONT
-                r2.font.size = Pt(10)
-                r2.font.color.rgb = C["TEXT_MAIN"]
+
+                for line_desc in p_desc.split("\n"):
+                    p_d = tf_p.add_paragraph()
+                    p_d.space_before = Pt(3)
+                    p_d.text = line_desc
+                    r_d = p_d.runs[0]
+                    r_d.font.name = FONT
+                    r_d.font.size = Pt(10)
+                    r_d.font.color.rgb = C["TEXT_MAIN"]
 
         # ─── Slide 12: Impact & CTA ───
         elif stype == "impact_cta":
@@ -2611,17 +2628,31 @@ def generate_pitch_pdf(output_path):
 
     def _c(key): return _rgb_reportlab(key)
 
-    s_tag   = ParagraphStyle("PT",  fontName="Helvetica-Bold", fontSize=8,   leading=10, textColor=_c("CYAN"), spaceAfter=1)
-    s_title = ParagraphStyle("PTI", fontName="Helvetica-Bold", fontSize=21,  leading=25, textColor=_c("WHITE"),spaceAfter=1)
-    s_sub   = ParagraphStyle("PS",  fontName="Helvetica",      fontSize=11,  leading=14, textColor=_c("CYAN"), spaceAfter=8)
-    s_body  = ParagraphStyle("PB",  fontName="Helvetica",      fontSize=9.5, leading=13.5,textColor=_c("WHITE"))
-    s_bul   = ParagraphStyle("PBL", fontName="Helvetica",      fontSize=9,   leading=12.5,textColor=_c("WHITE"),leftIndent=8, spaceAfter=3)
-    s_th    = ParagraphStyle("PTH", fontName="Helvetica-Bold", fontSize=8,   leading=10, textColor=colors.white)
-    s_td    = ParagraphStyle("PTD", fontName="Helvetica",      fontSize=7.5, leading=9.5,textColor=_c("WHITE"))
-    s_tdg   = ParagraphStyle("PTDG",fontName="Helvetica-Bold", fontSize=7.5, leading=9.5,textColor=_c("GREEN"))
-    s_kpi_v = ParagraphStyle("PKV", fontName="Helvetica-Bold", fontSize=18,  leading=22, textColor=_c("CYAN"), alignment=1)
-    s_kpi_l = ParagraphStyle("PKL", fontName="Helvetica",      fontSize=8,   leading=10.5,textColor=_c("WHITE"),alignment=1)
-    s_foot  = ParagraphStyle("PFT", fontName="Helvetica-Oblique",fontSize=7.5,leading=10, textColor=_c("GRAY"), alignment=0)
+    def _clean(t):
+        if not isinstance(t, str):
+            return t
+        return (
+            t.replace("✓", "[PASS]")
+             .replace("•", "&bull;")
+             .replace("®", "&reg;")
+             .replace("—", "&mdash;")
+             .replace("–", "&ndash;")
+        )
+
+    s_tag     = ParagraphStyle("PT",   fontName="Helvetica-Bold", fontSize=8.5, leading=10.5, textColor=_c("CYAN"), spaceAfter=1)
+    s_title   = ParagraphStyle("PTI",  fontName="Helvetica-Bold", fontSize=21,  leading=25,   textColor=_c("WHITE"),spaceAfter=2)
+    s_sub     = ParagraphStyle("PS",   fontName="Helvetica-Bold", fontSize=11.5,leading=15,   textColor=_c("CYAN"), spaceAfter=8)
+    s_body    = ParagraphStyle("PB",   fontName="Helvetica",      fontSize=9.5, leading=13.5, textColor=_c("WHITE"))
+    s_bul     = ParagraphStyle("PBL",  fontName="Helvetica",      fontSize=9,   leading=12.5, textColor=_c("WHITE"),leftIndent=10, spaceAfter=4)
+    s_th      = ParagraphStyle("PTH",  fontName="Helvetica-Bold", fontSize=9,   leading=11,   textColor=colors.white, alignment=1)
+    s_td      = ParagraphStyle("PTD",  fontName="Helvetica",      fontSize=8.5, leading=11,   textColor=_c("WHITE"))
+    s_td_bold = ParagraphStyle("PTDB", fontName="Helvetica-Bold", fontSize=8.5, leading=11,   textColor=_c("WHITE"))
+    s_tdg     = ParagraphStyle("PTDG", fontName="Helvetica-Bold", fontSize=8.5, leading=11,   textColor=_c("GREEN"))
+    s_td_cyan = ParagraphStyle("PTDC", fontName="Helvetica-Bold", fontSize=8.5, leading=11,   textColor=_c("CYAN"))
+    s_kpi_v   = ParagraphStyle("PKV",  fontName="Helvetica-Bold", fontSize=20,  leading=24,   textColor=_c("CYAN"), alignment=1)
+    s_kpi_l   = ParagraphStyle("PKL",  fontName="Helvetica-Bold", fontSize=8.5, leading=11,   textColor=_c("WHITE"),alignment=1)
+    s_kpi_sub = ParagraphStyle("PKLS", fontName="Helvetica-Oblique", fontSize=7.5, leading=9.5, textColor=_c("GRAY"), alignment=1)
+    s_foot    = ParagraphStyle("PFT",  fontName="Helvetica-Oblique", fontSize=8,   leading=10,   textColor=_c("GRAY"), alignment=0)
 
     def bg_draw(canvas_obj, doc_obj):
         canvas_obj.saveState()
@@ -2637,9 +2668,9 @@ def generate_pitch_pdf(output_path):
     story = []
 
     for idx, s in enumerate(SLIDES):
-        story.append(Paragraph(s["tag"], s_tag))
-        story.append(Paragraph(s["title"], s_title))
-        story.append(Paragraph(s["subtitle"], s_sub))
+        story.append(Paragraph(_clean(s["tag"]), s_tag))
+        story.append(Paragraph(_clean(s["title"]), s_title))
+        story.append(Paragraph(_clean(s["subtitle"]), s_sub))
 
         stype = s.get("type")
 
@@ -2648,8 +2679,8 @@ def generate_pitch_pdf(output_path):
             col_w = AW * 0.52
             kpis = s["kpis"]
             kt_data = [
-                [Paragraph(f"<b>{val}</b>", ParagraphStyle("KPV", parent=s_kpi_v, fontSize=16, leading=19, textColor=_c("CYAN"))) for val, _ in kpis],
-                [Paragraph(lbl, s_kpi_l) for _, lbl in kpis]
+                [Paragraph(f"<b>{_clean(val)}</b>", ParagraphStyle("KPV", parent=s_kpi_v, fontSize=17, leading=20, textColor=_c("CYAN"))) for val, _ in kpis],
+                [Paragraph(_clean(lbl), s_kpi_l) for _, lbl in kpis]
             ]
             kt = Table(kt_data, colWidths=[col_w / len(kpis)] * len(kpis))
             kt.setStyle(TableStyle([
@@ -2665,12 +2696,12 @@ def generate_pitch_pdf(output_path):
                 kt,
                 Spacer(1, 8),
                 Paragraph("<b>THE REVOLUTIONARY CLINICAL BREAKTHROUGH</b>", s_sub),
-                Paragraph(s["body"], s_body),
+                Paragraph(_clean(s["body"]), s_body),
                 Spacer(1, 6),
                 Paragraph(
-                    '<font color="#10B981">✓ Sub-15ms Latency &nbsp;&nbsp;&nbsp; ✓ 26+ Hours Off-Grid Battery<br/>'
-                    '✓ DPDP Act 2023 Compliant &nbsp;&nbsp;&nbsp; ✓ 82.9% Drug Savings<br/>'
-                    '✓ 35/35 Automated Quality Gates Passed (EXIT CODE 0)</font>',
+                    '<font color="#10B981"><b>[PASS]</b> Sub-15ms Latency &nbsp;&nbsp;&nbsp;&nbsp; <b>[PASS]</b> 26+ Hours Off-Grid Battery<br/>'
+                    '<b>[PASS]</b> DPDP Act 2023 Compliant &nbsp;&nbsp;&nbsp;&nbsp; <b>[PASS]</b> 82.9% Drug Savings<br/>'
+                    '<b>[PASS]</b> 35/35 Automated Quality Gates Passed (EXIT CODE 0)</font>',
                     s_body
                 )
             ]
@@ -2680,7 +2711,27 @@ def generate_pitch_pdf(output_path):
                 img_w = AW * 0.44
                 img_h = img_w * (1080 / 1920)
                 right_story.append(RLI(s["image"], width=img_w, height=img_h, hAlign="CENTER"))
-                right_story.append(Paragraph(f"<i>{s['image_caption']}</i>", ParagraphStyle("RC", parent=s_kpi_l, textColor=_c("CYAN"), fontSize=7.5)))
+                right_story.append(Spacer(1, 3))
+                right_story.append(Paragraph(f"<i>{_clean(s['image_caption'])}</i>", ParagraphStyle("RC", parent=s_kpi_l, textColor=_c("CYAN"), fontSize=8, alignment=1)))
+                right_story.append(Spacer(1, 5))
+                hw_box = Table([[
+                    Paragraph(
+                        '<b><font color="#00C8FF">HARDWARE-AI CO-DESIGN TARGET ARCHITECTURE</font></b><br/>'
+                        '&bull; <b>Qualcomm Snapdragon&reg; X Elite:</b> 45.0 TOPS Hexagon NPU (12-Core Oryon)<br/>'
+                        '&bull; <b>HP Wolf Security Enclave:</b> Hardware AES-256-GCM Vault &bull; 26+ Hours Battery<br/>'
+                        '&bull; <b>100% Offline Standalone:</b> Zero Cloud Egress &bull; Complete Data Sovereignty',
+                        s_td
+                    )
+                ]], colWidths=[img_w])
+                hw_box.setStyle(TableStyle([
+                    ("BACKGROUND", (0,0), (-1,-1), _c("NAVY")),
+                    ("BOX", (0,0), (-1,-1), 1, _c("COBALT")),
+                    ("TOPPADDING", (0,0), (-1,-1), 5),
+                    ("BOTTOMPADDING", (0,0), (-1,-1), 5),
+                    ("LEFTPADDING", (0,0), (-1,-1), 8),
+                    ("RIGHTPADDING", (0,0), (-1,-1), 8),
+                ]))
+                right_story.append(hw_box)
 
             split_table = Table([[left_story, right_story]], colWidths=[AW * 0.54, AW * 0.46])
             split_table.setStyle(TableStyle([
@@ -2694,9 +2745,9 @@ def generate_pitch_pdf(output_path):
         elif stype == "stats_and_text":
             stat_cards = s["stat_cards"]
             sc_data = [
-                [Paragraph(f"<b>{val}</b>", ParagraphStyle("SCV", parent=s_kpi_v, fontSize=22, textColor=_c(col))) for val, _, col, _ in stat_cards],
-                [Paragraph(desc, s_kpi_l) for _, desc, _, _ in stat_cards],
-                [Paragraph(f"<i>{sub}</i>", ParagraphStyle("SCS", parent=s_kpi_l, textColor=_c("GRAY"), fontSize=7)) for _, _, _, sub in stat_cards]
+                [Paragraph(f"<b>{_clean(val)}</b>", ParagraphStyle("SCV", parent=s_kpi_v, fontSize=22, textColor=_c(col))) for val, _, col, _ in stat_cards],
+                [Paragraph(_clean(desc), s_kpi_l) for _, desc, _, _ in stat_cards],
+                [Paragraph(f"<i>{_clean(sub)}</i>", s_kpi_sub) for _, _, _, sub in stat_cards]
             ]
             st = Table(sc_data, colWidths=[AW / len(stat_cards)] * len(stat_cards))
             st.setStyle(TableStyle([
@@ -2711,10 +2762,10 @@ def generate_pitch_pdf(output_path):
             story.append(Spacer(1, 8))
 
             t_cols = [
-                [Paragraph(f'<b><font color="#EF4444">{s["col1_title"]}</font></b>', s_sub),
-                 Paragraph(s["col1_text"].replace("\n", "<br/>"), s_body)],
-                [Paragraph(f'<b><font color="#10B981">{s["col2_title"]}</font></b>', s_sub),
-                 Paragraph(s["col2_text"].replace("\n", "<br/>"), s_body)]
+                [Paragraph(f'<b><font color="#EF4444">{_clean(s["col1_title"])}</font></b>', s_sub),
+                 Paragraph(_clean(s["col1_text"]).replace("\n", "<br/>"), s_body)],
+                [Paragraph(f'<b><font color="#10B981">{_clean(s["col2_title"])}</font></b>', s_sub),
+                 Paragraph(_clean(s["col2_text"]).replace("\n", "<br/>"), s_body)]
             ]
             split_cols = Table([[t_cols[0], t_cols[1]]], colWidths=[AW * 0.5, AW * 0.5])
             split_cols.setStyle(TableStyle([
@@ -2733,10 +2784,14 @@ def generate_pitch_pdf(output_path):
         elif stype == "hardware":
             t_info = s["table"]
             heads = t_info["headers"]; rows = t_info["rows"]
-            nc = len(heads); cws = [AW * 0.60 * r for r in [0.24, 0.30, 0.46]]
-            td = [[Paragraph("<b>%s</b>" % h, s_th) for h in heads]]
+            cws = [AW * 0.60 * r for r in [0.24, 0.30, 0.46]]
+            td = [[Paragraph("<b>%s</b>" % _clean(h), s_th) for h in heads]]
             for row_d in rows:
-                td.append([Paragraph(v, s_td) for v in row_d])
+                td.append([
+                    Paragraph(_clean(row_d[0]), s_td_bold),
+                    Paragraph(_clean(row_d[1]), s_td),
+                    Paragraph(_clean(row_d[2]), s_td)
+                ])
             tbl = Table(td, colWidths=cws)
             tbl.setStyle(TableStyle([
                 ("BACKGROUND", (0,0), (-1,0), _c("COBALT")),
@@ -2758,10 +2813,10 @@ def generate_pitch_pdf(output_path):
 
             smart_card = Table([[Paragraph(
                 '<b><font color="#00C8FF">HP SMART SENSE DYNAMIC PROFILES</font></b><br/><br/>'
-                '• <b>Performance (45 TOPS):</b> Emergency STEMI digitization<br/>'
-                '• <b>Balanced (32 TOPS):</b> Standard clinical daily screening<br/>'
-                '• <b>Eco Mode (20 TOPS):</b> 26+ hours off-grid battery endurance<br/>'
-                '• <b>Acoustics &lt;20 dBA:</b> Silent operation for stethoscopy',
+                '&bull; <b>Performance (45 TOPS):</b> Emergency STEMI digitization<br/>'
+                '&bull; <b>Balanced (32 TOPS):</b> Standard clinical daily screening<br/>'
+                '&bull; <b>Eco Mode (20 TOPS):</b> 26+ hours off-grid battery endurance<br/>'
+                '&bull; <b>Acoustics &lt;20 dBA:</b> Silent operation for stethoscopy',
                 s_td
             )]], colWidths=[AW * 0.38])
             smart_card.setStyle(TableStyle([
@@ -2789,21 +2844,37 @@ def generate_pitch_pdf(output_path):
                 img_w = AW * 0.64
                 img_h = img_w * (1080 / 1920)
                 left_side.append(RLI(s["image"], width=img_w, height=img_h, hAlign="CENTER"))
+                left_side.append(Spacer(1, 4))
+                cap_box = Table([[Paragraph(
+                    '<b><font color="#00C8FF">Live Clinical Cockpit: 6 Concurrent On-Device AI Diagnostic Engines</font></b><br/>'
+                    '<font color="#10B981">Snapdragon&reg; X Elite 45 TOPS Hexagon NPU &nbsp;&bull;&nbsp; HP Smart Sense Governor &nbsp;&bull;&nbsp; 100% Offline Edge Resilience</font>',
+                    s_td
+                )]], colWidths=[img_w])
+                cap_box.setStyle(TableStyle([
+                    ("BACKGROUND", (0,0), (-1,-1), _c("CARD")),
+                    ("BOX", (0,0), (-1,-1), 1, _c("COBALT")),
+                    ("TOPPADDING", (0,0), (-1,-1), 4),
+                    ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+                    ("LEFTPADDING", (0,0), (-1,-1), 8),
+                    ("RIGHTPADDING", (0,0), (-1,-1), 8),
+                    ("ALIGN", (0,0), (-1,-1), "CENTER"),
+                ]))
+                left_side.append(cap_box)
 
             callouts = s["callouts"]
             right_side = []
             for t, d in callouts:
                 card_t = Table([[
-                    Paragraph(f'<b><font color="#00C8FF">{t}</font></b>', s_th),
-                    Paragraph(d, s_td)
-                ]], colWidths=[AW * 0.11, AW * 0.22])
+                    Paragraph(f'<b><font color="#00C8FF">{_clean(t)}</font></b>', s_th),
+                    Paragraph(_clean(d), s_td)
+                ]], colWidths=[AW * 0.12, AW * 0.23])
                 card_t.setStyle(TableStyle([
                     ("BACKGROUND", (0,0), (-1,-1), _c("CARD")),
                     ("BOX", (0,0), (-1,-1), 1, _c("COBALT")),
                     ("TOPPADDING", (0,0), (-1,-1), 4),
                     ("BOTTOMPADDING", (0,0), (-1,-1), 4),
-                    ("LEFTPADDING", (0,0), (-1,-1), 5),
-                    ("RIGHTPADDING", (0,0), (-1,-1), 5),
+                    ("LEFTPADDING", (0,0), (-1,-1), 6),
+                    ("RIGHTPADDING", (0,0), (-1,-1), 6),
                     ("VALIGN", (0,0), (-1,-1), "MIDDLE")
                 ]))
                 right_side.append(card_t)
@@ -2823,10 +2894,16 @@ def generate_pitch_pdf(output_path):
             if s.get("table"):
                 t_info = s["table"]
                 heads = t_info["headers"]; rows = t_info["rows"]
-                nc = len(heads); cws = [AW * 0.58 / nc] * nc
-                td = [[Paragraph("<b>%s</b>" % h, s_th) for h in heads]]
+                cws = [AW * 0.58 * r for r in [0.22, 0.22, 0.12, 0.12, 0.32]]
+                td = [[Paragraph("<b>%s</b>" % _clean(h), s_th) for h in heads]]
                 for row_d in rows:
-                    td.append([Paragraph(v, s_td) for v in row_d])
+                    td.append([
+                        Paragraph(_clean(row_d[0]), s_td_bold),
+                        Paragraph(_clean(row_d[1]), s_td),
+                        Paragraph(_clean(row_d[2]), s_td_cyan),
+                        Paragraph(_clean(row_d[3]), s_tdg),
+                        Paragraph(_clean(row_d[4]), s_td)
+                    ])
                 t = Table(td, colWidths=cws)
                 t.setStyle(TableStyle([
                     ("BACKGROUND", (0,0), (-1,0), _c("COBALT")),
@@ -2839,8 +2916,27 @@ def generate_pitch_pdf(output_path):
                 ]))
                 left_flowables.append(t)
             elif s.get("bullets"):
-                for b in s["bullets"]:
-                    left_flowables.append(Paragraph("•  " + b, s_bul))
+                for bi, b in enumerate(s["bullets"]):
+                    cleaned_b = _clean(b)
+                    colon = cleaned_b.find(":")
+                    if 0 < colon < 60:
+                        title_part = cleaned_b[:colon].strip()
+                        desc_part = cleaned_b[colon+1:].strip()
+                        color_hex = "#00C8FF" if bi % 2 == 0 else "#10B981"
+                        card_content = Paragraph(f'<b><font color="{color_hex}">&bull; {title_part}:</font></b> {desc_part}', s_td)
+                    else:
+                        card_content = Paragraph(f'&bull; {cleaned_b}', s_td)
+                    b_tbl = Table([[card_content]], colWidths=[AW * 0.58])
+                    b_tbl.setStyle(TableStyle([
+                        ("BACKGROUND", (0,0), (-1,-1), _c("CARD")),
+                        ("BOX", (0,0), (-1,-1), 1, _c("COBALT")),
+                        ("TOPPADDING", (0,0), (-1,-1), 5),
+                        ("BOTTOMPADDING", (0,0), (-1,-1), 5),
+                        ("LEFTPADDING", (0,0), (-1,-1), 8),
+                        ("RIGHTPADDING", (0,0), (-1,-1), 8),
+                    ]))
+                    left_flowables.append(b_tbl)
+                    left_flowables.append(Spacer(1, 3))
 
             right_flowables = []
             if os.path.isfile(s["image"]):
@@ -2851,7 +2947,8 @@ def generate_pitch_pdf(output_path):
                     rh = 3.8 * inch
                     rw = rh * (img.width / img.height)
                 right_flowables.append(RLI(s["image"], width=rw, height=rh, hAlign="CENTER"))
-                right_flowables.append(Paragraph(f"<i>{s['image_caption']}</i>", ParagraphStyle("RIC", parent=s_kpi_l, textColor=_c("CYAN"), fontSize=7.5)))
+                right_flowables.append(Spacer(1, 3))
+                right_flowables.append(Paragraph(f"<i>{_clean(s['image_caption'])}</i>", ParagraphStyle("RIC", parent=s_kpi_l, textColor=_c("CYAN"), fontSize=7.5, alignment=1)))
 
             split = Table([[left_flowables, right_flowables]], colWidths=[AW * 0.58, AW * 0.42])
             split.setStyle(TableStyle([
@@ -2866,8 +2963,8 @@ def generate_pitch_pdf(output_path):
             rows_grid = []
             for (t1, d1), (t2, d2) in zip(s["cards_col1"], s["cards_col2"]):
                 rows_grid.append([
-                    Paragraph(f'<b><font color="#00C8FF">{t1}</font></b><br/>{d1}', s_td),
-                    Paragraph(f'<b><font color="#00C8FF">{t2}</font></b><br/>{d2}', s_td)
+                    Paragraph(f'<b><font color="#00C8FF">{_clean(t1)}</font></b><br/>{_clean(d1)}', s_td),
+                    Paragraph(f'<b><font color="#00C8FF">{_clean(t2)}</font></b><br/>{_clean(d2)}', s_td)
                 ])
             grid_t = Table(rows_grid, colWidths=[AW * 0.5, AW * 0.5])
             grid_t.setStyle(TableStyle([
@@ -2887,9 +2984,14 @@ def generate_pitch_pdf(output_path):
             t_info = s["table"]
             heads = t_info["headers"]; rows = t_info["rows"]
             cws = [AW * 0.62 * r for r in [0.24, 0.16, 0.16, 0.44]]
-            td = [[Paragraph("<b>%s</b>" % h, s_th) for h in heads]]
+            td = [[Paragraph("<b>%s</b>" % _clean(h), s_th) for h in heads]]
             for row_d in rows:
-                td.append([Paragraph(v, s_tdg if any(kw in v for kw in ["COMPLIANT", "ALIGNED", "INTEGRATED", "ARCHITECTED"]) else s_td) for v in row_d])
+                td.append([
+                    Paragraph(_clean(row_d[0]), s_td_bold),
+                    Paragraph(_clean(row_d[1]), s_td),
+                    Paragraph(_clean(row_d[2]), s_tdg),
+                    Paragraph(_clean(row_d[3]), s_td)
+                ])
             tbl = Table(td, colWidths=cws)
             tbl.setStyle(TableStyle([
                 ("BACKGROUND", (0,0), (-1,0), _c("COBALT")),
@@ -2905,11 +3007,11 @@ def generate_pitch_pdf(output_path):
 
             v_card = Table([[Paragraph(
                 '<b><font color="#10B981">HP WOLF SECURITY ENCLAVE</font></b><br/><br/>'
-                '• <b>AES-256-GCM</b> authenticated local vault encryption<br/>'
-                '• <b>PBKDF2</b> key derivation with 100,000 SHA-256 rounds<br/>'
-                '• <b>SHA-256 Merkle Chain</b> tamper-evident audit log<br/>'
-                '• <b>Zero Biometrics</b> ever transmitted outside device<br/>'
-                '• <b>DPDP Act 2023</b> full compliance guarantee',
+                '&bull; <b>AES-256-GCM</b> authenticated local vault encryption<br/>'
+                '&bull; <b>PBKDF2</b> key derivation with 100,000 SHA-256 rounds<br/>'
+                '&bull; <b>SHA-256 Merkle Chain</b> tamper-evident audit log<br/>'
+                '&bull; <b>Zero Biometrics</b> ever transmitted outside device<br/>'
+                '&bull; <b>DPDP Act 2023</b> full compliance guarantee',
                 s_td
             )]], colWidths=[AW * 0.36])
             v_card.setStyle(TableStyle([
@@ -2955,14 +3057,52 @@ def generate_pitch_pdf(output_path):
             ]))
             story.append(at)
 
+        # Slide 10 Comparison Table
+        elif stype == "comparison_table" or ("table" in s and len(s["table"]["headers"]) == 4 and "Dimension" in s["table"]["headers"][0]):
+            ti = s["table"]; heads = ti["headers"]; rows = ti["rows"]
+            cws = [AW * 0.18, AW * 0.24, AW * 0.24, AW * 0.34]
+            td = [[
+                Paragraph("<b>%s</b>" % _clean(heads[0]), s_th),
+                Paragraph("<b>%s</b>" % _clean(heads[1]), s_th),
+                Paragraph("<b>%s</b>" % _clean(heads[2]), s_th),
+                Paragraph('<b><font color="#00C8FF">%s</font></b>' % _clean(heads[3]), s_th),
+            ]]
+            for row_d in rows:
+                td.append([
+                    Paragraph(_clean(row_d[0]), s_td_bold),
+                    Paragraph(_clean(row_d[1]), s_td),
+                    Paragraph(_clean(row_d[2]), s_td),
+                    Paragraph(f'<b><font color="#00C8FF">{_clean(row_d[3])}</font></b>', s_td_cyan)
+                ])
+            t = Table(td, colWidths=cws)
+            t.setStyle(TableStyle([
+                ("BACKGROUND", (0,0), (-2,0), _c("COBALT")),
+                ("BACKGROUND", (-1,0), (-1,0), colors.HexColor("#0D3B66")),
+                ("ROWBACKGROUNDS", (0,1), (-1,-1), [_c("CARD"), _c("CARD2")]),
+                ("BACKGROUND", (-1,1), (-1,-1), colors.HexColor("#0A2540")),
+                ("BOX", (0,0), (-1,-1), 1.5, _c("COBALT")),
+                ("INNERGRID", (0,0), (-1,-1), 0.4, colors.HexColor("#1E2A55")),
+                ("TOPPADDING", (0,0), (-1,-1), 4),
+                ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+                ("LEFTPADDING", (0,0), (-1,-1), 6),
+                ("RIGHTPADDING", (0,0), (-1,-1), 6),
+                ("VALIGN", (0,0), (-1,-1), "MIDDLE")
+            ]))
+            story.append(t)
+
         # Slide 11 Verification & Paths (Table on Left, Paths on Right)
         elif stype == "verification_and_paths":
             t_info = s["table"]
             heads = t_info["headers"]; rows = t_info["rows"]
             cws = [AW * 0.54 * r for r in [0.46, 0.16, 0.18, 0.20]]
-            td = [[Paragraph("<b>%s</b>" % h, s_th) for h in heads]]
+            td = [[Paragraph("<b>%s</b>" % _clean(h), s_th) for h in heads]]
             for row_d in rows:
-                td.append([Paragraph(v, s_tdg if v == "PASSED" else s_td) for v in row_d])
+                td.append([
+                    Paragraph(_clean(row_d[0]), s_td_bold),
+                    Paragraph(_clean(row_d[1]), s_td),
+                    Paragraph(_clean(row_d[2]), s_td),
+                    Paragraph(_clean(row_d[3]), s_tdg if row_d[3] == "PASSED" else s_td)
+                ])
             tbl = Table(td, colWidths=cws)
             tbl.setStyle(TableStyle([
                 ("BACKGROUND", (0,0), (-1,0), _c("COBALT")),
@@ -2979,7 +3119,7 @@ def generate_pitch_pdf(output_path):
             path_cards = []
             for p_title, p_desc in s["paths"]:
                 p_table = Table([[Paragraph(
-                    f'<b><font color="#00C8FF">{p_title}</font></b><br/>' + p_desc.replace("\n", "<br/>"),
+                    f'<b><font color="#00C8FF">{_clean(p_title)}</font></b><br/>' + _clean(p_desc).replace("\n", "<br/>"),
                     s_td
                 )]], colWidths=[AW * 0.44])
                 p_table.setStyle(TableStyle([
@@ -3001,14 +3141,14 @@ def generate_pitch_pdf(output_path):
             ]))
             story.append(split)
 
-        # Generic Tables (Comparison)
+        # Generic Tables Fallback
         elif "table" in s:
             ti = s["table"]; heads = ti["headers"]; rows = ti["rows"]
             nc = len(heads); cws = [AW / nc] * nc
-            td = [[Paragraph("<b>%s</b>" % h, s_th) for h in heads]]
+            td = [[Paragraph("<b>%s</b>" % _clean(h), s_th) for h in heads]]
             for row_d in rows:
                 td.append([
-                    Paragraph(v, s_tdg if any(kw in v for kw in ["PASSED","COMPLIANT","ALIGNED","INTEGRATED","ARCHITECTED"]) else s_td)
+                    Paragraph(_clean(v), s_tdg if any(kw in v for kw in ["PASSED","COMPLIANT","ALIGNED","INTEGRATED","ARCHITECTED"]) else s_td)
                     for v in row_d
                 ])
             t = Table(td, colWidths=cws)
@@ -3028,9 +3168,9 @@ def generate_pitch_pdf(output_path):
         elif stype == "impact_cta":
             stat_cards = s["stat_cards"]
             sc_data = [
-                [Paragraph(f"<b>{val}</b>", ParagraphStyle("SCV2", parent=s_kpi_v, fontSize=22, textColor=_c(col))) for val, _, col, _ in stat_cards],
-                [Paragraph(desc, s_kpi_l) for _, desc, _, _ in stat_cards],
-                [Paragraph(f"<i>{sub}</i>", ParagraphStyle("SCS2", parent=s_kpi_l, textColor=_c("GRAY"), fontSize=7)) for _, _, _, sub in stat_cards]
+                [Paragraph(f"<b>{_clean(val)}</b>", ParagraphStyle("SCV2", parent=s_kpi_v, fontSize=22, textColor=_c(col))) for val, _, col, _ in stat_cards],
+                [Paragraph(_clean(desc), s_kpi_l) for _, desc, _, _ in stat_cards],
+                [Paragraph(f"<i>{_clean(sub)}</i>", s_kpi_sub) for _, _, _, sub in stat_cards]
             ]
             st = Table(sc_data, colWidths=[AW / len(stat_cards)] * len(stat_cards))
             st.setStyle(TableStyle([
@@ -3046,7 +3186,7 @@ def generate_pitch_pdf(output_path):
 
             card_box = Table([[Paragraph(
                 '<b><font color="#00C8FF">CLOSING VISION & DEPLOYMENT COMMITMENT</font></b><br/><br/>' +
-                s["body"].replace("\n\n", "<br/><br/>"),
+                _clean(s["body"]).replace("\n\n", "<br/><br/>"),
                 s_body
             )]], colWidths=[AW])
             card_box.setStyle(TableStyle([
@@ -3060,7 +3200,7 @@ def generate_pitch_pdf(output_path):
             story.append(card_box)
 
         story.append(Spacer(1, 4))
-        story.append(Paragraph(s["footer"], s_foot))
+        story.append(Paragraph(_clean(s["footer"]), s_foot))
 
         if idx < len(SLIDES) - 1:
             story.append(PageBreak())
