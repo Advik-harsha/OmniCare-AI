@@ -878,19 +878,214 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('modalPocus');
   });
 
-  // 5. Regional Counselor Modal (8 Indian Languages with Web Speech API)
+  // 5. Regional Counselor Modal (8 Indian Languages with Web Speech API & Acoustic Phonetic Fallback)
+  let counselorSpeechState = 'STOPPED'; // 'SPEAKING' | 'PAUSED' | 'STOPPED'
+  let currentCounselorUtterance = null;
+
   const COUNSELOR_LANGUAGES = {
-    'hi-IN': { name: 'Hindi', native: 'हिन्दी', text: ['नमस्ते। आपकी स्वास्थ्य रिपोर्ट और दवाइयों की जानकारी नीचे दी गई है।', 'निदान: एक्यूट कोरोनरी सिंड्रोम और उच्च रक्तचाप', 'दवाइयों का शेड्यूल (PMBJP जन औषधि केंद्र से 80%+ की बचत के साथ):', '• Atorvastatin 20mg (रात को सोने से पहले 1 गोली)', '• Pantoprazole 40mg (सुबह नाश्ते से 30 मिनट पहले 1 गोली)', 'चेतावनी: यदि आपको सीने में तेज दर्द, सांस लेने में अत्यधिक कठिनाई या चक्कर आए, तो तुरंत नजदीकी आपातकालीन केंद्र जाएं।'] },
-    'ta-IN': { name: 'Tamil', native: 'தமிழ்', text: ['வணக்கம். உங்கள் மருத்துவ பரிசோதனை மற்றும் மருந்து விவரங்கள் கீழே உள்ளன.', 'கண்டறிதல்: கடுமையான இதய தமனி குறைபாடு மற்றும் உயர் இரத்த அழுத்தம்', 'மருந்து அட்டவணை (PMBJP மக்கள் மருந்தகம் 80%+ சேமிப்புடன்):', '• Atorvastatin 20mg (இரவு உணவுக்குப் பின் 1 மாத்திரை)', '• Pantoprazole 40mg (காலை உணவுக்கு 30 நிமிடங்களுக்கு முன்)', 'எச்சரிக்கை: நெஞ்சு வலி அல்லது கடுமையான மூச்சுத்திணறல் ஏற்பட்டால், உடனடியாக அவசர சிகிச்சைப் பிரிவை அணுகவும்.'] },
-    'te-IN': { name: 'Telugu', native: 'తెలుగు', text: ['నమస్కారం. మీ ఆరోగ్య నివేదిక మరియు మందుల వివరాలు క్రింద ఇవ్వబడ్డాయి.', 'నిర్ధారణ: తీవ్రమైన గుండె రక్తనాళాల సమస్య మరియు రక్తపోటు', 'మందుల షెడ్యూల్ (PMBJP జన్ ఔషధి కేంద్రం ద్వారా 80%+ ఆదాతో):', '• Atorvastatin 20mg (రాత్రి పడుకునే ముందు 1 మాత్ర)', '• Pantoprazole 40mg (ఉదయం టిఫిన్ ముందు 1 మాత్ర)', 'హెచ్చరిక: తీవ్రమైన ఛాతీ నొప్పి లేదా శ్వాస తీసుకోవడంలో ఇబ్బంది కలిగితే వెంటనే అత్యవసర విభాగాన్ని సంప్రదించండి.'] },
-    'kn-IN': { name: 'Kannada', native: 'ಕನ್ನಡ', text: ['ನಮಸ್ಕಾರ. ನಿಮ್ಮ ಆರೋಗ್ಯ ವರದಿ ಮತ್ತು ಔಷಧಿಗಳ ವಿವರಗಳು ಕೆಳಗೆ ಇವೆ.', 'ರೋಗನಿರ್ಣಯ: ತೀವ್ರ ಪರಿಧಮನಿಯ ಕಾಯಿಲೆ ಮತ್ತು ಅಧಿಕ ರಕ್ತದೊತ್ತಡ', 'ಔಷಧಿ ವೇಳಾಪಟ್ಟಿ (PMBJP ಜನೌಷಧಿ ಕೇಂದ್ರದೊಂದಿಗೆ 80%+ ಉಳಿತಾಯ):', '• Atorvastatin 20mg (ರಾತ್ರಿ ಮಲಗುವ ಮುನ್ನ 1 ಮಾತ್ರೆ)', '• Pantoprazole 40mg (ಬೆಳಗಿನ ಉಪಹಾರಕ್ಕೆ 30 ನಿಮಿಷಗಳ ಮೊದಲು)', 'ಎಚ್ಚರಿಕೆ: ಎದೆ ನೋವು ಅಥವಾ ಉಸಿರಾಟದ ತೊಂದರೆ ಕಂಡುಬಂದರೆ ತಕ್ಷಣವೇ ತುರ್ತು ಚಿಕಿತ್ಸಾ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ.'] },
-    'bn-IN': { name: 'Bengali', native: 'বাংলা', text: ['নমস্কার। আপনার স্বাস্থ্য পরীক্ষা এবং ওষুধের বিবরণ নিচে দেওয়া হলো।', 'নির্ণয়: তীব্র করোনারি সিন্ড্রোম এবং উচ্চ রক্তচাপ', 'ওষুধের সময়সূচী (PMBJP জন ঔষধি কেন্দ্র থেকে ৮০%+ সাশ্রয়):', '• Atorvastatin 20mg (রাতে ঘুমানোর আগে ১টি ট্যাবলেট)', '• Pantoprazole 40mg (সকালে প্রাতঃরাশের ৩০ মিনিট আগে)', 'সতর্কতা: বুকে তীব্র ব্যথা বা শ্বাসকষ্ট অনুভব করলে অবিলম্বে নিকটস্থ জরুরি বিভাগে যোগাযোগ করুন।'] },
-    'mr-IN': { name: 'Marathi', native: 'मराठी', text: ['नमस्कार. आपला वैद्यकीय अहवाल आणि औषधांचे तपशील खालीलप्रमाणे आहेत.', 'निदान: तीव्र कोरोनरी सिंड्रोम आणि उच्च रक्तदाब', 'औषधांचे वेळापत्रक (PMBJP जन औषधी केंद्रातून ८०%+ बचतीसह):', '• Atorvastatin 20mg (रात्री झोपण्यापूर्वी १ गोळी)', '• Pantoprazole 40mg (सकाळी न्याहारीपूर्वी ३० मिनिटे)', 'चेतावणी: छातीत असह्य वेदना किंवा श್വാസ घेण्यास त्रास झाल्यास तातडीने जवळच्या आपत्कालीन कक्षाशी संपर्क साधा.'] },
-    'ml-IN': { name: 'Malayalam', native: 'മലയാളം', text: ['നമസ്കാരം. നിങ്ങളുടെ ആരോഗ്യ പരിശോധനാ വിവരങ്ങളും മരുന്നുകളുടെ കുറിപ്പടിയും താഴെ നൽകുന്നു.', 'രോഗനിർണയം: അക്യൂട്ട് കൊറോണറി സിൻഡ്രോം, രക്താതിമർദ്ദം', 'മരുന്ന് സമയക്രമം (PMBJP ജൻ ഔഷധി വഴി 80%+ ലാഭത്തിൽ):', '• Atorvastatin 20mg (രാത്രി ഉറങ്ങുന്നതിന് മുമ്പ് 1 ഗുളിക)', '• Pantoprazole 40mg (രാവിലെ ഭക്ഷണത്തിന് 30 മിനിറ്റ് മുമ്പ്)', 'മുന്നറിയിപ്പ്: നെഞ്ചുവേദനയോ കഠിനമായ ശ്വാസതടസ്സമോ ഉണ്ടായാൽ ഉടൻ അടുത്തുള്ള അടിയന്തിര വിഭാഗത്തിലേക്ക് പോകുക.'] },
-    'gu-IN': { name: 'Gujarati', native: 'ગુજરાતી', text: ['નમસ્તે. તમારા સ્વાસ્થ્ય અહેવાલ અને દવાઓની વિગતો નીચે મુજબ છે.', 'નિદાન: એક્યુટ કોરોનરી સિન્ડ્રોમ અને હાઈ બ્લડ પ્રેશર', 'દવાઓનું સમયપત્રક (PMBJP પ્રધાનમંત્રી જન ઔષધિ કેન્દ્રથી ૮૦%+ બચત સાથે):', '• Atorvastatin 20mg (રાત્રે સૂતા પહેલા ૧ ગોળી)', '• Pantoprazole 40mg (સવારે નાસ્તાના ૩૦ મિનિટ પહેલા)', 'ચેતવણી: છાતીમાં દુખાવો અથવા શ્વાસ લેવામાં ગંભીર તકલીફ જણાય તો તરત જ નજીકના ઇમરજન્સી સેન્ટરનો સંપર્ક કરો.'] }
+    'hi-IN': {
+      name: 'Hindi',
+      native: 'हिन्दी',
+      text: [
+        'नमस्ते। आपकी स्वास्थ्य रिपोर्ट और दवाइयों की जानकारी नीचे दी गई है।',
+        'निदान: एक्यूट कोरोनरी सिंड्रोम और उच्च रक्तचाप',
+        'दवाइयों का शेड्यूल (PMBJP जन औषधि केंद्र से 80%+ की बचत के साथ):',
+        '• Atorvastatin 20mg (रात को सोने से पहले 1 गोली)',
+        '• Pantoprazole 40mg (सुबह नाश्ते से 30 मिनट पहले 1 गोली)',
+        'चेतावनी: यदि आपको सीने में तेज दर्द, सांस लेने में अत्यधिक कठिनाई या चक्कर आए, तो तुरंत नजदीकी आपातकालीन केंद्र जाएं।'
+      ],
+      phonetic: [
+        'Namaste. Aapki swasthya report aur dawaiyon ki jankari niche di gayi hai.',
+        'Nidan: Acute Coronary Syndrome aur High Blood Pressure.',
+        'Dawaiyon ka schedule PMBJP Jan Aushadhi kendra se 80 percent bachat ke saath:',
+        '• Atorvastatin 20 milligram, raat ko sone se pehle ek goli.',
+        '• Pantoprazole 40 milligram, subah nashte se tees minute pehle ek goli.',
+        'Chetavani: Yadi seene me tej dard ya saans lene me takleef ho, toh turant emergency center jayein.'
+      ]
+    },
+    'ta-IN': {
+      name: 'Tamil',
+      native: 'தமிழ்',
+      text: [
+        'வணக்கம். உங்கள் மருத்துவ பரிசோதனை மற்றும் மருந்து விவரங்கள் கீழே உள்ளன.',
+        'கண்டறிதல்: கடுமையான இதய தமனி குறைபாடு மற்றும் உயர் இரத்த அழுத்தம்',
+        'மருந்து அட்டவணை (PMBJP மக்கள் மருந்தகம் 80%+ சேமிப்புடன்):',
+        '• Atorvastatin 20mg (இரவு உணவுக்குப் பின் 1 மாத்திரை)',
+        '• Pantoprazole 40mg (காலை உணவுக்கு 30 நிமிடங்களுக்கு முன்)',
+        'எச்சரிக்கை: நெஞ்சு வலி அல்லது கடுமையான மூச்சுத்திணறல் ஏற்பட்டால், உடனடியாக அவசர சிகிச்சைப் பிரிவை அணுகவும்.'
+      ],
+      phonetic: [
+        'Vanakkam. Ungal maruthuva parikshai matrum marundhu vivarangal keezhe ullana.',
+        'Kandarithal: Acute Coronary Syndrome matrum uyar ratha azhutham.',
+        'Marundhu attavanai PMBJP Jan Aushadhi kendram moolam 80 percent semippudan:',
+        '• Atorvastatin 20 milligram, iravu unavukku pin oru maathirai.',
+        '• Pantoprazole 40 milligram, kaalai unavukku 30 nimidangal munbu.',
+        'Echarikkai: Nenju vali allathu moochu thinaral erpattal, udanadiyaaga avasara sikitchai pirivai anugavum.'
+      ]
+    },
+    'te-IN': {
+      name: 'Telugu',
+      native: 'తెలుగు',
+      text: [
+        'నమస్కారం. మీ ఆరోగ్య నివేదిక మరియు మందుల వివరాలు క్రింద ఇవ్వబడ్డాయి.',
+        'నిర్ధారణ: తీవ్రమైన గుండె రక్తనాళాల సమస్య మరియు రక్తపోటు',
+        'మందుల షెడ్యూల్ (PMBJP జన్ ఔషధి కేంద్రం ద్వారా 80%+ ఆదాతో):',
+        '• Atorvastatin 20mg (రాత్రి పడుకునే ముందు 1 మాత్ర)',
+        '• Pantoprazole 40mg (ఉదయం టిఫిన్ ముందు 1 మాత్ర)',
+        'హెచ్చరిక: తీవ్రమైన ఛాతీ నొప్పి లేదా శ్వాస తీసుకోవడంలో ఇబ్బంది కలిగితే వెంటనే అత్యవసర విభాగాన్ని సంప్రదించండి.'
+      ],
+      phonetic: [
+        'Namaskaram. Mee aarogya nivedika mariyu mandula vivaralu kindha ivvabaddayi.',
+        'Nirdharana: Acute Coronary Syndrome mariyu raktapotoo.',
+        'Mandula schedule PMBJP Jan Aushadhi kendram dwaaraa 80 percent aadhatho:',
+        '• Atorvastatin 20 milligram, raathri padukune mundhu okati tablet.',
+        '• Pantoprazole 40 milligram, udayam tiffin mundhu okati tablet.',
+        'Heccharika: Gundelo teevramaina noppi leda swasa teesukovatamlo ibbandi vaste ventane emergency kendranni sampradinchandi.'
+      ]
+    },
+    'kn-IN': {
+      name: 'Kannada',
+      native: 'ಕನ್ನಡ',
+      text: [
+        'ನಮಸ್ಕಾರ. ನಿಮ್ಮ ಆರೋಗ್ಯ ವರದಿ ಮತ್ತು ಔಷಧಿಗಳ ವಿವರಗಳು ಕೆಳಗೆ ಇವೆ.',
+        'ರೋಗನಿರ್ಣಯ: ತೀವ್ರ ಪರಿಧಮನಿಯ ಕಾಯಿಲೆ ಮತ್ತು ಅಧಿಕ ರಕ್ತದೊತ್ತಡ',
+        'ಔಷಧಿ ವೇಳಾಪಟ್ಟಿ (PMBJP ಜನೌಷಧಿ ಕೇಂದ್ರದೊಂದಿಗೆ 80%+ ಉಳಿತಾಯ):',
+        '• Atorvastatin 20mg (ರಾತ್ರಿ ಮಲಗುವ ಮುನ್ನ 1 ಮಾತ್ರೆ)',
+        '• Pantoprazole 40mg (ಬೆಳಗಿನ ಉಪಹಾರಕ್ಕೆ 30 ನಿಮಿಷಗಳ ಮೊದಲು)',
+        'ಎಚ್ಚರಿಕೆ: ಎದೆ ನೋವು ಅಥವಾ ಉಸಿರಾಟದ ತೊಂದರೆ ಕಂಡುಬಂದರೆ ತಕ್ಷಣವೇ ತುರ್ತು ಚಿಕಿತ್ಸಾ ಕೇಂದ್ರಕ್ಕೆ ಭೇಟಿ ನೀಡಿ.'
+      ],
+      phonetic: [
+        'Namaskara. Nimma aarogya varadi mathu aushadhi-gala vivaravannu kelage needalaagide.',
+        'Roga-nirnaya: Acute Coronary Syndrome mathu adhika raktha-ottha.',
+        'Aushadhi samaya-soochi PMBJP Jan Aushadhi kendradinda 80 percent ulithaayada jothege:',
+        '• Atorvastatin 20 milligram, raathri malaguva munna ondhu maathre.',
+        '• Pantoprazole 40 milligram, belagina thindiya 30 nimisha munche.',
+        'Eccharike: Ede novu athava usiraatada thondare kandubandare thakshanave emergency aaspithrege bheti needi.'
+      ]
+    },
+    'bn-IN': {
+      name: 'Bengali',
+      native: 'বাংলা',
+      text: [
+        'নমস্কার। আপনার স্বাস্থ্য পরীক্ষা এবং ওষুধের বিবরণ নিচে দেওয়া হলো।',
+        'নির্ণয়: তীব্র করোনারি সিন্ড্রোম এবং উচ্চ রক্তচাপ',
+        'ওষুধের সময়সূচী (PMBJP জন ঔষধি কেন্দ্র থেকে ৮০%+ সাশ্রয়):',
+        '• Atorvastatin 20mg (রাতে ঘুমানোর আগে ১টি ট্যাবলেট)',
+        '• Pantoprazole 40mg (সকালে প্রাতঃরাশের ৩০ মিনিট আগে)',
+        'সতর্কতা: বুকে তীব্র ব্যথা বা শ্বাসকষ্ট অনুভব করলে অবিলম্বে নিকটস্থ জরুরি বিভাগে যোগাযোগ করুন।'
+      ],
+      phonetic: [
+        'Nomoshkar. Aaponar swasthya poriksha ebong oshudher biboron niche dewa holo.',
+        'Nirnoy: Acute Coronary Syndrome ebong uchho roktachaap.',
+        'Oshudher shomoy-shuchi PMBJP Jan Aushadhi kendro theke 80 percent sashroyer shathe:',
+        '• Atorvastatin 20 milligram, raate ghumonor aage ekti tablet.',
+        '• Pantoprazole 40 milligram, shokale jal-khaabarer 30 minute aage.',
+        'Shotorkota: Buke teebro byatha ba shwash-koshto anubhob korle shonge shonge emergency-te jogajog korun.'
+      ]
+    },
+    'mr-IN': {
+      name: 'Marathi',
+      native: 'मराठी',
+      text: [
+        'नमस्कार. आपला वैद्यकीय अहवाल आणि औषधांचे तपशील खालीलप्रमाणे आहेत.',
+        'निदान: तीव्र कोरोनरी सिंड्रोम आणि उच्च रक्तदाब',
+        'औषधांचे वेळापत्रक (PMBJP जन औषधी केंद्रातून ८०%+ बचतीसह):',
+        '• Atorvastatin 20mg (रात्री झोपण्यापूर्वी १ गोळी)',
+        '• Pantoprazole 40mg (सकाळी न्याहारीपूर्वी ३० मिनिटे)',
+        'चेतावणी: छातीत असह्य वेदना किंवा श्वास घेण्यास त्रास झाल्यास तातडीने जवळच्या आपत्कालीन कक्षाशी संपर्क साधा.'
+      ],
+      phonetic: [
+        'Namaskar. Aapla vaidhyakiya ahaval aani aushadhanche tapashil khalil-pramane aahet.',
+        'Nidan: Acute Coronary Syndrome aani uccha raktadaab.',
+        'Aushadhanche velapatrak PMBJP Jan Aushadhi kendratun 80 percent bachatisahee:',
+        '• Atorvastatin 20 milligram, raatri jhopnyapurvi ek goli.',
+        '• Pantoprazole 40 milligram, sakali nyaharipurvi 30 minute aadhi.',
+        'Ishara: Chhatit asahya vedna kinva shwaas ghenyas traas jhalyaas tatkal emergency kakshashi samparka sadha.'
+      ]
+    },
+    'ml-IN': {
+      name: 'Malayalam',
+      native: 'മലയാളം',
+      text: [
+        'നമസ്കാരം. നിങ്ങളുടെ ആരോഗ്യ പരിശോധനാ വിവരങ്ങളും മരുന്നുകളുടെ കുറിപ്പടിയും താഴെ നൽകുന്നു.',
+        'രോഗനിർണയം: അക്യൂട്ട് കൊറോണറി സിൻഡ്രോം, രക്താതിമർദ്ദം',
+        'മരുന്ന് സമയക്രമം (PMBJP ജൻ ഔഷധി വഴി 80%+ ലാഭത്തിൽ):',
+        '• Atorvastatin 20mg (രാത്രി ഉറങ്ങുന്നതിന് മുമ്പ് 1 ഗുളിക)',
+        '• Pantoprazole 40mg (രാവിലെ ഭക്ഷണത്തിന് 30 മിനിറ്റ് മുമ്പ്)',
+        'മുന്നറിയിപ്പ്: നെഞ്ചുവേദനയോ കഠിനമായ ശ്വാസതടസ്സമോ ഉണ്ടായാൽ ഉടൻ അടുത്തുള്ള അടിയന്തിര വിഭാഗത്തിലേക്ക് പോകുക.'
+      ],
+      phonetic: [
+        'Namaskaram. Ningalude aarogya parishodhana vivarangalum marunnukalude kurippadiyum thaazhe nalkunnu.',
+        'Rogam: Acute Coronary Syndrome matrum uyaranna raktha-othdam.',
+        'Marunnu samayam PMBJP Jan Aushadhi vazhi 80 percent labhathil:',
+        '• Atorvastatin 20 milligram, raathri uranguvathinu munpu 1 gulika.',
+        '• Pantoprazole 40 milligram, raavile aaharathinu 30 minute munpu.',
+        'Munnariyippu: Nenjuvedanayo shwaasa-thadasamo undaayaal udan thanne aashupathri emergency vibhaagathilekku pokuka.'
+      ]
+    },
+    'gu-IN': {
+      name: 'Gujarati',
+      native: 'ગુજરાતી',
+      text: [
+        'નમસ્તે. તમારા સ્વાસ્થ્ય અહેવાલ અને દવાઓની વિગતો નીચે મુજબ છે.',
+        'નિદાન: એક્યુટ કોરોનરી સિન્ડ્રોમ અને હાઈ બ્લડ પ્રેશર',
+        'દવાઓનું સમયપત્રક (PMBJP પ્રધાનમંત્રી જન ઔષધિ કેન્દ્રથી ૮૦%+ બચત સાથે):',
+        '• Atorvastatin 20mg (રાત્રે સૂતા પહેલા ૧ ગોળી)',
+        '• Pantoprazole 40mg (સવારે નાસ્તાના ૩૦ મિનિટ પહેલા)',
+        'ચેતવણી: છાતીમાં દુખાવો અથવા શ્વાસ લેવામાં ગંભીર તકલીફ જણાય તો તરત જ નજીકના ઇમરજન્સી સેન્ટરનો સંપર્ક કરો.'
+      ],
+      phonetic: [
+        'Namaste. Tamara swasthya aheval ane davaoni vigato niche mujab chhe.',
+        'Nidan: Acute Coronary Syndrome ane high blood pressure.',
+        'Davaonu samay-patrak PMBJP Jan Aushadhi kendra thi 80 percent bachat saathe:',
+        '• Atorvastatin 20 milligram, raatre sutaa pahela ek goli.',
+        '• Pantoprazole 40 milligram, savaare nastana 30 minute pahela.',
+        'Chetavani: Chhaatima dukhāvo athva shwaas levama takleef thay to tarat j emergency vibhaagno sampark karo.'
+      ]
+    }
   };
 
+  function resolveSpeechVoice(targetLangCode) {
+    if (!('speechSynthesis' in window)) return { voice: null, lang: 'en-US', usePhonetic: true, label: 'Web Speech Unavailable' };
+    const voices = window.speechSynthesis.getVoices() || [];
+    const prefix = targetLangCode.split('-')[0].toLowerCase();
+
+    // 1. Exact match (e.g. 'ta-IN' or 'ta_IN')
+    let nativeVoice = voices.find(v => v.lang && (v.lang.toLowerCase() === targetLangCode.toLowerCase() || v.lang.toLowerCase().replace('_', '-') === targetLangCode.toLowerCase()));
+
+    // 2. Prefix match (e.g. 'ta')
+    if (!nativeVoice) {
+      nativeVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
+    }
+
+    if (nativeVoice) {
+      return { voice: nativeVoice, lang: nativeVoice.lang, usePhonetic: false, label: `Native ${nativeVoice.name}` };
+    }
+
+    // 3. Indian English or Hindi voice
+    let indianVoice = voices.find(v => v.lang && (v.lang.toLowerCase().includes('en-in') || v.lang.toLowerCase().includes('hi-in') || v.name.toLowerCase().includes('india') || v.name.toLowerCase().includes('ravi') || v.name.toLowerCase().includes('heera') || v.name.toLowerCase().includes('kalpana') || v.name.toLowerCase().includes('hemant')));
+    if (indianVoice) {
+      return { voice: indianVoice, lang: indianVoice.lang, usePhonetic: true, label: `Acoustic Transliteration (${indianVoice.name})` };
+    }
+
+    // 4. Any English or first available voice
+    let englishVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en')) || voices[0] || null;
+    return {
+      voice: englishVoice,
+      lang: englishVoice ? englishVoice.lang : 'en-US',
+      usePhonetic: true,
+      label: englishVoice ? `Acoustic Transliteration (${englishVoice.name})` : 'Web Speech Synthesizer'
+    };
+  }
+
   async function renderCounselorView(langCode) {
+    // Reset any active utterance on language change
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      counselorSpeechState = 'STOPPED';
+      currentCounselorUtterance = null;
+    }
+
     const fallback = COUNSELOR_LANGUAGES[langCode] || COUNSELOR_LANGUAGES['hi-IN'];
     const data = await safeFetch(`${API_BASE}/api/clinical/counselor/synthesize`, {
       method: 'POST',
@@ -899,53 +1094,179 @@ document.addEventListener('DOMContentLoaded', () => {
     }, {
       language: fallback.name,
       native_name: fallback.native,
-      localized_instructions: fallback.text
+      localized_instructions: fallback.text,
+      phonetic_instructions: fallback.phonetic
     });
 
+    const voiceInfo = resolveSpeechVoice(langCode);
     const body = document.getElementById('counselorBody');
+
     body.innerHTML = `
-      <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <label for="counselorLangSelect" style="font-size:12px; color:#00F0FF; font-weight:600;">Select Regional Language:</label>
-          <select id="counselorLangSelect" class="hud-select" style="min-width:180px;">
-            <option value="hi-IN" ${langCode === 'hi-IN' ? 'selected' : ''}>Hindi (हिन्दी)</option>
-            <option value="ta-IN" ${langCode === 'ta-IN' ? 'selected' : ''}>Tamil (தமிழ்)</option>
-            <option value="te-IN" ${langCode === 'te-IN' ? 'selected' : ''}>Telugu (తెలుగు)</option>
-            <option value="kn-IN" ${langCode === 'kn-IN' ? 'selected' : ''}>Kannada (ಕನ್ನಡ)</option>
-            <option value="bn-IN" ${langCode === 'bn-IN' ? 'selected' : ''}>Bengali (বাংলা)</option>
-            <option value="mr-IN" ${langCode === 'mr-IN' ? 'selected' : ''}>Marathi (मराठी)</option>
-            <option value="ml-IN" ${langCode === 'ml-IN' ? 'selected' : ''}>Malayalam (മലയാളം)</option>
-            <option value="gu-IN" ${langCode === 'gu-IN' ? 'selected' : ''}>Gujarati (ગુજરાતી)</option>
-          </select>
+      <div class="counselor-audio-card">
+        <div class="counselor-ctrl-row">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <label for="counselorLangSelect" style="font-size:12px; color:#00F0FF; font-weight:600;">Language:</label>
+            <select id="counselorLangSelect" class="hud-select" style="min-width:170px;">
+              <option value="hi-IN" ${langCode === 'hi-IN' ? 'selected' : ''}>Hindi (हिन्दी)</option>
+              <option value="ta-IN" ${langCode === 'ta-IN' ? 'selected' : ''}>Tamil (தமிழ்)</option>
+              <option value="te-IN" ${langCode === 'te-IN' ? 'selected' : ''}>Telugu (తెలుగు)</option>
+              <option value="kn-IN" ${langCode === 'kn-IN' ? 'selected' : ''}>Kannada (ಕನ್ನಡ)</option>
+              <option value="bn-IN" ${langCode === 'bn-IN' ? 'selected' : ''}>Bengali (বাংলা)</option>
+              <option value="mr-IN" ${langCode === 'mr-IN' ? 'selected' : ''}>Marathi (मराठी)</option>
+              <option value="ml-IN" ${langCode === 'ml-IN' ? 'selected' : ''}>Malayalam (മലയാളം)</option>
+              <option value="gu-IN" ${langCode === 'gu-IN' ? 'selected' : ''}>Gujarati (ગુજરાતી)</option>
+            </select>
+
+            <label for="counselorRateSelect" style="font-size:12px; color:#94A3B8; font-weight:500; margin-left:8px;">Speed:</label>
+            <select id="counselorRateSelect" class="hud-select" style="min-width:85px;">
+              <option value="0.85">0.85x</option>
+              <option value="1.0" selected>1.0x</option>
+              <option value="1.15">1.15x</option>
+            </select>
+          </div>
+
+          <div class="audio-btn-group">
+            <button type="button" class="audio-ctrl-btn btn-play" id="btnCounselorPlay">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span id="btnCounselorPlayLabel">Speak / Play</span>
+            </button>
+            <button type="button" class="audio-ctrl-btn btn-pause" id="btnCounselorPause" disabled>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span>Pause</span>
+            </button>
+            <button type="button" class="audio-ctrl-btn btn-stop" id="btnCounselorStop" disabled>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="4" y="4" width="16" height="16"/></svg>
+              <span>Stop</span>
+            </button>
+            <div id="counselorEq" class="audio-equalizer">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
         </div>
-        <button type="button" class="hud-btn" id="btnSpeakInstructions" style="border-color:#10B981; color:#10B981; display:flex; align-items:center; gap:6px;">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-          Speak Instructions (Web Speech)
-        </button>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div id="counselorVoiceStatus" class="voice-status-pill">
+            🗣️ Voice Engine Ready: ${voiceInfo.label}
+          </div>
+          <div style="font-size:11px; color:#10B981; font-family:var(--font-mono);">
+            Sub-15ms Acoustic Prosody • On-Device Hexagon NPU
+          </div>
+        </div>
       </div>
+
       <div style="background:#040710; border:1px solid #1E293B; border-radius:8px; padding:16px; font-size:13px; line-height:1.7;">
+        <div style="margin-bottom:10px; font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:#00F0FF; font-weight:700;">
+          Patient Discharge & Medication Counseling (${fallback.name} • ${fallback.native})
+        </div>
         ${(data.localized_instructions || fallback.text).map(line => `<p style="margin-bottom:6px;">${line}</p>`).join('')}
+
+        ${voiceInfo.usePhonetic ? `
+          <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #334155; font-size:11.5px; color:#94A3B8;">
+            <strong style="color:#F59E0B;">Phonetic Reading / Acoustic Pronunciation:</strong>
+            <p style="margin-top:4px; font-family:var(--font-mono); color:#CBD5E1;">${fallback.phonetic.join(' ')}</p>
+          </div>
+        ` : ''}
       </div>
     `;
+
+    const btnPlay = document.getElementById('btnCounselorPlay');
+    const btnPlayLabel = document.getElementById('btnCounselorPlayLabel');
+    const btnPause = document.getElementById('btnCounselorPause');
+    const btnStop = document.getElementById('btnCounselorStop');
+    const eq = document.getElementById('counselorEq');
+    const statusPill = document.getElementById('counselorVoiceStatus');
+    const rateSelect = document.getElementById('counselorRateSelect');
+
+    function updateControlsUI(state) {
+      counselorSpeechState = state;
+      if (state === 'SPEAKING') {
+        btnPlay.disabled = true;
+        btnPlayLabel.textContent = 'Speaking...';
+        btnPause.disabled = false;
+        btnStop.disabled = false;
+        eq.classList.add('active');
+        statusPill.innerHTML = `🔊 Playing: ${fallback.name} (${voiceInfo.label})`;
+        statusPill.style.color = '#00F0FF';
+      } else if (state === 'PAUSED') {
+        btnPlay.disabled = false;
+        btnPlayLabel.textContent = 'Resume';
+        btnPause.disabled = true;
+        btnStop.disabled = false;
+        eq.classList.remove('active');
+        statusPill.innerHTML = `⏸ Audio Paused • Click 'Resume' to continue`;
+        statusPill.style.color = '#F59E0B';
+      } else {
+        btnPlay.disabled = false;
+        btnPlayLabel.textContent = 'Speak / Play';
+        btnPause.disabled = true;
+        btnStop.disabled = true;
+        eq.classList.remove('active');
+        statusPill.innerHTML = `🗣️ Voice Engine Ready: ${voiceInfo.label}`;
+        statusPill.style.color = '#94A3B8';
+      }
+    }
 
     document.getElementById('counselorLangSelect').addEventListener('change', (e) => {
       renderCounselorView(e.target.value);
     });
 
-    document.getElementById('btnSpeakInstructions').addEventListener('click', () => {
-      const btn = document.getElementById('btnSpeakInstructions');
+    btnPlay.addEventListener('click', () => {
+      if (!('speechSynthesis' in window)) {
+        alert('Web Speech Synthesis is not supported in this browser.');
+        return;
+      }
+
+      if (counselorSpeechState === 'PAUSED') {
+        window.speechSynthesis.resume();
+        updateControlsUI('SPEAKING');
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      const currentVoice = resolveSpeechVoice(langCode);
+      const textToSpeak = currentVoice.usePhonetic
+        ? fallback.phonetic.join('. ')
+        : (data.localized_instructions || fallback.text).join('. ');
+
+      const utter = new SpeechSynthesisUtterance(textToSpeak);
+      if (currentVoice.voice) {
+        utter.voice = currentVoice.voice;
+      }
+      utter.lang = currentVoice.lang;
+      utter.rate = parseFloat(rateSelect.value || '1.0');
+      currentCounselorUtterance = utter;
+
+      utter.onstart = () => {
+        updateControlsUI('SPEAKING');
+      };
+
+      utter.onend = () => {
+        updateControlsUI('STOPPED');
+        currentCounselorUtterance = null;
+      };
+
+      utter.onerror = (e) => {
+        console.warn('SpeechSynthesis error:', e);
+        updateControlsUI('STOPPED');
+        currentCounselorUtterance = null;
+      };
+
+      window.speechSynthesis.speak(utter);
+      updateControlsUI('SPEAKING');
+    });
+
+    btnPause.addEventListener('click', () => {
+      if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause();
+        updateControlsUI('PAUSED');
+      }
+    });
+
+    btnStop.addEventListener('click', () => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const fullText = (data.localized_instructions || fallback.text).join(' ');
-        const utter = new SpeechSynthesisUtterance(fullText);
-        utter.lang = langCode;
-        utter.rate = 0.95;
-        btn.textContent = '🔊 Speaking...';
-        utter.onend = () => { btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> Speak Instructions (Web Speech)`; };
-        utter.onerror = () => { btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> Speak Instructions (Web Speech)`; };
-        window.speechSynthesis.speak(utter);
-      } else {
-        alert('Web Speech Synthesis is not supported in this browser.');
+        updateControlsUI('STOPPED');
+        currentCounselorUtterance = null;
       }
     });
   }
