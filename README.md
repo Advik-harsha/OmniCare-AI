@@ -13,6 +13,13 @@
 
 ---
 
+<div align="center">
+  <img src="docs/screenshot.png" alt="OmniCare AI — Futuristic Clinical Cockpit UI" width="950" style="border-radius: 8px; box-shadow: 0 8px 32px rgba(0, 240, 255, 0.25);" />
+  <p><strong>OmniCare AI Futuristic Clinical Cockpit</strong> — 45.0 TOPS Qualcomm Hexagon NPU Live Telemetry HUD, 60 FPS Camera PPG Pulse Waveform, Calibrated 1mm Lead II ECG Grid, and 6 Multimodal Diagnostic Edge Engines.</p>
+</div>
+
+---
+
 > ⚠️ **CLINICAL DEMONSTRATION & DECISION SUPPORT DISCLAIMER**  
 > OmniCare AI is engineered as an on-device clinical decision support prototype and demonstration system for the Qualcomm Snapdragon® AI Lab Challenge 2026. All algorithmic outputs, diagnostic suggestions, and pharmacopeia substitutions are intended solely for clinical demonstration and auxiliary decision support. They do **not** constitute validated medical diagnoses and must **never** supersede the clinical judgment of a licensed medical practitioner. Formal clinical validation and CDSCO regulatory clearance are mandatory prior to clinical deployment.
 
@@ -121,6 +128,11 @@ OmniCare AI directly integrates with the Snapdragon X Elite architecture and HP 
 - **HP Poly Studio Dual Beamforming Mics:** Spatial array filtering with high-pass cutoff (100 Hz) providing **38.4 dB acoustic friction suppression**.
 - **HP True Vision 5MP Camera:** 60 FPS ROI extraction with temporal denoising for camera-based rPPG pulse extraction.
 
+<div align="center">
+  <img src="docs/shot_hud.png" alt="Qualcomm Hexagon NPU 45.0 TOPS Real-Time Telemetry HUD" width="880" style="border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.3);" />
+  <p><em>Qualcomm Hexagon NPU 45.0 TOPS Real-Time Telemetry HUD with HP Smart Sense Dynamic Governor (Performance 45T / Balanced 32T / Eco 20T Silent).</em></p>
+</div>
+
 ---
 
 ## 🔬 The 6 Multimodal Diagnostic AI Engines
@@ -133,6 +145,32 @@ OmniCare AI directly integrates with the Snapdragon X Elite architecture and HP 
 | **4** | **Clinical SOAP Scribe** | Llama-3.2-3B Instruct | Hexagon NPU INT4 | **34.2 tok/s** | Synthesizes transcripts into standardized Subjective, Objective, Assessment, and Plan cards with automatic **WHO ICD-10-CM** diagnostic coding. |
 | **5** | **Camera rPPG Vitals** | POS-Net Algorithm | HP True Vision 5MP | **8.2 ms** | Contactless extraction of Heart Rate (HR bpm), Oxygen Saturation (SpO2 %), Respiration Rate (RR), and Hemodynamic Shock Index from facial camera feeds. |
 | **6** | **12-Lead Paper ECG AI** | Optical Filter + PTB-XL | Hexagon NPU INT8 | **6.8 ms** | Optical grid removal (98.4% background suppression) converting paper strip photos into calibrated Lead II traces; detects STEMI (Heart Attack), AFib, and PVC with PR/QRS/QTc intervals. |
+
+<div align="center">
+  <img src="docs/modalities_2x2.png" alt="OmniCare AI 4-Modality Clinical Diagnostics Composite" width="880" style="border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.3);" />
+  <p><em>4-Modality Real-Time Clinical Diagnostics: (1) Dermatology & Monk Skin Tone, (2) Poly Studio Pulmonary Stethoscopy, (3) Contactless rPPG Camera Vitals, and (4) 12-Lead Paper ECG AI Digitizer.</em></p>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="docs/scribe_and_voice.png" alt="Clinical SOAP Scribe and Whisper Voice Dictation" width="880" style="border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.3);" />
+  <p><em>Ambient Clinical Consultation: Whisper-Small Voice Dictation coupled with Llama-3.2-3B INT4 Automated SOAP Scribe and WHO ICD-10 Diagnostic Coding.</em></p>
+</div>
+
+### 📸 Clinical Diagnostic Modalities In Detail
+
+| Modality 1: Dermatology & Monk Skin Tone | Modality 2: HP Poly Pulmonary Stethoscopy |
+|:---:|:---:|
+| <img src="docs/shot_d1_derm.png" width="440" alt="Dermatology & Retinal AI" /><br/>**Monk Skin Tone (MST 1-10)** equity calibration & Stolz ABCD melanoma score | <img src="docs/shot_d2_stetho.png" width="440" alt="Pulmonary Stethoscopy" /><br/>Wheeze & crackle detection with **38.4 dB** acoustic friction suppression |
+
+| Modality 3: Multilingual Voice Dictation | Modality 4: Clinical SOAP Scribe & ICD-10 |
+|:---:|:---:|
+| <img src="docs/shot_d3_voice.png" width="440" alt="Whisper Voice Dictation" /><br/>On-device **Whisper-Small INT8** Indian medical speech transcription | <img src="docs/shot_d4_soap.png" width="440" alt="Llama-3.2-3B SOAP Note" /><br/>Autonomous **Llama-3.2-3B INT4** clinical documentation & billing codes |
+
+| Modality 5: Contactless Camera rPPG Vitals | Modality 6: 12-Lead Paper ECG AI Digitizer |
+|:---:|:---:|
+| <img src="docs/shot_d5_rppg.png" width="440" alt="Contactless rPPG Vitals" /><br/>**HP True Vision 5MP** camera-based contactless HR, SpO2 & Shock Index | <img src="docs/shot_d6_ecg.png" width="440" alt="12-Lead Paper ECG Digitizer" /><br/>98.4% grid suppression & **PTB-XL** STEMI / Arrhythmia detection |
 
 ---
 
@@ -243,8 +281,7 @@ Validates Python compilation, all 35 API tests, UI DOM bindings, offline resilie
 
 ```
 OmniCare-AI/
-├── .github/workflows/
-│   └── ci.yml                        # GitHub Actions automated CI across Python 3.10/3.11
+├── .coderabbit.yaml                  # Automated AI code review guidelines & security rules
 ├── backend/
 │   ├── config.py                     # Workstation hardware & model configuration
 │   ├── main.py                       # FastAPI REST service (52 registered routes)
@@ -277,6 +314,7 @@ OmniCare-AI/
 │       └── wolf_vault.py             # HP Wolf Security AES-256-GCM enclave & audit chain
 ├── docs/
 │   ├── ARCHITECTURE.md               # Systems architecture & NPU acceleration specs
+│   ├── CI_PIPELINE.md                # Cross-platform continuous integration workflow guide
 │   ├── CLINICAL_VERIFICATION.md      # Clinical validation protocols & accuracy benchmarks
 │   ├── INVENTORY.md                  # Comprehensive end-to-end functionality & API inventory
 │   └── SUBMISSION.md                 # Complete competition entry documentation
