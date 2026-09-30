@@ -292,12 +292,15 @@ OmniCare-AI/
 │   ├── css/showcase.css              # Executive dark presentation styling
 │   └── js/showcase.js                # 1-click clinical scenario demonstrator logic
 ├── submission_files/
-│   ├── OmniCare_AI_Brief_Project_Description.docx # Form Upload 1 (.docx)
-│   ├── OmniCare_AI_Brief_Project_Description.pdf  # Form Upload 1 (.pdf)
-│   ├── OmniCare_AI_Short_Pitch_Presentation.pdf   # Form Upload 2 (.pdf 16:9)
-│   ├── OmniCare_AI_Short_Pitch_Presentation.pptx  # Form Upload 3 (.pptx 16:9)
-│   ├── OmniCare_AI_Technical_Whitepaper.docx      # 12-page technical whitepaper
-│   └── OmniCare_AI_Executive_Summary.pdf          # 2-page printable executive brief
+│   ├── OmniCare_AI_Brief_Project_Description.docx # Form Upload 1 (.docx — 3 pages, embedded hero capture)
+│   ├── OmniCare_AI_Brief_Project_Description.pdf  # Form Upload 1 (.pdf — exactly 3 pages)
+│   ├── OmniCare_AI_Technical_Whitepaper.docx      # Comprehensive Technical Whitepaper (.docx)
+│   ├── OmniCare_AI_Technical_Whitepaper.pdf       # Comprehensive Technical Whitepaper (.pdf — exactly 5 pages)
+│   ├── OmniCare_AI_Short_Pitch_Presentation.pdf   # Form Upload 2 (.pdf — 12 widescreen landscape slides)
+│   ├── OmniCare_AI_Short_Pitch_Presentation.pptx  # Form Upload 3 (.pptx — 12 slides with complete speaker notes)
+│   ├── OmniCare_AI_Executive_Presentation.pptx    # Synced 12-slide executive presentation
+│   ├── OmniCare_AI_Presentation.pptx              # Root presentation deck
+│   └── OmniCare_AI_Executive_Summary.pdf          # 3-page executive summary PDF
 ├── launch_omnicare.bat               # Windows 1-click launcher batch script
 ├── launch_omnicare.ps1               # PowerShell 1-click launcher script
 ├── requirements.txt                  # Root Python requirements file
@@ -313,11 +316,13 @@ The files below are located in [`submission_files/`](file:///e:/Sage_drama/Snapd
 
 | Submission Field | Recommended File | File Size | Description |
 |:---|:---|:---:|:---|
-| **Brief Project Description \*** | `OmniCare_AI_Brief_Project_Description.pdf` *(or .docx)* | 41.2 KB / 5.5 KB | 4-page executive brief covering the crisis, Snapdragon X Elite co-design, 6 modalities, 10 edge advancements, and Ayushman Bharat deployment horizon. |
-| **Short Pitch Presentation in PDF \*** | `OmniCare_AI_Short_Pitch_Presentation.pdf` | 17.5 KB | 12 widescreen (16:9) presentation slides exported directly for PDF submission. |
-| **Short Pitch Presentation in PPT \*** | `OmniCare_AI_Short_Pitch_Presentation.pptx` | 47.3 KB | 12 widescreen presentation slides with Qualcomm/HP cobalt-cyan theme and speaker notes. |
+| **Brief Project Description \*** | `OmniCare_AI_Brief_Project_Description.pdf` *(or .docx)* | ~463 KB / ~303 KB | Exactly 3-page executive brief covering the crisis, Snapdragon X Elite co-design, 6 modalities, 10 edge advancements, 35/35 automated test table, embedded 1080p Cockpit capture, and Ayushman Bharat deployment horizon. |
+| **Short Pitch Presentation in PDF \*** | `OmniCare_AI_Short_Pitch_Presentation.pdf` | ~548 KB | Exactly 12 widescreen (16:9) landscape slides with embedded Cockpit screenshot, 2x2 modality waveforms, HP Smart Sense telemetry, and 3-path judge inspection guide. |
+| **Short Pitch Presentation in PPT \*** | `OmniCare_AI_Short_Pitch_Presentation.pptx` | ~514 KB | Exactly 12 widescreen presentation slides with Qualcomm/HP cobalt-cyan theme, embedded graphics, and complete 400–600 character speaker notes on every single slide. |
+| **Technical Whitepaper (Comprehensive)** | `OmniCare_AI_Technical_Whitepaper.pdf` *(or .docx)* | ~502 KB / ~452 KB | Comprehensive 5-page PDF / 6-section DOCX technical whitepaper covering INT8/INT4 NPU quantization, DP-SGD differential privacy, and ABDM FHIR R4 interoperability. |
 | **Project Title \*** | *Text entry* | 135 chars | `OmniCare AI — On-Device Multimodal Clinical Diagnostic Workstation for Snapdragon-Powered HP PCs (45 TOPS Qualcomm Hexagon NPU)` |
 | **GitHub Repository Link \*** | *Text entry* | 44 chars | `https://github.com/Advik-harsha/OmniCare-AI` |
+
 
 ---
 

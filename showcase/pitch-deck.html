@@ -46,7 +46,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 12px 28px;
-      background: rgba(7, 10, 19, 0.9);
+      background: rgba(7, 10, 19, 0.95);
       border-bottom: 1px solid rgba(0, 240, 255, 0.15);
       z-index: 50;
     }
@@ -65,7 +65,8 @@
     .nav-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .slide-counter {
@@ -73,9 +74,10 @@
       font-size: 12px;
       color: var(--cyan);
       background: rgba(0, 240, 255, 0.1);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 4px;
       border: 1px solid rgba(0, 240, 255, 0.3);
+      letter-spacing: 0.5px;
     }
 
     .deck-btn {
@@ -98,6 +100,14 @@
       background: rgba(0, 240, 255, 0.15);
       border-color: var(--cyan);
       color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
+    .deck-btn.active {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
     }
 
     /* Presentation Deck Stage */
@@ -108,19 +118,20 @@
       align-items: center;
       justify-content: center;
       padding: 20px 40px;
+      overflow: hidden;
     }
 
     .slide {
       display: none;
       width: 100%;
-      max-width: 1180px;
-      max-height: 80vh;
+      max-width: 1200px;
+      max-height: 82vh;
       background: var(--card-bg);
-      border: 1px solid rgba(0, 240, 255, 0.2);
+      border: 1px solid rgba(0, 240, 255, 0.22);
       border-radius: 16px;
-      padding: 40px 48px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 240, 255, 0.15);
-      animation: fadeIn 0.35s ease;
+      padding: 38px 46px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.15);
+      animation: fadeIn 0.3s ease;
       overflow-y: auto;
     }
 
@@ -128,8 +139,24 @@
       display: block;
     }
 
+    /* Custom Sleek Scrollbar */
+    .slide::-webkit-scrollbar {
+      width: 6px;
+    }
+    .slide::-webkit-scrollbar-track {
+      background: rgba(7, 10, 19, 0.4);
+      border-radius: 3px;
+    }
+    .slide::-webkit-scrollbar-thumb {
+      background: rgba(0, 240, 255, 0.25);
+      border-radius: 3px;
+    }
+    .slide::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 240, 255, 0.55);
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -140,10 +167,11 @@
       font-weight: 700;
       color: var(--cyan);
       background: rgba(0, 240, 255, 0.1);
-      padding: 3px 8px;
+      padding: 3px 10px;
       border-radius: 4px;
       border: 1px solid rgba(0, 240, 255, 0.3);
       margin-bottom: 12px;
+      letter-spacing: 0.5px;
     }
 
     .slide-title {
@@ -156,16 +184,16 @@
     }
 
     .slide-subtitle {
-      font-size: 16px;
+      font-size: 15.5px;
       color: var(--muted);
-      margin-bottom: 24px;
-      line-height: 1.4;
+      margin-bottom: 22px;
+      line-height: 1.45;
     }
 
     .slide-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 22px;
     }
 
     .slide-grid-3 {
@@ -175,10 +203,16 @@
     }
 
     .slide-card {
-      background: rgba(7, 10, 19, 0.6);
-      border: 1px solid rgba(0, 240, 255, 0.12);
+      background: rgba(7, 10, 19, 0.65);
+      border: 1px solid rgba(0, 240, 255, 0.14);
       border-radius: 10px;
       padding: 20px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .slide-card:hover {
+      border-color: rgba(0, 240, 255, 0.35);
+      transform: translateY(-2px);
     }
 
     .slide-card h3 {
@@ -186,6 +220,9 @@
       font-size: 16px;
       color: var(--cyan);
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .slide-card p {
@@ -196,10 +233,14 @@
 
     .slide-card ul {
       margin-top: 8px;
-      padding-left: 20px;
+      padding-left: 18px;
       font-size: 13px;
       color: var(--muted);
       line-height: 1.6;
+    }
+
+    .slide-card ul li {
+      margin-bottom: 4px;
     }
 
     .highlight-pill {
@@ -207,17 +248,77 @@
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 600;
-      padding: 2px 6px;
+      padding: 3px 8px;
       border-radius: 4px;
       background: rgba(16, 185, 129, 0.15);
       border: 1px solid rgba(16, 185, 129, 0.4);
       color: var(--green);
-      margin-top: 6px;
+      margin-top: 10px;
     }
 
+    /* Key Performance Indicators Hero Banner (Slide 1) */
+    .kpi-banner {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 240, 255, 0.15);
+    }
+
+    .kpi-item {
+      background: rgba(7, 10, 19, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .kpi-item:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .kpi-val {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .kpi-lbl {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    /* Diagnostic Telemetry Chips (Slides 4 & 6) */
+    .telemetry-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .telemetry-chip {
+      background: rgba(0, 82, 255, 0.15);
+      border: 1px solid rgba(0, 82, 255, 0.35);
+      color: #93C5FD;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    /* Slide Table (Slide 11) */
     .slide-table-wrapper {
       overflow-x: auto;
-      margin-top: 10px;
+      margin-top: 8px;
       border-radius: 8px;
       border: 1px solid rgba(0, 240, 255, 0.2);
     }
@@ -240,6 +341,7 @@
     .slide-table th:last-child {
       background: rgba(0, 240, 255, 0.25);
       color: var(--cyan);
+      border-left: 2px solid var(--cyan);
     }
 
     .slide-table td {
@@ -252,7 +354,7 @@
     .slide-table td:last-child {
       color: #FFFFFF;
       font-weight: 600;
-      background: rgba(0, 240, 255, 0.08);
+      background: rgba(0, 240, 255, 0.09);
       border-left: 2px solid var(--cyan);
     }
 
@@ -260,25 +362,58 @@
       background: rgba(0, 240, 255, 0.12);
     }
 
-    /* Bottom Progress Bar */
+    .win-check {
+      color: var(--cyan);
+      font-weight: bold;
+      margin-right: 4px;
+    }
+
+    /* Verification Ribbon (Slide 12) */
+    .verification-ribbon {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .v-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--green);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* Bottom Navigation & Progress Bar */
     .deck-footer {
       display: flex;
       flex-direction: column;
       background: rgba(7, 10, 19, 0.95);
       border-top: 1px solid rgba(0, 240, 255, 0.15);
+      z-index: 50;
     }
 
     .deck-progress-bar {
       height: 4px;
       background: rgba(0, 240, 255, 0.1);
       width: 100%;
+      cursor: pointer;
+      position: relative;
     }
 
     .deck-progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--cobalt), var(--cyan));
-      width: 9%;
-      transition: width 0.3s ease;
+      width: 8.33%;
+      transition: width 0.25s ease;
       box-shadow: 0 0 8px var(--cyan);
     }
 
@@ -289,6 +424,46 @@
       padding: 10px 28px;
       font-size: 12px;
       color: var(--dim);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Interactive Slide Dots Bar */
+    .slide-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slide-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      background: rgba(13, 21, 39, 0.7);
+      color: var(--dim);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .slide-dot:hover {
+      border-color: var(--cyan);
+      color: var(--text);
+      background: rgba(0, 240, 255, 0.15);
+    }
+
+    .slide-dot.active {
+      background: rgba(0, 240, 255, 0.25);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
     }
 
     .nav-hint {
@@ -308,15 +483,25 @@
     /* Notes Drawer */
     .notes-box {
       display: none;
-      background: rgba(4, 7, 16, 0.95);
+      background: rgba(4, 7, 16, 0.96);
       border-top: 1px solid rgba(0, 240, 255, 0.3);
       padding: 12px 28px;
-      font-size: 12px;
+      font-size: 12.5px;
       color: #93C5FD;
       font-family: var(--font-mono);
+      line-height: 1.5;
     }
 
     .notes-box.active { display: block; }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .slide { padding: 24px 20px; max-height: 85vh; }
+      .slide-title { font-size: 24px; }
+      .slide-grid-2, .slide-grid-3, .kpi-banner { grid-template-columns: 1fr; }
+      .deck-nav { padding: 10px 16px; }
+      .deck-bottom-bar { flex-direction: column; gap: 8px; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
@@ -328,9 +513,10 @@
     </div>
     <div class="nav-controls">
       <span class="slide-counter" id="slideCounter">Slide 1 of 12</span>
-      <button type="button" class="deck-btn" id="btnPrev">← Prev</button>
-      <button type="button" class="deck-btn" id="btnNext">Next →</button>
-      <button type="button" class="deck-btn" id="btnNotes">Speaker Notes [N]</button>
+      <button type="button" class="deck-btn" id="btnPrev" title="Previous Slide (← / PageUp)">← Prev</button>
+      <button type="button" class="deck-btn" id="btnNext" title="Next Slide (→ / Space / PageDown)">Next →</button>
+      <button type="button" class="deck-btn" id="btnNotes" title="Toggle Speaker Notes (N)">Speaker Notes [N]</button>
+      <button type="button" class="deck-btn" id="btnFullscreen" title="Toggle Fullscreen (F)">⛶ Fullscreen</button>
       <a href="index.html" class="deck-btn">Showcase Portal</a>
       <a href="../frontend/index.html" class="deck-btn" style="border-color:var(--cyan); color:var(--cyan);">Launch Cockpit</a>
     </div>
@@ -341,7 +527,7 @@
 
     <!-- SLIDE 1 -->
     <section class="slide active" data-slide="1" data-notes="Opening vision slide. Highlight Qualcomm Snapdragon X Elite, 45 TOPS Hexagon NPU, HP OmniBook X 14, and zero cloud data leaks.">
-      <span class="slide-tag">SLIDE 01 • EXECUTIVE VISION</span>
+      <span class="slide-tag">SLIDE 01 • EXECUTIVE VISION • QUALCOMM SNAPDRAGON® AI LAB 2026</span>
       <h2 class="slide-title">OmniCare <span style="color:var(--cyan);">AI</span></h2>
       <p class="slide-subtitle">On-Device Multimodal Clinical Diagnostic Workstation for Snapdragon-Powered HP PCs</p>
       <div class="slide-grid-2">
@@ -354,6 +540,29 @@
           <h3>Target Hardware Architecture</h3>
           <p>Engineered for <strong>HP OmniBook X 14</strong> and <strong>HP EliteBook Ultra G1q</strong> featuring the 45 TOPS Qualcomm Hexagon NPU, HP Smart Sense battery governor, and HP Wolf Security enclave.</p>
           <span class="highlight-pill">26+ Hours Off-Grid Endurance</span>
+        </div>
+      </div>
+      <!-- 5-Key Metrics Banner -->
+      <div class="kpi-banner">
+        <div class="kpi-item">
+          <span class="kpi-val">45.0 <small style="font-size:12px;">TOPS</small></span>
+          <span class="kpi-lbl">Qualcomm Hexagon NPU (HTP v73)</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-val">&lt; 15 <small style="font-size:12px;">ms</small></span>
+          <span class="kpi-lbl">Multimodal Local Inference</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-val">26+ <small style="font-size:12px;">Hrs</small></span>
+          <span class="kpi-lbl">Off-Grid Battery Endurance</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-val">82.9%</span>
+          <span class="kpi-lbl">PMBJP Jan Aushadhi Savings</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-val">35 / 35</span>
+          <span class="kpi-lbl">Quality Gates Passed (100%)</span>
         </div>
       </div>
     </section>
@@ -401,8 +610,8 @@
             <li><strong>Eco Mode (20 TOPS, 26h):</strong> All-day off-grid operation in rural field health camps.</li>
           </ul>
         </div>
-        <div style="grid-column: 1 / -1; margin-top: 6px; font-size: 11px; color: var(--dim); border-top: 1px solid rgba(0,240,255,0.1); padding-top: 8px;">
-          <strong>Target Deployment:</strong> Snapdragon X Elite (HP OmniBook X 14) &bull; <em>Note: When evaluated on non-Snapdragon host machines, OmniCare AI automatically executes via on-device simulation and CPU fallback mode.</em>
+        <div style="grid-column: 1 / -1; margin-top: 6px; font-size: 11.5px; color: var(--dim); border-top: 1px solid rgba(0,240,255,0.1); padding-top: 8px;">
+          <strong>Target Deployment:</strong> Snapdragon X Elite (HP OmniBook X 14 / HP EliteBook Ultra G1q) &bull; <em>Note: When evaluated on non-Snapdragon host machines, OmniCare AI automatically executes via on-device simulation and CPU fallback mode.</em>
         </div>
       </div>
     </section>
@@ -417,11 +626,21 @@
           <h3>Modality 01: Dermatology &amp; Retina</h3>
           <p>YOLOv8-Seg &amp; ResNet-50 INT8 with <strong>Monk Skin Tone (MST 1-10)</strong> calibration. Eliminates melanin bias across Indian phototypes. Computes Stolz ABCD TDS score and Grad-CAM visual heatmaps.</p>
           <span class="highlight-pill">Optical IQA: 96.4% Accuracy</span>
+          <div class="telemetry-row">
+            <span class="telemetry-chip">MST 8 Calibrated</span>
+            <span class="telemetry-chip">TDS Score 5.85</span>
+            <span class="telemetry-chip">Grad-CAM Heatmap</span>
+          </div>
         </div>
         <div class="slide-card">
           <h3>Modality 02: HP Poly Studio Stethoscopy</h3>
           <p>HP Poly Studio dual beamforming microphone ingestion with <strong>38.4 dB friction suppression</strong>. YAMNet INT8 classifies wheezes, crackles, and stridor with late-inspiratory phase gating.</p>
           <span class="highlight-pill">Web Audio API Synthesis</span>
+          <div class="telemetry-row">
+            <span class="telemetry-chip">38.4 dB Noise Filter</span>
+            <span class="telemetry-chip">Phase Gating</span>
+            <span class="telemetry-chip">Dual Beamforming</span>
+          </div>
         </div>
       </div>
     </section>
@@ -434,13 +653,23 @@
       <div class="slide-grid-2">
         <div class="slide-card">
           <h3>Modality 03: Multilingual Dictation</h3>
-          <p>Qualcomm AI Hub Whisper-Small INT8 transcribed medical audio with Indian accent tolerance and medical lexicon boosting directly into clinical transcripts.</p>
+          <p>Qualcomm AI Hub Whisper-Small INT8 <strong>transcribes</strong> medical audio with robust Indian clinical accent tolerance and medical lexicon boosting directly into clinical transcripts.</p>
           <span class="highlight-pill">Sub-15ms Latency • Offline</span>
+          <div class="telemetry-row">
+            <span class="telemetry-chip">Whisper-Small INT8</span>
+            <span class="telemetry-chip">Indian Dialect Boost</span>
+            <span class="telemetry-chip">Medical Lexicon</span>
+          </div>
         </div>
         <div class="slide-card">
           <h3>Modality 04: Llama-3.2-3B SOAP Scribe</h3>
           <p>Generates structured Subjective, Objective, Assessment, and Plan notes at <strong>34.2 tokens/second</strong>. Automatically maps WHO ICD-10-CM diagnostic codes with clinical rationale.</p>
           <span class="highlight-pill">34.2 tok/s on Hexagon NPU</span>
+          <div class="telemetry-row">
+            <span class="telemetry-chip">Llama-3.2-3B INT4</span>
+            <span class="telemetry-chip">WHO ICD-10-CM</span>
+            <span class="telemetry-chip">Structured SOAP</span>
+          </div>
         </div>
       </div>
     </section>
@@ -455,11 +684,21 @@
           <h3>Modality 05: HP True Vision 5MP rPPG</h3>
           <p>POS-Net INT8 extracts Heart Rate, SpO2, Resp Rate, and Hemodynamic Shock Index from facial video in <strong>8.2 ms</strong>. Animated 60 FPS cyan PPG pulse wave.</p>
           <span class="highlight-pill">8.2ms Contactless Triage</span>
+          <div class="telemetry-row">
+            <span class="telemetry-chip">60 FPS Cyan Pulse Wave</span>
+            <span class="telemetry-chip">Shock Index 1.28</span>
+            <span class="telemetry-chip">SpO2 97%</span>
+          </div>
         </div>
         <div class="slide-card">
           <h3>Modality 06: 12-Lead Paper ECG Digitizer</h3>
           <p>98.4% optical grid suppression strips millimeter graph lines from smartphone/camera photos. PTB-XL INT8 detects STEMI, AFib, and PVC in <strong>6.8 ms</strong> on Lead II canvas.</p>
           <span class="highlight-pill">6.8ms PTB-XL Classification</span>
+          <div class="telemetry-row">
+            <span class="telemetry-chip">98.4% Grid Suppression</span>
+            <span class="telemetry-chip">STEMI / AFib / PVC</span>
+            <span class="telemetry-chip">Lead II Canvas</span>
+          </div>
         </div>
       </div>
     </section>
@@ -473,14 +712,17 @@
         <div class="slide-card">
           <h3>NEWS2 Score Breakdown</h3>
           <p>Royal College of Physicians 7-parameter score breakdown with automated emergency ICU escalation pathways.</p>
+          <span class="highlight-pill">Automated ICU Pathways</span>
         </div>
         <div class="slide-card">
           <h3>PMBJP Generic Substitution</h3>
           <p>Demonstrated <strong>82.9% average patient savings</strong> by matching branded drugs (Augmentin, Lipitor, Plavix) to generic equivalents.</p>
+          <span class="highlight-pill">82.9% Patient Savings</span>
         </div>
         <div class="slide-card">
           <h3>CYP450 DDI Contraindications</h3>
           <p>Screens CYP3A4, CYP2C19, CYP2D6 enzymes, flagging critical hazards like Clopidogrel + Omeprazole competitive inhibition.</p>
+          <span class="highlight-pill">Real-Time CYP450 Safety</span>
         </div>
       </div>
     </section>
@@ -532,14 +774,17 @@
         <div class="slide-card">
           <h3>HP Wolf Security Vault</h3>
           <p>Hardware-isolated AES-256-GCM encrypted database with SHA-256 tamper-evident Merkle audit chaining.</p>
+          <span class="highlight-pill">AES-256-GCM + Merkle</span>
         </div>
         <div class="slide-card">
           <h3>Differential Privacy (DP-SGD)</h3>
           <p>Applies per-sample gradient clipping (C=1.0) and Gaussian noise (&epsilon;=1.2, &delta;=10⁻⁵) preventing biometric model leakage.</p>
+          <span class="highlight-pill">DP-SGD Formal Privacy</span>
         </div>
         <div class="slide-card">
           <h3>NRCeS India ABDM FHIR</h3>
           <p>Exports standardized ABHA FHIR R4 JSON clinical consultation bundles with zero cloud leaks.</p>
+          <span class="highlight-pill">ABDM FHIR R4 Bundles</span>
         </div>
       </div>
     </section>
@@ -564,43 +809,43 @@
               <td><strong>Edge AI Compute</strong></td>
               <td>None (Fixed microcontrollers)</td>
               <td>None (Client is dumb display)</td>
-              <td><strong>45.0 TOPS Qualcomm Hexagon NPU</strong></td>
+              <td><span class="win-check">✓</span> <strong>45.0 TOPS Qualcomm Hexagon NPU</strong></td>
             </tr>
             <tr>
               <td><strong>Diagnostic Latency</strong></td>
               <td>Display only (no AI diagnosis)</td>
               <td>800ms - 2,500ms roundtrip lag</td>
-              <td><strong>Sub-15ms multimodal inference</strong></td>
+              <td><span class="win-check">✓</span> <strong>Sub-15ms multimodal inference</strong></td>
             </tr>
             <tr>
               <td><strong>Network Resilience</strong></td>
               <td>100% Offline (Manual readouts)</td>
               <td>Fails completely without 4G/5G</td>
-              <td><strong>100% Zero Cloud Egress Offline</strong></td>
+              <td><span class="win-check">✓</span> <strong>100% Zero Cloud Egress Offline</strong></td>
             </tr>
             <tr>
               <td><strong>Hardware Investment</strong></td>
               <td>$15,000+ (Multiple bulky carts)</td>
               <td>$1,200 tablet + $50/mo cloud API</td>
-              <td><strong>1 single HP PC replaces $15k hardware</strong></td>
+              <td><span class="win-check">✓</span> <strong>1 single HP PC replaces $15k hardware</strong></td>
             </tr>
             <tr>
               <td><strong>Off-Grid Battery</strong></td>
               <td>1-2 hours / AC power required</td>
               <td>4-6 hours (tablets / iPads)</td>
-              <td><strong>26+ Hours (HP Smart Sense Eco)</strong></td>
+              <td><span class="win-check">✓</span> <strong>26+ Hours (HP Smart Sense Eco)</strong></td>
             </tr>
             <tr>
               <td><strong>Data Sovereignty</strong></td>
               <td>Paper records (loss hazards)</td>
               <td>High risk of cloud leakage</td>
-              <td><strong>Hardware Wolf Vault (DPDP Act 2023)</strong></td>
+              <td><span class="win-check">✓</span> <strong>Hardware Wolf Vault (DPDP Act 2023)</strong></td>
             </tr>
             <tr>
               <td><strong>Drug Cost Savings</strong></td>
               <td>None (Out-of-pocket burden)</td>
               <td>None (Static prescription PDFs)</td>
-              <td><strong>82.9% generic savings via PMBJP AI</strong></td>
+              <td><span class="win-check">✓</span> <strong>82.9% generic savings via PMBJP AI</strong></td>
             </tr>
           </tbody>
         </table>
@@ -626,9 +871,17 @@
           <ul>
             <li><strong>Zero Cloud Subscription Fees:</strong> Saves ₹18,000/month per clinic in cloud GPU API bills.</li>
             <li><strong>Massive Patient Cost Relief:</strong> ₹500+ savings per prescription via Jan Aushadhi generic substitution.</li>
-            <li><strong>Turnkey HP Hardware:</strong> Runs natively out of the box on HP OmniBook X 14.</li>
+            <li><strong>Turnkey HP Hardware:</strong> Runs natively out of the box on HP OmniBook X 14 and HP EliteBook Ultra G1q.</li>
           </ul>
         </div>
+      </div>
+      <!-- Verification & Compliance Banner -->
+      <div class="verification-ribbon">
+        <span class="v-pill">✓ 35/35 Automated Master Gates (100% Pass)</span>
+        <span class="v-pill">✓ 100% Zero Cloud Egress Offline Resilience</span>
+        <span class="v-pill">✓ India DPDP Act 2023 Compliant</span>
+        <span class="v-pill">✓ NRCeS ABDM FHIR R4 Consultation Bundles</span>
+        <span class="v-pill">✓ CDSCO SaMD MDR-2017 Class B Architecture</span>
       </div>
     </section>
 
@@ -641,12 +894,30 @@
 
   <!-- Bottom Bar -->
   <footer class="deck-footer">
-    <div class="deck-progress-bar">
+    <div class="deck-progress-bar" id="progressBar" title="Click to seek slide">
       <div class="deck-progress-fill" id="progressFill"></div>
     </div>
     <div class="deck-bottom-bar">
       <span>OmniCare AI • Qualcomm Snapdragon® AI Lab Build &amp; Present Challenge 2026</span>
-      <div class="nav-hint">Use <kbd>←</kbd> <kbd>→</kbd> or <kbd>Space</kbd> to navigate • Press <kbd>N</kbd> for notes</div>
+      
+      <!-- Clickable Slide Indicator Dots -->
+      <div class="slide-dots" id="slideDots">
+        <!-- 1 to 12 dynamically generated or rendered -->
+        <div class="slide-dot active" data-target="1" title="Slide 1: Executive Vision">1</div>
+        <div class="slide-dot" data-target="2" title="Slide 2: The Crisis">2</div>
+        <div class="slide-dot" data-target="3" title="Slide 3: Snapdragon & HP Advantage">3</div>
+        <div class="slide-dot" data-target="4" title="Slide 4: Vision & Acoustics">4</div>
+        <div class="slide-dot" data-target="5" title="Slide 5: Clinical NLP">5</div>
+        <div class="slide-dot" data-target="6" title="Slide 6: rPPG & ECG">6</div>
+        <div class="slide-dot" data-target="7" title="Slide 7: Edge Intelligence">7</div>
+        <div class="slide-dot" data-target="8" title="Slide 8: Peer Deliberation">8</div>
+        <div class="slide-dot" data-target="9" title="Slide 9: Inclusivity & PACS">9</div>
+        <div class="slide-dot" data-target="10" title="Slide 10: Security Architecture">10</div>
+        <div class="slide-dot" data-target="11" title="Slide 11: Competitive Matrix">11</div>
+        <div class="slide-dot" data-target="12" title="Slide 12: Commercial Horizon">12</div>
+      </div>
+
+      <div class="nav-hint">Use <kbd>←</kbd> <kbd>→</kbd> or <kbd>Space</kbd> to navigate • Press <kbd>N</kbd> for notes • <kbd>F</kbd> for Fullscreen</div>
     </div>
   </footer>
 
@@ -664,31 +935,93 @@
       if (activeSlide) {
         activeSlide.classList.add('active');
         const notes = activeSlide.getAttribute('data-notes') || 'No speaker notes.';
-        document.getElementById('notesContent').textContent = notes;
+        document.getElementById('notesContent').textContent = `[Slide ${num} of ${totalSlides}] ${notes}`;
       }
 
       document.getElementById('slideCounter').textContent = `Slide ${num} of ${totalSlides}`;
       document.getElementById('progressFill').style.width = `${(num / totalSlides) * 100}%`;
+
+      // Update active state on dots
+      document.querySelectorAll('.slide-dot').forEach(dot => {
+        const target = parseInt(dot.getAttribute('data-target'), 10);
+        dot.classList.toggle('active', target === num);
+      });
     }
 
     document.getElementById('btnPrev').addEventListener('click', () => showSlide(currentSlide - 1));
     document.getElementById('btnNext').addEventListener('click', () => showSlide(currentSlide + 1));
 
-    document.getElementById('btnNotes').addEventListener('click', () => {
-      document.getElementById('notesDrawer').classList.toggle('active');
+    const btnNotes = document.getElementById('btnNotes');
+    const notesDrawer = document.getElementById('notesDrawer');
+    btnNotes.addEventListener('click', () => {
+      notesDrawer.classList.toggle('active');
+      btnNotes.classList.toggle('active', notesDrawer.classList.contains('active'));
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-        showSlide(currentSlide + 1);
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        showSlide(currentSlide - 1);
-      } else if (e.key === 'n' || e.key === 'N') {
-        document.getElementById('notesDrawer').classList.toggle('active');
+    // Fullscreen Toggle
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        btnFullscreen.classList.add('active');
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+        btnFullscreen.classList.remove('active');
       }
     });
 
-    // Initialize
+    document.addEventListener('fullscreenchange', () => {
+      btnFullscreen.classList.toggle('active', !!document.fullscreenElement);
+    });
+
+    // Progress Bar Click-to-Seek
+    document.getElementById('progressBar').addEventListener('click', (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = clickX / rect.width;
+      const targetSlide = Math.min(totalSlides, Math.max(1, Math.round(pct * totalSlides)));
+      showSlide(targetSlide);
+    });
+
+    // Click on slide dots
+    document.querySelectorAll('.slide-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const target = parseInt(dot.getAttribute('data-target'), 10);
+        if (!isNaN(target)) showSlide(target);
+      });
+    });
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'Enter') {
+        showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
+        showSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        notesDrawer.classList.toggle('active');
+        btnNotes.classList.toggle('active', notesDrawer.classList.contains('active'));
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      } else if (e.key === 'Home') {
+        showSlide(1);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides);
+      } else if (e.key >= '1' && e.key <= '9') {
+        showSlide(parseInt(e.key, 10));
+      } else if (e.key === '0') {
+        showSlide(10);
+      }
+    });
+
+    // Initialize Slide 1
     showSlide(1);
   </script>
 </body>

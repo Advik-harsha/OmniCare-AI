@@ -23,14 +23,16 @@
 
 | Artifact | Location | Format | Description |
 |:---|:---|:---|:---|
-| **Technical Whitepaper** | `submission_files/OmniCare_AI_Technical_Whitepaper.docx` | DOCX | 6-section comprehensive technical architecture, clinical models, and NPU benchmarks |
-| **Executive Presentation** | `submission_files/OmniCare_AI_Executive_Presentation.pptx` | PPTX | 12 widescreen slides with dark cobalt/cyan theme, architecture diagrams, and clinical impact |
-| **Executive Summary PDF** | `submission_files/OmniCare_AI_Executive_Summary.pdf` | PDF | Printable executive brief with KPI matrix and CDSCO SaMD regulatory seal |
-| **Interactive Pitch Deck** | `showcase/pitch-deck.html` | HTML5 / JS | 12-slide standalone interactive presentation engine with keyboard navigation and speaker notes |
-| **Judge Showcase Portal** | `showcase/index.html` | HTML5 / JS | 1-click clinical scenario demonstrator with 100% offline fallback resilience |
+| **Brief Project Description** | `submission_files/OmniCare_AI_Brief_Project_Description.pdf` | PDF / DOCX | Exactly 3-page executive brief covering the crisis, Snapdragon X Elite co-design, 6 modalities, 10 edge advancements, 35/35 test table, and Ayushman Bharat deployment horizon |
+| **Technical Whitepaper** | `submission_files/OmniCare_AI_Technical_Whitepaper.pdf` | PDF / DOCX | 5-page balanced technical architecture, clinical models, INT8/INT4 NPU quantization benchmarks, and ABDM FHIR R4 interoperability |
+| **Short Pitch Presentation** | `submission_files/OmniCare_AI_Short_Pitch_Presentation.pptx` | PPTX / PDF | 12 widescreen (16:9) slides with dark cobalt/cyan theme, architecture diagrams, embedded screenshots, and complete 400-600 char speaker notes |
+| **Executive Presentation** | `submission_files/OmniCare_AI_Executive_Presentation.pptx` | PPTX | Synced 12-slide presentation deck |
+| **Executive Summary PDF** | `submission_files/OmniCare_AI_Executive_Summary.pdf` | PDF | Printable 3-page executive brief with KPI matrix and CDSCO SaMD regulatory seal |
+| **Interactive Pitch Deck** | `showcase/pitch-deck.html` | HTML5 / JS | 12-slide standalone interactive presentation engine with slide dots, fullscreen, and speaker notes |
+| **Judge Showcase Portal** | `showcase/index.html` | HTML5 / JS | 1-click clinical scenario demonstrator and direct deliverables access with 100% offline fallback resilience |
 | **Clinical Cockpit UI** | `frontend/index.html` | HTML5 / CSS / JS | Real-time cockpit dashboard with 45 TOPS HUD, 60 FPS PPG canvas, calibrated ECG grid, and Web Audio synth |
-| **Automated Test Suite** | `backend/test_endpoints.py` | Python (FastAPI TestClient) | 25/25 automated regression tests validating all endpoints with exit code 0 |
-| **Task Loop Runner** | `ralph.ps1` & `prd.json` | PowerShell / JSON | Autonomous task execution harness with state tracking and git commit integrity |
+| **Automated Test Suite** | `backend/test_endpoints.py` | Python (FastAPI TestClient) | 35/35 automated regression & edge-case tests validating all endpoints with exit code 0 |
+| **Master Quality Gates** | `verify_all.py` | Python | 10/10 Master Quality Gates runner validating compilation, startup, tests, UI, security, and docs |
 
 ---
 
@@ -43,7 +45,8 @@ OmniCare AI is designed for immediate, zero-friction inspection by Qualcomm and 
 2. Experience 100% interactive responsiveness:
    - Click any of the **4 Clinical Demonstration Scenarios** (Acute STEMI, Pneumonia, Melanin-Calibrated Dermoscopy, POCUS Ultrasound).
    - Inspect live hardware telemetry, architectural flows, and regulatory compliance matrices.
-3. Open `showcase/pitch-deck.html` to review the interactive 12-slide executive presentation (press `Arrow Keys` or `Space` to navigate, `N` for speaker notes).
+   - Access direct links to download official PDF and PowerPoint submission deliverables.
+3. Open `showcase/pitch-deck.html` to review the interactive 12-slide executive presentation (press `Arrow Keys` or `Space` to navigate, `N` for speaker notes, `F` for fullscreen).
 *Guaranteed 100% offline fallback resilience: All frontend operations execute without requiring a running backend server.*
 
 ### Option B: Full Stack Workstation Execution (FastAPI + Cockpit)
@@ -52,7 +55,7 @@ OmniCare AI is designed for immediate, zero-friction inspection by Qualcomm and 
    .\launch_omnicare.ps1
    ```
    *(or double-click `launch_omnicare.bat`)*
-2. Open `http://localhost:8000/docs` to inspect interactive Swagger documentation across 30+ endpoints.
+2. Open `http://localhost:8000/docs` to inspect interactive Swagger documentation across 40+ endpoints.
 3. Open `frontend/index.html` to access the **Futuristic Clinical Cockpit**:
    - Observe live 60 FPS cyan PPG pulse waves.
    - Inspect calibrated Lead II ECG strip on 1mm pink grid.
@@ -60,16 +63,17 @@ OmniCare AI is designed for immediate, zero-friction inspection by Qualcomm and 
    - Test Web Audio API pulmonary breath sound synthesizer (Vesicular, Crackles, Wheezes).
    - Launch all 8 clinical modals (NEWS2, Council of Specialists, Jan Aushadhi, POCUS, FHIR, Wolf Vault).
 
-### Option C: Automated Verification Runner
+### Option C: Master Quality Gates Runner
 To independently verify the test suite:
 ```powershell
-python backend/test_endpoints.py
+python verify_all.py
 ```
 *Expected Output:*
 ```
-Ran 25 tests in 0.15s
+Ran 35 tests in 0.22s
 OK
->>> STATUS: ALL 25/25 VERIFICATION GATES PASSED (EXIT CODE 0) <<<
+>>> STATUS: ALL 35/35 VERIFICATION & EDGE-CASE GATES PASSED (EXIT CODE 0) <<<
+TOTAL FAILURES: 0 (All quality gates passed!)
 ```
 
 ---
