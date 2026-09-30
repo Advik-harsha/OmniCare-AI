@@ -13,7 +13,9 @@ from typing import Optional, Dict, Any, List
 
 try:
     from config import CONFIG
+    from engine.execution_mode import get_execution_environment
     from engine.telemetry import get_npu_telemetry
+
     from engine.hardware_governor import get_governor_status, set_governor_profile
     from engine.fhir_exporter import export_abdm_fhir_bundle, PATIENT_PRESETS
     from engine.safety_guardrails import get_safety_engine
@@ -35,7 +37,9 @@ try:
     from security.offline_sync_engine import get_sync_engine
 except ImportError:
     from backend.config import CONFIG
+    from backend.engine.execution_mode import get_execution_environment
     from backend.engine.telemetry import get_npu_telemetry
+
     from backend.engine.hardware_governor import get_governor_status, set_governor_profile
     from backend.engine.fhir_exporter import export_abdm_fhir_bundle, PATIENT_PRESETS
     from backend.engine.safety_guardrails import get_safety_engine
@@ -163,13 +167,21 @@ class DPSGDDeltaRequest(BaseModel):
 
 @app.get("/")
 def read_root():
+    env = get_execution_environment()
     return {
         "workstation": CONFIG.app_name,
         "version": CONFIG.version,
         "status": "OPERATIONAL",
+        "execution_mode": env["execution_mode"],
+        "mode_label": env["mode_label"],
+        "is_hardware_accelerated": env["is_hardware_accelerated"],
+        "is_simulation_fallback": env["is_simulation_fallback"],
         "target_soc": CONFIG.hardware.soc,
+        "target_npu": CONFIG.hardware.npu,
         "npu_tops": CONFIG.hardware.npu_peak_tops,
-        "privacy": "Zero Cloud Egress (DPDP Act 2023 Compliant)",
+        "privacy": "Zero Cloud Egress (Privacy-Preserving Edge Architecture)",
+        "privacy_notice": env["regulatory_notice"],
+        "clinical_safety_notice": env["clinical_safety_notice"],
         "cockpit_ui": "/cockpit",
         "showcase_portal": "/showcase",
         "docs_url": "/docs"
@@ -177,13 +189,21 @@ def read_root():
 
 @app.get("/health")
 def health_check():
+    env = get_execution_environment()
     return {
         "status": "healthy",
         "service": CONFIG.app_name,
-        "npu_status": "ONLINE (45.0 TOPS HTP v73)",
+        "execution_mode": env["execution_mode"],
+        "mode_label": env["mode_label"],
+        "npu_status": f"ONLINE ({env['mode_label']})",
         "memory_ok": True,
         "storage_enclave": "LOCKED_SECURE"
     }
+
+@app.get("/api/system/mode")
+def get_system_mode_endpoint():
+    return get_execution_environment()
+
 
 # ----------------- NPU Telemetry & Hardware Governor -----------------
 

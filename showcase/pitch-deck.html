@@ -380,7 +380,7 @@
     </section>
 
     <!-- SLIDE 3 -->
-    <section class="slide" data-slide="3" data-notes="Architecture slide. Detail Snapdragon X Elite, 45 TOPS Hexagon NPU, HP Smart Sense modes, and DPDP Act compliance.">
+    <section class="slide" data-slide="3" data-notes="Architecture slide. Detail Snapdragon X Elite, 45 TOPS Hexagon NPU, HP Smart Sense modes, and offline simulation fallback on evaluation PCs.">
       <span class="slide-tag">SLIDE 03 • THE QUALCOMM &amp; HP ADVANTAGE</span>
       <h2 class="slide-title">45 TOPS Hexagon NPU: Instant Edge AI</h2>
       <p class="slide-subtitle">Hardware-isolated acceleration for 6 diagnostic modalities without internet connectivity</p>
@@ -400,6 +400,9 @@
             <li><strong>Balanced Mode (32 TOPS):</strong> Standard clinical consultation rounds.</li>
             <li><strong>Eco Mode (20 TOPS, 26h):</strong> All-day off-grid operation in rural field health camps.</li>
           </ul>
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 6px; font-size: 11px; color: var(--dim); border-top: 1px solid rgba(0,240,255,0.1); padding-top: 8px;">
+          <strong>Target Deployment:</strong> Snapdragon X Elite (HP OmniBook X 14) &bull; <em>Note: When evaluated on non-Snapdragon host machines, OmniCare AI automatically executes via on-device simulation and CPU fallback mode.</em>
         </div>
       </div>
     </section>
@@ -521,10 +524,10 @@
     </section>
 
     <!-- SLIDE 10 -->
-    <section class="slide" data-slide="10" data-notes="Security & Privacy: HP Wolf Vault, DP-SGD differential privacy, DPDP Act 2023, and ABDM FHIR R4.">
-      <span class="slide-tag">SLIDE 10 • SECURITY &amp; COMPLIANCE</span>
+    <section class="slide" data-slide="10" data-notes="Security & Privacy: HP Wolf Vault, DP-SGD differential privacy, DPDP Act 2023 alignment, and ABDM FHIR R4 export.">
+      <span class="slide-tag">SLIDE 10 • SECURITY &amp; PRIVACY ARCHITECTURE</span>
       <h2 class="slide-title">HP Wolf Vault &amp; Zero Cloud Egress Privacy</h2>
-      <p class="slide-subtitle">Absolute compliance with India's DPDP Act 2023 and ABDM FHIR R4 standards</p>
+      <p class="slide-subtitle">Engineered for privacy-preserving local storage in alignment with India's DPDP Act 2023 and ABDM FHIR R4 principles</p>
       <div class="slide-grid-3">
         <div class="slide-card">
           <h3>HP Wolf Security Vault</h3>
@@ -532,7 +535,7 @@
         </div>
         <div class="slide-card">
           <h3>Differential Privacy (DP-SGD)</h3>
-          <p>Applies per-sample gradient clipping (C=1.0) and Gaussian noise (ε=1.2, δ=10⁻⁵) preventing biometric model leakage.</p>
+          <p>Applies per-sample gradient clipping (C=1.0) and Gaussian noise (&epsilon;=1.2, &delta;=10⁻⁵) preventing biometric model leakage.</p>
         </div>
         <div class="slide-card">
           <h3>NRCeS India ABDM FHIR</h3>

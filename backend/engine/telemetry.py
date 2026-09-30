@@ -8,8 +8,10 @@ import random
 
 try:
     from config import CONFIG
+    from engine.execution_mode import get_execution_environment
 except ImportError:
     from backend.config import CONFIG
+    from backend.engine.execution_mode import get_execution_environment
 
 class NPUTelemetryEngine:
     def __init__(self):
@@ -22,7 +24,9 @@ class NPUTelemetryEngine:
         self.precision = CONFIG.hardware.npu_precision
 
     def get_telemetry(self) -> dict:
-        """Returns live hardware profile metrics."""
+        """Returns live hardware profile metrics with transparent execution mode disclosure."""
+        env = get_execution_environment()
+
         # Realistic slight fluctuations around benchmark optimums
         current_latency = round(self.target_latency_ms + random.uniform(-0.6, 0.8), 1)
         utilized_tops = round(self.peak_tops * random.uniform(0.68, 0.85), 1)
@@ -32,6 +36,10 @@ class NPUTelemetryEngine:
         
         return {
             "status": "ONLINE",
+            "execution_mode": env["execution_mode"],
+            "mode_label": env["mode_label"],
+            "is_hardware_accelerated": env["is_hardware_accelerated"],
+            "is_simulation_fallback": env["is_simulation_fallback"],
             "soc": self.soc,
             "npu": self.npu,
             "peak_tops": self.peak_tops,
@@ -43,9 +51,11 @@ class NPUTelemetryEngine:
             "npu_temperature_c": temp_c,
             "fan_noise_dba": 18.5,
             "cloud_egress_bytes": 0,
-            "execution_provider": self.execution_provider,
+            "execution_provider": env["execution_provider"],
             "precision": self.precision,
             "dpdp_compliant": True,
+            "privacy_design": "Designed for zero-cloud data processing and privacy-preserving local storage; formal legal/compliance assessment is required for production deployment.",
+            "clinical_safety_notice": env["clinical_safety_notice"],
             "timestamp": time.time()
         }
 
@@ -53,3 +63,4 @@ _telemetry_engine = NPUTelemetryEngine()
 
 def get_npu_telemetry() -> dict:
     return _telemetry_engine.get_telemetry()
+

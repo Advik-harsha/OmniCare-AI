@@ -9,8 +9,11 @@ from typing import Dict, Any, List, Optional
 
 try:
     from config import CONFIG
+    from engine.execution_mode import wrap_clinical_response
 except ImportError:
     from backend.config import CONFIG
+    from backend.engine.execution_mode import wrap_clinical_response
+
 
 
 def get_cardiologist_opinion(context: Dict[str, Any]) -> Dict[str, Any]:
@@ -160,11 +163,16 @@ def get_general_physician_opinion(context: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def deliberate_case(patient_context: Dict[str, Any]) -> Dict[str, Any]:
+def deliberate_case(patient_context: Any = None) -> Dict[str, Any]:
     """
     Runs multi-agent consultation across all 4 specialist agents and applies
     Chief Medical Officer (CMO) consensus arbitration.
     """
+    if isinstance(patient_context, str):
+        patient_context = {"patient_id": patient_context, "symptoms": patient_context}
+    elif not isinstance(patient_context, dict):
+        patient_context = {}
+
     cardio = get_cardiologist_opinion(patient_context)
     pulmo = get_pulmonologist_opinion(patient_context)
     derma = get_dermatologist_opinion(patient_context)
@@ -238,9 +246,13 @@ def deliberate_case(patient_context: Dict[str, Any]) -> Dict[str, Any]:
         "discordant_specialties": critical_agents if has_conflict else []
     }
 
-    return {
+    res = {
         "engine": "Autonomous Multi-Agent Council of AI Specialists",
         "snapdragon_hardware_acceleration": "Qualcomm Hexagon NPU 45 TOPS",
         "specialists": specialists,
-        "cmo_synthesis": cmo_synthesis
+        "cmo_synthesis": cmo_synthesis,
+        "human_in_the_loop_mandatory": True,
+        "clinical_safety_notice": "DEMONSTRATION DECISION SUPPORT ONLY. Specialist recommendations and CMO arbitration are decision-support outputs that must be confirmed by the attending human physician."
     }
+    return wrap_clinical_response(res, "Council of AI Specialists", "Multi-Agent Specialist Swarm (4 Specialists + CMO)", 14.2)
+

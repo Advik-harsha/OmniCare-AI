@@ -7,6 +7,13 @@ Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026
 import time
 from typing import Dict, Any, List, Optional
 
+try:
+    from engine.execution_mode import wrap_clinical_response
+except ImportError:
+    from backend.engine.execution_mode import wrap_clinical_response
+
+
+
 ICD10_DATABASE = {
     "copd": {
         "code": "J44.1",
@@ -47,6 +54,9 @@ def generate_soap_note(
     else:
         vitals_str = "HR 84 bpm, SpO2 95% on room air, RR 22 bpm, BP 130/85, NEWS2 Score: 4"
 
+    if isinstance(consultation_text, dict):
+        consultation_text = consultation_text.get("text") or consultation_text.get("transcript") or str(consultation_text)
+
     text_lower = consultation_text.lower() if consultation_text else ""
     
     # Context-aware condition classification
@@ -83,9 +93,7 @@ Differential Diagnoses: Viral bronchiolitis, congestive heart failure, hypersens
 {plan_text}
 Patient Counseling: Multilingual audio counseling provided via on-device speech synthesis."""
 
-    return {
-        "modality": "Modality 4: Clinical SOAP Scribing",
-        "model_architecture": "Llama-3.2-3B INT4 (Qualcomm AI Hub)",
+    res = {
         "npu_hardware": "Qualcomm Hexagon NPU (HTP v73)",
         "llm_token_generation_speed_tok_s": 34.2,
         "npu_prompt_processing_latency_ms": 13.6,
@@ -102,3 +110,5 @@ Patient Counseling: Multilingual audio counseling provided via on-device speech 
         ],
         "timestamp": time.time()
     }
+    return wrap_clinical_response(res, "Modality 4: Clinical SOAP Scribing", "Llama-3.2-3B INT4 (Qualcomm AI Hub)", 13.6)
+

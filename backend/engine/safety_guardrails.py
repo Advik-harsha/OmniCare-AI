@@ -7,8 +7,8 @@ from typing import Dict, Any, List
 
 class SafetyGuardrailEngine:
     def __init__(self):
-        self.standard = "CDSCO SaMD MDR-2017 / IEC 62304 Class B"
-        self.dpdp_status = "100% Zero-Cloud Strict Compliance"
+        self.standard = "CDSCO SaMD MDR-2017 / IEC 62304 Class B Reference Framework"
+        self.dpdp_status = "Designed for Zero-Cloud Local Processing (DPDP Act Principles)"
 
     def evaluate_triage_risk(self, news2_score: int, shock_index: float, arrhythmia_type: str = "NORMAL") -> dict:
         """Evaluates clinical emergency escalation thresholds."""
@@ -40,7 +40,9 @@ class SafetyGuardrailEngine:
             "clinical_alerts": alerts,
             "human_in_the_loop_mandatory": True,
             "autonomous_diagnosis_prohibited": True,
-            "device_class": "Class B Software as a Medical Device (SaMD)"
+            "device_class": "Class B Software as a Medical Device (SaMD) Reference Framework",
+            "clinical_safety_notice": "DEMONSTRATION ONLY: Decision-support guidance must be verified by a licensed clinician before any clinical action is taken.",
+            "regulatory_status": "Architectural prototype designed in alignment with SaMD guidelines; not certified by CDSCO."
         }
 
     def verify_fairness_calibration(self, mst_rating: int) -> dict:
@@ -55,11 +57,13 @@ class SafetyGuardrailEngine:
 
     def get_guardrails_status(self) -> dict:
         return {
-            "cdsco_mdr_2017": "COMPLIANT",
-            "iec_62304_lifecycle": "CLASS_B_VERIFIED",
-            "india_dpdp_act_2023": "ZERO_CLOUD_EGRESS_ENFORCED",
-            "failsafe_mode": "ON_DEVICE_HEURISTIC_BACKUP_ACTIVE"
+            "cdsco_mdr_2017": "ALIGNED_DESIGN_FRAMEWORK",
+            "iec_62304_lifecycle": "CLASS_B_DESIGN_ALIGNMENT",
+            "india_dpdp_act_2023": "ZERO_CLOUD_EGRESS_DESIGN",
+            "failsafe_mode": "ON_DEVICE_HEURISTIC_BACKUP_ACTIVE",
+            "disclaimer": "Designed for zero-cloud data processing and privacy-preserving local storage; formal legal and regulatory certification is required for production clinical deployment."
         }
+
 
 _safety = SafetyGuardrailEngine()
 

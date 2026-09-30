@@ -5,3 +5,19 @@ __pycache__/
 .coverage
 htmlcov/
 *.log
+
+# Environments & Local Keys
+.venv/
+env/
+venv/
+*.env
+*.enc
+.test_verification_vault.enc
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+

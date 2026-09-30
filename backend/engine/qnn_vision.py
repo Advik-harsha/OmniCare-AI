@@ -9,8 +9,11 @@ from typing import Dict, Any, Optional
 
 try:
     from engine.xai_abcd import evaluate_abcd_rule, compute_optical_iqa, get_mst_melanin_calibration
+    from engine.execution_mode import wrap_clinical_response
 except ImportError:
     from backend.engine.xai_abcd import evaluate_abcd_rule, compute_optical_iqa, get_mst_melanin_calibration
+    from backend.engine.execution_mode import wrap_clinical_response
+
 
 DERM_PRESETS = {
     "melanoma_suspect": {
@@ -98,9 +101,7 @@ def analyze_dermatology_lesion(preset_lesion: str = "melanoma_suspect", custom_m
         mst_scale=mst
     )
     
-    return {
-        "modality": "Modality 1: Dermatology & Cutaneous Screening",
-        "model_architecture": "YOLOv8-Seg INT8 + ResNet-50 INT8",
+    res = {
         "npu_hardware": "Qualcomm Hexagon NPU (HTP v73)",
         "npu_inference_latency_ms": 11.4,
         "diagnosis": preset["diagnosis"],
@@ -111,15 +112,14 @@ def analyze_dermatology_lesion(preset_lesion: str = "melanoma_suspect", custom_m
         "xai_abcd_metrics": abcd,
         "timestamp": time.time()
     }
+    return wrap_clinical_response(res, "Modality 1: Dermatology & Cutaneous Screening", "YOLOv8-Seg INT8 + ResNet-50 INT8", 11.4)
 
 def screen_retinal_fundus(preset_fundus: str = "moderate_npdr") -> dict:
     """Runs Retinal Fundus AI screening for Diabetic Retinopathy and Glaucoma CDR."""
     preset = RETINA_PRESETS.get(preset_fundus.lower(), RETINA_PRESETS["moderate_npdr"])
     iqa = compute_optical_iqa()
     
-    return {
-        "modality": "Modality 1: Retinal Screening",
-        "model_architecture": "DenseNet-121 INT8 Retinal Classifier",
+    res = {
         "npu_hardware": "Qualcomm Hexagon NPU (HTP v73)",
         "npu_inference_latency_ms": 9.8,
         "dr_grade": preset["dr_grade"],
@@ -133,3 +133,5 @@ def screen_retinal_fundus(preset_fundus: str = "moderate_npdr") -> dict:
         "optical_iqa": iqa,
         "timestamp": time.time()
     }
+    return wrap_clinical_response(res, "Modality 1: Retinal Screening", "DenseNet-121 INT8 Retinal Classifier", 9.8)
+

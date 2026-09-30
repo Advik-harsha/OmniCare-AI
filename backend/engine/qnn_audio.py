@@ -7,6 +7,13 @@ Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026
 import time
 from typing import Dict, Any, List
 
+try:
+    from engine.execution_mode import wrap_clinical_response
+except ImportError:
+    from backend.engine.execution_mode import wrap_clinical_response
+
+
+
 AUDIO_PRESETS = {
     "pneumonia_crackles": {
         "sound_type": "Fine & Coarse End-Inspiratory Crackles",
@@ -65,10 +72,8 @@ def analyze_pulmonary_sound(preset_key: str = "pneumonia_crackles") -> dict:
     key = preset_key.lower().strip()
     preset = AUDIO_PRESETS.get(key, AUDIO_PRESETS["pneumonia_crackles"])
     
-    return {
-        "modality": "Modality 2: Pulmonary Stethoscopy",
+    res = {
         "hardware_input": "HP Poly Studio Dual Beamforming Mics",
-        "model_architecture": "YAMNet INT8 Acoustic Classifier",
         "npu_hardware": "Qualcomm Hexagon NPU (HTP v73)",
         "npu_latency_ms": 7.4,
         "sound_type": preset["sound_type"],
@@ -84,3 +89,5 @@ def analyze_pulmonary_sound(preset_key: str = "pneumonia_crackles") -> dict:
         "synth_parameters": preset["synth_params"],
         "timestamp": time.time()
     }
+    return wrap_clinical_response(res, "Modality 2: Pulmonary Stethoscopy", "YAMNet INT8 Acoustic Classifier", 7.4)
+

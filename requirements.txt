@@ -1,0 +1,20 @@
+# OmniCare AI — Base Python Dependencies
+# Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026
+# Works out-of-the-box on clean Windows 10/11 environments with fallback support
+
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0.0
+numpy>=1.24.0
+cryptography>=41.0.0
+requests>=2.28.0
+python-multipart>=0.0.6
+httpx>=0.24.0
+
+# Document & Presentation Generation Artifacts
+python-docx>=1.1.0
+python-pptx>=0.6.21
+reportlab>=4.0.0
+
+# Optional / Native Snapdragon X Elite Acceleration (Optional at runtime)
+# onnxruntime-qnn; platform_machine == "ARM64"

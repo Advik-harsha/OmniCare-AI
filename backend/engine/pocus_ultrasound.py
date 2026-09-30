@@ -9,8 +9,11 @@ from typing import Dict, Any, List, Optional
 
 try:
     from config import CONFIG
+    from engine.execution_mode import wrap_clinical_response
 except ImportError:
     from backend.config import CONFIG
+    from backend.engine.execution_mode import wrap_clinical_response
+
 
 # POCUS Presets for rapid bedside demonstration
 POCUS_CARDIAC_PRESETS: Dict[str, Dict[str, Any]] = {
@@ -137,7 +140,7 @@ def analyze_cardiac_pocus(
         color = "#EF4444"
         clinical_note = "Severe systolic failure. High risk for cardiogenic shock and ventricular tachyarrhythmias."
 
-    return {
+    res = {
         "engine": "Qualcomm Hexagon NPU Handheld POCUS AI (INT8)",
         "latency_ms": 11.4,
         "probe_view": view,
@@ -155,6 +158,7 @@ def analyze_cardiac_pocus(
         "indicator_color": color,
         "clinical_interpretation": clinical_note
     }
+    return wrap_clinical_response(res, "Point-of-Care Ultrasound: Cardiac LVEF", "Handheld Cardiac POCUS AI (INT8)", 11.4)
 
 
 def analyze_pleural_pocus(
@@ -196,7 +200,7 @@ def analyze_pleural_pocus(
         b_note = f"Normal A-line dominant pattern with minimal B-lines ({b_count})."
         color = "#10B981" if sliding else "#EF4444"
 
-    return {
+    res = {
         "engine": "Qualcomm Hexagon NPU Pleural POCUS AI (INT8)",
         "latency_ms": 9.8,
         "sign": sign,
@@ -209,6 +213,8 @@ def analyze_pleural_pocus(
         "indicator_color": color,
         "pneumothorax_probability": 0.02 if sliding else 0.94
     }
+    return wrap_clinical_response(res, "Point-of-Care Ultrasound: Pleural Sliding", "Handheld Pleural POCUS AI (INT8)", 9.8)
+
 
 
 def get_pocus_presets() -> Dict[str, Any]:

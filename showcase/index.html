@@ -61,8 +61,9 @@
       <div class="kpi-card">
         <span class="kpi-num cyan-text">100% <small>Offline</small></span>
         <span class="kpi-label">Zero Cloud Egress</span>
-        <span class="kpi-desc">India DPDP Act 2023 Compliant</span>
+        <span class="kpi-desc">DPDP Privacy-Preserving Design</span>
       </div>
+
       <div class="kpi-card">
         <span class="kpi-num green-text">82.9% <small>Savings</small></span>
         <span class="kpi-label">Jan Aushadhi Generics</span>
@@ -158,7 +159,7 @@
               <td><strong>Patient Data Privacy</strong></td>
               <td class="cell-highlight-green"><strong>100% Zero Cloud Egress</strong> (Hardware Enclave)</td>
               <td class="cell-highlight-red">High Risk: Biometrics streamed over public WAN</td>
-              <td>Full compliance with India's DPDP Act 2023 &amp; ABDM standards</td>
+              <td>Designed for local data sovereignty in alignment with DPDP Act principles</td>
             </tr>
             <tr>
               <td><strong>Battery &amp; Power Envelope</strong></td>
@@ -191,7 +192,7 @@
         </div>
         <div class="arch-card">
           <div class="arch-card-header">2. Qualcomm Hexagon NPU Pipeline</div>
-          <p>Hardware accelerated QNN execution provider hosting INT8-quantized YOLOv8-Seg, ResNet-50, YAMNet, Whisper-Small, and INT4-quantized Llama-3.2-3B running at 34.2 tokens/second within a 15W thermal envelope.</p>
+          <p>Hardware accelerated QNN execution provider hosting INT8-quantized YOLOv8-Seg, ResNet-50, YAMNet, Whisper-Small, and INT4-quantized Llama-3.2-3B running at 34.2 tokens/second within a 15W thermal envelope (with deterministic offline software fallback on non-Snapdragon review hardware).</p>
         </div>
         <div class="arch-card">
           <div class="arch-card-header">3. HP Wolf Security Enclave</div>
@@ -200,13 +201,13 @@
       </div>
     </section>
 
-    <!-- REGULATORY COMPLIANCE BADGES -->
+    <!-- REGULATORY REFERENCE BADGES -->
     <section class="section-block">
       <div class="compliance-row">
         <div class="compliance-badge">
           <div class="comp-icon">🇮🇳</div>
           <div>
-            <strong>India DPDP Act 2023</strong>
+            <strong>India DPDP Act Principles</strong>
             <p>100% Zero Cloud Egress • Local biometric isolation</p>
           </div>
         </div>
@@ -214,25 +215,31 @@
           <div class="comp-icon">📋</div>
           <div>
             <strong>NRCeS India ABDM FHIR R4</strong>
-            <p>Standardized clinical consultation bundle export</p>
+            <p>Standardized clinical consultation bundle export format</p>
           </div>
         </div>
         <div class="compliance-badge">
           <div class="comp-icon">⚕️</div>
           <div>
-            <strong>CDSCO SaMD MDR-2017</strong>
-            <p>Class B Software as Medical Device safety guardrails</p>
+            <strong>CDSCO SaMD MDR-2017 Framework</strong>
+            <p>Class B Reference Design • Human-in-the-loop decision support</p>
           </div>
         </div>
         <div class="compliance-badge">
           <div class="comp-icon">💊</div>
           <div>
-            <strong>PMBJP Jan Aushadhi</strong>
-            <p>Government of India certified 82.9% generic savings</p>
+            <strong>PMBJP Jan Aushadhi Equivalence</strong>
+            <p>82.9% average generic drug cost savings catalogue</p>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- CLINICAL SAFETY NOTICE -->
+    <div style="margin-top: 24px; padding: 12px 20px; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; font-size: 12px; color: #94A3B8; text-align: center;">
+      <strong style="color: #F59E0B;">⚠️ CLINICAL DEMONSTRATION &amp; DECISION SUPPORT DISCLAIMER:</strong>
+      OmniCare AI is an engineering research prototype designed for demonstration purposes. All diagnostic insights, risk stratifications, and pharmacological recommendations are decision-support outputs requiring clinical evaluation by a licensed medical practitioner. Target Hardware: Qualcomm Snapdragon X Elite (45 TOPS Hexagon NPU).
+    </div>
 
   </main>
 
@@ -240,6 +247,7 @@
     <p>OmniCare AI — Qualcomm Snapdragon® AI Lab Build &amp; Present Challenge 2026</p>
     <p>Target Hardware: Snapdragon-Powered HP PCs (HP OmniBook X 14 / HP EliteBook Ultra G1q) • Author: Harsh Maurya</p>
   </footer>
+
 
   <script src="js/showcase.js"></script>
 </body>

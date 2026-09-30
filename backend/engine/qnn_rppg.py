@@ -9,6 +9,13 @@ import math
 import random
 from typing import Dict, Any, List
 
+try:
+    from engine.execution_mode import wrap_clinical_response
+except ImportError:
+    from backend.engine.execution_mode import wrap_clinical_response
+
+
+
 class RPPGEngine:
     def __init__(self):
         self.camera_model = "HP True Vision 5MP Camera"
@@ -79,11 +86,10 @@ class RPPGEngine:
 
         waveform = self.generate_ppg_waveform(hr_val, num_points=60)
 
-        return {
-            "modality": "Modality 5: Contactless Camera rPPG Vitals",
+        res = {
+
             "camera_source": self.camera_model,
             "roi_tracking": self.roi_areas,
-            "model_architecture": self.model_architecture,
             "npu_latency_ms": self.npu_latency_ms,
             "sampling_rate_hz": self.sampling_rate_hz,
             "hr_bpm": hr_val,
@@ -98,6 +104,8 @@ class RPPGEngine:
             "waveform_points": waveform,
             "timestamp": time.time()
         }
+        return wrap_clinical_response(res, "Modality 5: Contactless Camera rPPG Vitals", self.model_architecture, self.npu_latency_ms)
+
 
 _rppg = RPPGEngine()
 

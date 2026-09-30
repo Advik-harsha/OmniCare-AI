@@ -9,6 +9,13 @@ import math
 import random
 from typing import Dict, Any, List
 
+try:
+    from engine.execution_mode import wrap_clinical_response
+except ImportError:
+    from backend.engine.execution_mode import wrap_clinical_response
+
+
+
 ECG_PRESETS = {
     "stemi_anterior": {
         "rhythm_classification": "STEMI",
@@ -127,7 +134,7 @@ class CardiacECGEngine:
         key = preset_strip.lower().strip()
         preset = ECG_PRESETS.get(key, ECG_PRESETS["stemi_anterior"])
         
-        return {
+        res = {
             "status": "DIGITIZATION_SUCCESSFUL",
             "paper_grid_suppression_pct": self.optical_grid_suppression_ratio,
             "color_deconvolution_method": "Adaptive HSV Pink/Red Hemoglobin Mask Stripping",
@@ -139,6 +146,7 @@ class CardiacECGEngine:
             "baseline_wander_filtered": True,
             "target_preset": preset["diagnostic_label"]
         }
+        return wrap_clinical_response(res, "Modality 6: ECG Paper Digitization", "Optical Grid Filter + Deconvolution", 6.8)
 
     def analyze_ecg(self, preset_strip: str = "stemi_anterior") -> dict:
         """Runs PTB-XL INT8 arrhythmia classification and calculates electrophysiological intervals."""
@@ -146,11 +154,10 @@ class CardiacECGEngine:
         preset = ECG_PRESETS.get(key, ECG_PRESETS["stemi_anterior"])
         waveform = self.generate_lead2_waveform(key, num_cycles=3)
 
-        return {
-            "modality": "Modality 6: 12-Lead Paper ECG Digitizer",
-            "model_architecture": self.model_architecture,
+        res = {
             "npu_latency_ms": self.npu_latency_ms,
             "rhythm_classification": preset["rhythm_classification"],
+            "detected_arrhythmia": preset["diagnostic_label"],
             "diagnostic_label": preset["diagnostic_label"],
             "confidence": preset["confidence"],
             "critical_cardiac_alert": preset["critical_alert"],
@@ -163,11 +170,18 @@ class CardiacECGEngine:
                 "qtc_ms": preset["qtc_ms"],
                 "st_elevation_mm": preset["st_elevation_mm"]
             },
+            "intervals_ms": {
+                "pr": preset["pr_interval_ms"],
+                "qrs": preset["qrs_duration_ms"],
+                "qtc": preset["qtc_ms"]
+            },
             "affected_leads": preset["affected_leads"],
             "grid_suppression_ratio_pct": self.optical_grid_suppression_ratio,
             "lead2_canvas_waveform": waveform,
             "timestamp": time.time()
         }
+        return wrap_clinical_response(res, "Modality 6: 12-Lead Paper ECG Digitizer", self.model_architecture, self.npu_latency_ms)
+
 
 _ecg = CardiacECGEngine()
 

@@ -372,8 +372,34 @@ document.addEventListener('DOMContentLoaded', () => {
   ppgRenderer = new PPGWaveformRenderer('ppgCanvas');
   ecgRenderer = new ECGWaveformRenderer('ecgCanvas');
 
+  // Detect and display hardware execution mode (NPU vs Simulation Fallback)
+  async function syncSystemMode() {
+    const modeData = await safeFetch(`${API_BASE}/api/system/mode`, {}, {
+      execution_mode: "SIMULATION_FALLBACK",
+      mode_label: "Simulation / Fallback Mode (CPU Emulation)",
+      is_hardware_accelerated: false,
+      is_simulation_fallback: true
+    });
+
+    const modeValElem = document.getElementById('executionModeVal');
+    const modeDot = document.getElementById('modeDot');
+    if (modeValElem && modeDot) {
+      if (modeData.is_hardware_accelerated) {
+        modeDot.className = 'pill-dot green-pulse';
+        modeValElem.textContent = 'QUALCOMM HEXAGON NPU';
+        modeValElem.className = 'pill-val text-green';
+      } else {
+        modeDot.className = 'pill-dot amber-pulse';
+        modeValElem.textContent = 'SIMULATION / FALLBACK';
+        modeValElem.className = 'pill-val text-amber';
+      }
+    }
+  }
+  syncSystemMode();
+
   // Apply default profile
   applyPatientProfile('aarav');
+
 
   // Patient selector change
   document.getElementById('patientPresetSelect').addEventListener('change', (e) => {

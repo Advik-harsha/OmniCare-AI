@@ -433,6 +433,107 @@ class OmniCareEndpointTestSuite(unittest.TestCase):
         self._record_test(25, "Multi-Agent Specialist Council & CMO", "POST", "/api/clinical/council/deliberate", resp.status_code, dur, passed)
         self.assertTrue(passed, f"Council failed: {resp.text}")
 
+    # -------------------------------------------------------------------------
+    # Group 6: Robustness, Negative & Edge-Case Quality Gates (Tests 26 - 35)
+    # -------------------------------------------------------------------------
+
+    def test_26_edge_invalid_governor_profile(self):
+        """26: Reject unsupported governor profile with HTTP 400"""
+        t0 = time.perf_counter()
+        resp = self.client.post("/api/governor/profile", json={"profile": "invalid_mode_overclock"})
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 400 and "detail" in resp.json()
+        self._record_test(26, "Reject Invalid Governor Profile (400)", "POST", "/api/governor/profile", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Governor validation failed: {resp.text}")
+
+    def test_27_edge_unknown_patient_preset(self):
+        """27: Return 404 on nonexistent patient preset identifier"""
+        t0 = time.perf_counter()
+        resp = self.client.get("/api/patient/unknown_patient_999")
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 404
+        self._record_test(27, "Unknown Patient 404 Handling", "GET", "/api/patient/unknown_patient_999", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Unknown patient handling failed: {resp.text}")
+
+    def test_28_edge_vault_missing_record(self):
+        """28: Return 404 on nonexistent encrypted vault record"""
+        t0 = time.perf_counter()
+        resp = self.client.get("/api/security/vault/retrieve/nonexistent_record_id")
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 404
+        self._record_test(28, "Vault Record Not Found (404)", "GET", "/api/security/vault/retrieve/...", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Vault 404 failed: {resp.text}")
+
+    def test_29_edge_vault_empty_payload_validation(self):
+        """29: Reject missing required fields with HTTP 422 Unprocessable Entity"""
+        t0 = time.perf_counter()
+        resp = self.client.post("/api/security/vault/store", json={})
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 422
+        self._record_test(29, "Vault Store Schema Validation (422)", "POST", "/api/security/vault/store", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Vault schema validation failed: {resp.text}")
+
+    def test_30_edge_pacs_instance_not_found(self):
+        """30: Return 404 on nonexistent DICOM PACS study or instance"""
+        t0 = time.perf_counter()
+        resp = self.client.get("/api/pacs/studies/unknown_study/instances/unknown_inst")
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 404
+        self._record_test(30, "DICOM PACS 404 Handling", "GET", "/api/pacs/studies/.../instances/...", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"PACS 404 failed: {resp.text}")
+
+    def test_31_edge_news2_boundary_extreme(self):
+        """31: Correctly calculate NEWS2 score on extreme physiological values"""
+        payload = {"rr": 45, "spo2": 72, "sbp": 65, "hr": 165, "avpu": "U", "temp_c": 41.2}
+        t0 = time.perf_counter()
+        resp = self.client.post("/api/clinical/news2/calculate", json=payload)
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 200
+        if passed:
+            data = resp.json()
+            passed = data.get("total_score", 0) >= 12 and data.get("clinical_risk") == "HIGH_CLINICAL_RISK"
+        self._record_test(31, "NEWS2 Extreme Boundary Evaluation", "POST", "/api/clinical/news2/calculate", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Extreme NEWS2 failed: {resp.text}")
+
+    def test_32_edge_jan_aushadhi_unknown_drugs(self):
+        """32: Handle unknown drugs gracefully without exception"""
+        t0 = time.perf_counter()
+        resp = self.client.post("/api/drugs/jan_aushadhi/substitute", json={"prescriptions": ["UnknownDrugX 999mg"]})
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 200 and "substitutions" in resp.json()
+        self._record_test(32, "Jan Aushadhi Unknown Drug Graceful Handling", "POST", "/api/drugs/jan_aushadhi/substitute", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Unknown drug failed: {resp.text}")
+
+    def test_33_edge_pocus_cardiac_zero_volume_division(self):
+        """33: Protect against ZeroDivisionError on 0ml EDV in POCUS LVEF"""
+        t0 = time.perf_counter()
+        resp = self.client.post("/api/pocus/cardiac/ejection_fraction", json={"edv_ml": 0.0, "esv_ml": 0.0})
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 200 and resp.json().get("lvef_pct") == 0.0
+        self._record_test(33, "POCUS Zero Volume Division Protection", "POST", "/api/pocus/cardiac/ejection_fraction", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Zero EDV failed: {resp.text}")
+
+    def test_34_edge_federated_empty_delta(self):
+        """34: Safely handle empty weight delta list in federated DP-SGD"""
+        t0 = time.perf_counter()
+        resp = self.client.post("/api/federated/privacy/sanitize_delta", json={"weight_delta": []})
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 200 and "sanitized_delta" in resp.json()
+        self._record_test(34, "Federated DP-SGD Empty Delta Handling", "POST", "/api/federated/privacy/sanitize_delta", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"Empty delta failed: {resp.text}")
+
+    def test_35_edge_system_mode_transparency(self):
+        """35: Verify transparent execution mode disclosure endpoint"""
+        t0 = time.perf_counter()
+        resp = self.client.get("/api/system/mode")
+        dur = (time.perf_counter() - t0) * 1000
+        passed = resp.status_code == 200
+        if passed:
+            data = resp.json()
+            passed = "execution_mode" in data and "mode_label" in data and "clinical_safety_notice" in data
+        self._record_test(35, "Hardware Execution Transparency Disclosure", "GET", "/api/system/mode", resp.status_code, dur, passed)
+        self.assertTrue(passed, f"System mode disclosure failed: {resp.text}")
+
     @classmethod
     def tearDownClass(cls):
         print("\n" + "=" * 80)
@@ -442,21 +543,29 @@ class OmniCareEndpointTestSuite(unittest.TestCase):
         total_count = len(cls.results)
         avg_latency = sum(r["duration_ms"] for r in cls.results) / total_count if total_count > 0 else 0
         
-        print(f"  Total Endpoints Evaluated:  {total_count}")
-        print(f"  Passed Endpoints (HTTP 200): {passed_count}")
-        print(f"  Failed Endpoints:           {total_count - passed_count}")
+        print(f"  Total Gates Evaluated:      {total_count} (25 Primary + 10 Edge/Robustness)")
+        print(f"  Passed Gates (HTTP Expected): {passed_count}")
+        print(f"  Failed Gates:               {total_count - passed_count}")
         print(f"  Average Pipeline Latency:   {avg_latency:.2f} ms")
         print(f"  All Latencies Sub-50ms:     {'YES (Qualcomm NPU / In-Memory Edge)' if avg_latency < 50 else 'NO'}")
-        print(f"  India DPDP 2023 Compliance: 100% Zero Cloud Egress Verified")
+        print(f"  India DPDP 2023 Principles: Zero Cloud Egress Design Verified")
         print("=" * 80)
-        if passed_count == total_count and total_count == 25:
-            print("  >>> STATUS: ALL 25/25 VERIFICATION GATES PASSED (EXIT CODE 0) <<<")
+        if passed_count == total_count and total_count >= 35:
+            print(f"  >>> STATUS: ALL {total_count}/{total_count} VERIFICATION & EDGE-CASE GATES PASSED (EXIT CODE 0) <<<")
         else:
             print("  >>> STATUS: VERIFICATION FAILED <<<")
         print("=" * 80 + "\n")
 
-if __name__ == "__main__":
+def run_comprehensive_suite():
+    """Programmatically runs the complete 35-gate test suite and returns (passed_count, failed_count)."""
     suite = unittest.TestLoader().loadTestsFromTestCase(OmniCareEndpointTestSuite)
     runner = unittest.TextTestRunner(verbosity=0)
     result = runner.run(suite)
-    sys.exit(0 if result.wasSuccessful() else 1)
+    passed = result.testsRun - len(result.failures) - len(result.errors)
+    failed = len(result.failures) + len(result.errors)
+    return passed, failed
+
+if __name__ == "__main__":
+    passed, failed = run_comprehensive_suite()
+    sys.exit(0 if failed == 0 else 1)
+

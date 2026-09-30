@@ -27,9 +27,14 @@
 
     <!-- Live Telemetry HUD Bar -->
     <div class="hud-telemetry" id="telemetryBar">
+      <div class="telemetry-pill" id="executionModePill" title="Detected Hardware Acceleration Mode">
+        <span class="pill-dot amber-pulse" id="modeDot"></span>
+        <span class="pill-label">MODE:</span>
+        <span class="pill-val text-amber" id="executionModeVal">SIMULATION / FALLBACK</span>
+      </div>
       <div class="telemetry-pill">
         <span class="pill-dot green-pulse"></span>
-        <span class="pill-label">NPU PEAK:</span>
+        <span class="pill-label">TARGET NPU:</span>
         <span class="pill-val cyan-glow" id="npuTopsVal">45.0 TOPS</span>
       </div>
       <div class="telemetry-pill">
@@ -44,9 +49,9 @@
         <span class="pill-label">ACOUSTICS:</span>
         <span class="pill-val" id="fanAcousticsVal">&lt; 20 dBA</span>
       </div>
-      <div class="telemetry-pill privacy-badge">
+      <div class="telemetry-pill privacy-badge" title="Designed for zero-cloud data processing and privacy-preserving local storage; formal compliance assessment required for production deployment.">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>DPDP ACT 2023 ZERO CLOUD EGRESS</span>
+        <span>ZERO CLOUD EGRESS • LOCAL ENCLAVE</span>
       </div>
     </div>
 
@@ -77,8 +82,18 @@
     </div>
   </header>
 
+  <!-- CLINICAL SAFETY & DECISION SUPPORT DISCLAIMER BAR -->
+  <div class="clinical-safety-banner" id="clinicalSafetyBanner" style="background: rgba(245, 158, 11, 0.08); border-bottom: 1px solid rgba(245, 158, 11, 0.25); color: #F8FAFC; padding: 6px 24px; font-size: 11.5px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 40;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="color: #F59E0B; font-weight: 700;">⚠️ CLINICAL DECISION SUPPORT &amp; RESEARCH DEMONSTRATION</span>
+      <span style="color: #94A3B8;">— All diagnostic outputs and drug recommendations are decision-support suggestions for demonstration purposes. Not validated for autonomous clinical use without review by a licensed healthcare professional.</span>
+    </div>
+    <span class="badge badge-amber" style="font-size: 10px; font-family: var(--font-mono); white-space: nowrap;">HUMAN-IN-THE-LOOP MANDATORY</span>
+  </div>
+
   <!-- ==================== MAIN CLINICAL COCKPIT GRID ==================== -->
   <main class="cockpit-container">
+
     
     <!-- PATIENT BANNER -->
     <section class="patient-banner" id="patientBanner">

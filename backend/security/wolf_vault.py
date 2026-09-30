@@ -44,8 +44,20 @@ class AuditBlock:
 
 class WolfVault:
     def __init__(self):
-        # 256-bit symmetric key isolated in hardware enclave
-        self._key = AESGCM.generate_key(bit_length=256)
+        # 256-bit symmetric key isolated in hardware enclave or loaded from secure environment
+        env_key = os.getenv("OMNICARE_VAULT_KEY")
+        if env_key:
+            try:
+                decoded = base64.b64decode(env_key)
+                if len(decoded) == 32:
+                    self._key = decoded
+                else:
+                    self._key = AESGCM.generate_key(bit_length=256)
+            except Exception:
+                self._key = AESGCM.generate_key(bit_length=256)
+        else:
+            self._key = AESGCM.generate_key(bit_length=256)
+            
         self._cipher = AESGCM(self._key)
         self._audit_chain: List[AuditBlock] = []
         self._storage: Dict[str, dict] = {}
@@ -53,6 +65,7 @@ class WolfVault:
         # Genesis block
         genesis = AuditBlock(0, "0" * 64, "GENESIS", "SYSTEM", "HP Wolf Security Enclave Initialized")
         self._audit_chain.append(genesis)
+
 
     def _append_audit(self, action: str, patient_id: str, details: str):
         prev_block = self._audit_chain[-1]
@@ -120,8 +133,10 @@ class WolfVault:
             "audit_blocks_count": len(self._audit_chain),
             "audit_integrity_verified": self.verify_audit_integrity(),
             "dpdp_compliant": True,
-            "cloud_isolation": "100% On-Device Enclave"
+            "cloud_isolation": "100% On-Device Enclave",
+            "privacy_disclosure": "Designed for zero-cloud edge storage; formal legal/compliance assessment is required for production deployment."
         }
+
 
 _vault = WolfVault()
 

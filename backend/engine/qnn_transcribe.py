@@ -7,6 +7,13 @@ Qualcomm Snapdragon® AI Lab Build & Present Challenge 2026
 import time
 from typing import Dict, Any, List
 
+try:
+    from engine.execution_mode import wrap_clinical_response
+except ImportError:
+    from backend.engine.execution_mode import wrap_clinical_response
+
+
+
 DICTATION_PRESETS = {
     "copd_consultation": {
         "title": "Respiratory Consultation (Aarav Sharma)",
@@ -72,9 +79,7 @@ def transcribe_medical_audio(preset_key: str = "copd_consultation") -> dict:
     key = preset_key.lower().strip()
     preset = DICTATION_PRESETS.get(key, DICTATION_PRESETS["copd_consultation"])
     
-    return {
-        "modality": "Modality 3: Clinical Voice Dictation",
-        "model_architecture": "Whisper-Small INT8 (Qualcomm AI Hub)",
+    res = {
         "npu_hardware": "Qualcomm Hexagon NPU (HTP v73)",
         "npu_latency_ms": preset["npu_latency_ms"],
         "language": preset["language_detected"],
@@ -85,3 +90,5 @@ def transcribe_medical_audio(preset_key: str = "copd_consultation") -> dict:
         "word_error_rate_proxy": 0.038,
         "timestamp": time.time()
     }
+    return wrap_clinical_response(res, "Modality 3: Clinical Voice Dictation", "Whisper-Small INT8 (Qualcomm AI Hub)", preset["npu_latency_ms"])
+
