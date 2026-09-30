@@ -95,19 +95,26 @@ def ensure_visual_assets():
         banner.save(SCRIBE_VOICE)
 
 
-# Color Palette
+# Color Palette - High Contrast Tech Suite
 HEX = {
-    "DARK": "070A13",
-    "NAVY": "0A1128",
-    "CARD": "0D1527",
-    "CARD2": "111C35",
+    "DARK": "080D1A",
+    "NAVY": "0C1428",
+    "CARD": "121D36",
+    "CARD2": "172445",
+    "CARD_BORDER": "1E3A6E",
     "COBALT": "0052FF",
     "COBALT2": "0A66C2",
-    "CYAN": "00C8FF",
+    "COBALT_DARK": "0B2554",
+    "CYAN": "00E5FF",
+    "CYAN_BG": "0A2E4C",
     "GREEN": "10B981",
+    "GREEN_BG": "063323",
     "AMBER": "F59E0B",
     "RED": "EF4444",
     "WHITE": "FFFFFF",
+    "TEXT_MAIN": "F1F5F9",
+    "TEXT_LIGHT": "CBD5E1",
+    "TEXT_MUTED": "94A3B8",
     "GRAY": "94A3B8",
     "LGRAY": "F8FAFC",
     "BODY": "1E293B",
@@ -1539,7 +1546,8 @@ SLIDES = [
 def generate_pptx(output_path):
     from pptx import Presentation
     from pptx.util import Inches, Pt
-    from pptx.enum.text import PP_ALIGN
+    from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+    from pptx.enum.shapes import MSO_SHAPE
 
     prs = Presentation()
     prs.slide_width = Inches(13.333)
@@ -1549,94 +1557,127 @@ def generate_pptx(output_path):
     W = Inches(13.333)
     H = Inches(7.5)
     ML = Inches(0.65)
-    BW = W - 2 * ML
+    BW = W - 2 * ML  # 12.033 inches
 
     C = {k: _rgb_pptx(k) for k in HEX}
+    FONT = "Segoe UI"
+
+    def _pad(tf, l=5, r=5, t=4, b=4):
+        tf.word_wrap = True
+        tf.margin_left = Pt(l)
+        tf.margin_right = Pt(r)
+        tf.margin_top = Pt(t)
+        tf.margin_bottom = Pt(b)
+
+    def _add_card(slide, x, y, w, h, bg="CARD", border="CARD_BORDER", border_w=1.2, rounded=True):
+        st = MSO_SHAPE.ROUNDED_RECTANGLE if rounded else MSO_SHAPE.RECTANGLE
+        card = slide.shapes.add_shape(st, x, y, w, h)
+        card.fill.solid()
+        card.fill.fore_color.rgb = C[bg]
+        if border:
+            card.line.color.rgb = C[border]
+            card.line.width = Pt(border_w)
+        else:
+            card.line.fill.background()
+        return card
 
     def _bg(slide):
-        sp = slide.shapes.add_shape(1, 0, 0, W, H)
+        # Base canvas
+        sp = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, W, H)
         sp.fill.solid()
         sp.fill.fore_color.rgb = C["DARK"]
         sp.line.fill.background()
-        ab = slide.shapes.add_shape(1, 0, 0, Inches(0.08), H)
+
+        # Top cyan accent glow bar
+        top_glow = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, W, Inches(0.04))
+        top_glow.fill.solid()
+        top_glow.fill.fore_color.rgb = C["CYAN"]
+        top_glow.line.fill.background()
+
+        # Left branding strip
+        ab = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(0.07), H)
         ab.fill.solid()
         ab.fill.fore_color.rgb = C["COBALT"]
         ab.line.fill.background()
 
     def _topbar(slide, tag, num):
-        tb = slide.shapes.add_textbox(
-            ML, Inches(0.09), BW - Inches(1.1), Inches(0.28)
-        )
+        # Pill badge on left
+        tag_w = Inches(5.6)
+        _add_card(slide, ML, Inches(0.09), tag_w, Inches(0.28), bg="NAVY", border="COBALT2", border_w=1, rounded=True)
+        tb = slide.shapes.add_textbox(ML, Inches(0.09), tag_w, Inches(0.28))
         tf = tb.text_frame
-        tf.word_wrap = False
+        _pad(tf, l=8, r=8, t=3, b=3)
         p = tf.paragraphs[0]
         p.text = tag
+        p.alignment = PP_ALIGN.CENTER
         r = p.runs[0]
-        r.font.name = "Calibri"
-        r.font.size = Pt(8)
+        r.font.name = FONT
+        r.font.size = Pt(8.5)
         r.font.bold = True
         r.font.color.rgb = C["CYAN"]
 
-        # Slide Number Badge
-        nb = slide.shapes.add_shape(
-            1, W - ML - Inches(0.85), Inches(0.08), Inches(0.85), Inches(0.26)
-        )
-        nb.fill.solid()
-        nb.fill.fore_color.rgb = C["COBALT"]
-        nb.line.fill.background()
-        tb2 = slide.shapes.add_textbox(
-            W - ML - Inches(0.85), Inches(0.08), Inches(0.85), Inches(0.26)
-        )
+        # Slide Number Badge on right
+        nb_w = Inches(1.3)
+        nb_x = W - ML - nb_w
+        _add_card(slide, nb_x, Inches(0.09), nb_w, Inches(0.28), bg="COBALT", border=None, rounded=True)
+        tb2 = slide.shapes.add_textbox(nb_x, Inches(0.09), nb_w, Inches(0.28))
         tf2 = tb2.text_frame
-        tf2.word_wrap = False
+        _pad(tf2, l=4, r=4, t=3, b=3)
         p2 = tf2.paragraphs[0]
-        p2.text = num
+        p2.text = f"SLIDE {num} / 12"
         p2.alignment = PP_ALIGN.CENTER
         r2 = p2.runs[0]
-        r2.font.name = "Calibri"
+        r2.font.name = FONT
         r2.font.size = Pt(8.5)
         r2.font.bold = True
         r2.font.color.rgb = C["WHITE"]
 
-        line = slide.shapes.add_shape(1, ML, Inches(0.38), BW, Inches(0.025))
+        # Clean separator line below topbar
+        line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, ML, Inches(0.42), BW, Inches(0.015))
         line.fill.solid()
-        line.fill.fore_color.rgb = C["CYAN"]
+        line.fill.fore_color.rgb = C["CARD_BORDER"]
         line.line.fill.background()
 
     def _title(slide, text):
-        tb = slide.shapes.add_textbox(ML, Inches(0.44), BW, Inches(0.65))
+        tb = slide.shapes.add_textbox(ML, Inches(0.48), BW, Inches(0.62))
         tf = tb.text_frame
-        tf.word_wrap = True
+        _pad(tf, l=0, r=0, t=0, b=0)
         p = tf.paragraphs[0]
         p.text = text
         r = p.runs[0]
-        r.font.name = "Calibri"
+        r.font.name = FONT
         r.font.size = Pt(25)
         r.font.bold = True
         r.font.color.rgb = C["WHITE"]
 
     def _subtitle(slide, text):
-        tb = slide.shapes.add_textbox(ML, Inches(1.10), BW, Inches(0.4))
+        tb = slide.shapes.add_textbox(ML, Inches(1.10), BW, Inches(0.38))
         tf = tb.text_frame
-        tf.word_wrap = True
+        _pad(tf, l=0, r=0, t=0, b=0)
         p = tf.paragraphs[0]
         p.text = text
         r = p.runs[0]
-        r.font.name = "Calibri"
+        r.font.name = FONT
         r.font.size = Pt(12.5)
+        r.font.bold = True
         r.font.color.rgb = C["CYAN"]
 
     def _footer(slide, text):
-        tb = slide.shapes.add_textbox(ML, Inches(7.12), BW, Inches(0.32))
+        fline = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, ML, Inches(7.08), BW, Inches(0.015))
+        fline.fill.solid()
+        fline.fill.fore_color.rgb = C["CARD_BORDER"]
+        fline.line.fill.background()
+
+        tb = slide.shapes.add_textbox(ML, Inches(7.12), BW, Inches(0.30))
         tf = tb.text_frame
-        tf.word_wrap = True
+        _pad(tf, l=0, r=0, t=0, b=0)
         p = tf.paragraphs[0]
         p.text = text
         r = p.runs[0]
-        r.font.name = "Calibri"
-        r.font.size = Pt(8)
+        r.font.name = FONT
+        r.font.size = Pt(8.5)
         r.font.italic = True
-        r.font.color.rgb = C["GRAY"]
+        r.font.color.rgb = C["TEXT_MUTED"]
 
     for s in SLIDES:
         slide = prs.slides.add_slide(blank)
@@ -1656,100 +1697,133 @@ def generate_pptx(output_path):
 
         # ─── Slide 1: Cover Layout ───
         if stype == "cover":
-            # Left Column (KPIs + text)
-            col_w = Inches(6.4)
+            col_w = Inches(6.2)
             n_kpi = len(s["kpis"])
             kw = int(col_w / n_kpi)
             for ci, (val, lbl) in enumerate(s["kpis"]):
                 x = ML + ci * kw
-                card = slide.shapes.add_shape(
-                    1, x + Pt(3), Inches(1.68), kw - Pt(6), Inches(1.1)
-                )
-                card.fill.solid()
-                card.fill.fore_color.rgb = C["CARD"]
-                card.line.color.rgb = C["COBALT"]
-                card.line.width = Pt(1.2)
-                tb = slide.shapes.add_textbox(
-                    x + Pt(4), Inches(1.72), kw - Pt(8), Inches(1.0)
-                )
+                _add_card(slide, x + Pt(2), Inches(1.62), kw - Pt(5), Inches(1.18), bg="CARD", border="COBALT", border_w=1.2)
+                tb = slide.shapes.add_textbox(x + Pt(3), Inches(1.65), kw - Pt(7), Inches(1.10))
                 tf = tb.text_frame
-                tf.word_wrap = True
+                _pad(tf, l=2, r=2, t=3, b=2)
                 p1 = tf.paragraphs[0]
                 p1.text = val
                 p1.alignment = PP_ALIGN.CENTER
                 r1 = p1.runs[0]
+                r1.font.name = FONT
                 r1.font.bold = True
-                r1.font.size = Pt(18)
+                r1.font.size = Pt(19)
                 r1.font.color.rgb = C["CYAN"]
                 p2 = tf.add_paragraph()
+                p2.space_before = Pt(2)
                 p2.text = lbl
                 p2.alignment = PP_ALIGN.CENTER
                 r2 = p2.runs[0]
-                r2.font.size = Pt(8.5)
-                r2.font.color.rgb = C["WHITE"]
+                r2.font.name = FONT
+                r2.font.bold = True
+                r2.font.size = Pt(9)
+                r2.font.color.rgb = C["TEXT_LIGHT"]
 
-            body_box = slide.shapes.add_shape(
-                1, ML, Inches(2.95), col_w, Inches(3.9)
-            )
-            body_box.fill.solid()
-            body_box.fill.fore_color.rgb = C["CARD"]
-            body_box.line.color.rgb = C["COBALT"]
-            body_box.line.width = Pt(1.5)
-            tb_b = slide.shapes.add_textbox(
-                ML + Inches(0.2), Inches(3.1), col_w - Inches(0.4), Inches(3.5)
-            )
+            # Main Body Container Box
+            _add_card(slide, ML, Inches(2.95), col_w, Inches(3.95), bg="CARD", border="COBALT", border_w=1.5)
+            # Cyan top accent strip on body box
+            b_strip = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, ML, Inches(2.95), col_w, Inches(0.04))
+            b_strip.fill.solid()
+            b_strip.fill.fore_color.rgb = C["CYAN"]
+            b_strip.line.fill.background()
+
+            tb_b = slide.shapes.add_textbox(ML + Inches(0.2), Inches(3.10), col_w - Inches(0.4), Inches(3.65))
             tf_b = tb_b.text_frame
-            tf_b.word_wrap = True
+            _pad(tf_b, l=0, r=0, t=2, b=2)
 
             p_h = tf_b.paragraphs[0]
             p_h.text = "THE REVOLUTIONARY CLINICAL BREAKTHROUGH"
             r_h = p_h.runs[0]
+            r_h.font.name = FONT
             r_h.font.bold = True
-            r_h.font.size = Pt(11)
+            r_h.font.size = Pt(11.5)
             r_h.font.color.rgb = C["CYAN"]
 
             p_t = tf_b.add_paragraph()
             p_t.space_before = Pt(8)
             p_t.text = s["body"]
             r_t = p_t.runs[0]
-            r_t.font.size = Pt(11)
-            r_t.font.color.rgb = C["WHITE"]
+            r_t.font.name = FONT
+            r_t.font.size = Pt(10.5)
+            r_t.font.color.rgb = C["TEXT_MAIN"]
 
-            p_chips = tf_b.add_paragraph()
-            p_chips.space_before = Pt(12)
-            p_chips.text = (
-                "✓ Sub-15ms Multimodal Latency      ✓ 26+ Hours Off-Grid Battery\n"
-                "✓ DPDP Act 2023 Compliant           ✓ 82.9% Jan Aushadhi Savings\n"
-                "✓ 35/35 Quality Gates PASS         ✓ 100% Offline Standalone Resilience"
-            )
-            r_c = p_chips.runs[0]
-            r_c.font.size = Pt(9.5)
-            r_c.font.color.rgb = C["GREEN"]
+            chips = [
+                ("✓ Sub-15ms Multimodal Latency", "✓ 26+ Hours Off-Grid Battery"),
+                ("✓ DPDP Act 2023 Compliant",      "✓ 82.9% Jan Aushadhi Savings"),
+                ("✓ 35/35 Quality Gates PASS",     "✓ 100% Offline Standalone Resilience"),
+            ]
+            for c_left, c_right in chips:
+                p_chip = tf_b.add_paragraph()
+                p_chip.space_before = Pt(6)
+                r_l = p_chip.add_run()
+                r_l.text = f"{c_left:<38}"
+                r_l.font.name = FONT
+                r_l.font.bold = True
+                r_l.font.size = Pt(9.5)
+                r_l.font.color.rgb = C["GREEN"]
+                r_r = p_chip.add_run()
+                r_r.text = c_right
+                r_r.font.name = FONT
+                r_r.font.bold = True
+                r_r.font.size = Pt(9.5)
+                r_r.font.color.rgb = C["CYAN"]
 
-            # Right Column (Screenshot)
+            # Right Column (Hero Screenshot)
             img_x = ML + col_w + Inches(0.25)
             img_w = BW - col_w - Inches(0.25)
             img_h = img_w * (1080 / 1920)
-            img_y = Inches(1.68)
+            img_y = Inches(1.62)
             if os.path.isfile(s["image"]):
+                _add_card(slide, img_x - Pt(2), img_y - Pt(2), img_w + Pt(4), img_h + Pt(4), bg="DARK", border="COBALT", border_w=1.2)
                 slide.shapes.add_picture(s["image"], img_x, img_y, img_w, img_h)
-                cap_b = slide.shapes.add_shape(
-                    1, img_x, img_y + img_h + Pt(4), img_w, Inches(0.45)
-                )
-                cap_b.fill.solid()
-                cap_b.fill.fore_color.rgb = C["CARD"]
-                cap_b.line.color.rgb = C["COBALT"]
-                cap_b.line.width = Pt(1)
-                tb_c = slide.shapes.add_textbox(
-                    img_x, img_y + img_h + Pt(6), img_w, Inches(0.4)
-                )
-                p_cap = tb_c.text_frame.paragraphs[0]
+
+                cap_y = img_y + img_h + Inches(0.12)
+                cap_h = Inches(0.55)
+                _add_card(slide, img_x, cap_y, img_w, cap_h, bg="CARD", border="COBALT", border_w=1)
+                tb_c = slide.shapes.add_textbox(img_x, cap_y + Pt(2), img_w, cap_h - Pt(4))
+                tf_c = tb_c.text_frame
+                _pad(tf_c, l=4, r=4, t=2, b=2)
+                p_cap = tf_c.paragraphs[0]
                 p_cap.text = s["image_caption"]
                 p_cap.alignment = PP_ALIGN.CENTER
                 r_cap = p_cap.runs[0]
-                r_cap.font.size = Pt(9)
-                r_cap.font.italic = True
+                r_cap.font.name = FONT
+                r_cap.font.bold = True
+                r_cap.font.size = Pt(9.5)
                 r_cap.font.color.rgb = C["CYAN"]
+
+                # Bottom Hardware Badges
+                hw_y = cap_y + cap_h + Inches(0.12)
+                hw_h = Inches(1.20)
+                _add_card(slide, img_x, hw_y, img_w, hw_h, bg="NAVY", border="CARD_BORDER", border_w=1.2)
+                tb_hw = slide.shapes.add_textbox(img_x + Inches(0.15), hw_y + Inches(0.08), img_w - Inches(0.3), hw_h - Inches(0.16))
+                tf_hw = tb_hw.text_frame
+                _pad(tf_hw, l=2, r=2, t=2, b=2)
+                p_hw1 = tf_hw.paragraphs[0]
+                p_hw1.text = "HARDWARE-AI CO-DESIGN TARGET ARCHITECTURE"
+                r_hw1 = p_hw1.runs[0]
+                r_hw1.font.name = FONT
+                r_hw1.font.bold = True
+                r_hw1.font.size = Pt(10)
+                r_hw1.font.color.rgb = C["CYAN"]
+
+                for hw_line, hw_color in [
+                    ("⚡ Qualcomm Snapdragon® X Elite (12-Core Oryon) • 45.0 TOPS Hexagon NPU", "WHITE"),
+                    ("🔒 HP Wolf Security Hardware Enclave (AES-256-GCM) • 26+ Hours Battery", "GREEN"),
+                ]:
+                    p_l = tf_hw.add_paragraph()
+                    p_l.space_before = Pt(4)
+                    p_l.text = hw_line
+                    r_l = p_l.runs[0]
+                    r_l.font.name = FONT
+                    r_l.font.bold = True
+                    r_l.font.size = Pt(9)
+                    r_l.font.color.rgb = C[hw_color]
 
         # ─── Slide 2: Problem & Market ───
         elif stype == "stats_and_text":
@@ -1757,100 +1831,105 @@ def generate_pptx(output_path):
             cw = int(BW / n_cards)
             for ci, (val, desc, col, sub) in enumerate(s["stat_cards"]):
                 x = ML + ci * cw
-                card = slide.shapes.add_shape(
-                    1, x + Pt(4), Inches(1.68), cw - Pt(8), Inches(1.9)
-                )
-                card.fill.solid()
-                card.fill.fore_color.rgb = C["CARD"]
-                card.line.color.rgb = C[col]
-                card.line.width = Pt(1.5)
-                tb = slide.shapes.add_textbox(
-                    x + Pt(6), Inches(1.75), cw - Pt(12), Inches(1.75)
-                )
+                _add_card(slide, x + Pt(3), Inches(1.62), cw - Pt(6), Inches(1.85), bg="CARD", border=col, border_w=1.5)
+                tb = slide.shapes.add_textbox(x + Pt(5), Inches(1.68), cw - Pt(10), Inches(1.70))
                 tf = tb.text_frame
-                tf.word_wrap = True
+                _pad(tf, l=4, r=4, t=4, b=4)
                 p1 = tf.paragraphs[0]
                 p1.text = val
                 p1.alignment = PP_ALIGN.CENTER
                 r1 = p1.runs[0]
+                r1.font.name = FONT
                 r1.font.bold = True
                 r1.font.size = Pt(24)
                 r1.font.color.rgb = C[col]
                 p2 = tf.add_paragraph()
+                p2.space_before = Pt(3)
                 p2.text = desc
                 p2.alignment = PP_ALIGN.CENTER
                 r2 = p2.runs[0]
-                r2.font.size = Pt(9.5)
+                r2.font.name = FONT
+                r2.font.bold = True
+                r2.font.size = Pt(10)
                 r2.font.color.rgb = C["WHITE"]
                 p3 = tf.add_paragraph()
+                p3.space_before = Pt(2)
                 p3.text = sub
                 p3.alignment = PP_ALIGN.CENTER
                 r3 = p3.runs[0]
-                r3.font.size = Pt(8.5)
+                r3.font.name = FONT
                 r3.font.italic = True
-                r3.font.color.rgb = C["GRAY"]
+                r3.font.size = Pt(8.5)
+                r3.font.color.rgb = C["TEXT_LIGHT"]
 
-            # Two columns below
+            # Two comparison columns below
             w2 = (BW - Inches(0.3)) / 2
             for col_i, (t_box, b_text, c_border) in enumerate([
                 (s["col1_title"], s["col1_text"], "RED"),
                 (s["col2_title"], s["col2_text"], "GREEN"),
             ]):
                 bx = ML + col_i * (w2 + Inches(0.3))
-                box = slide.shapes.add_shape(
-                    1, bx, Inches(3.8), w2, Inches(3.05)
-                )
-                box.fill.solid()
-                box.fill.fore_color.rgb = C["CARD"]
-                box.line.color.rgb = C[c_border]
-                box.line.width = Pt(1.5)
-                tb = slide.shapes.add_textbox(
-                    bx + Inches(0.18),
-                    Inches(3.9),
-                    w2 - Inches(0.36),
-                    Inches(2.8),
-                )
+                _add_card(slide, bx, Inches(3.62), w2, Inches(3.30), bg="CARD", border=c_border, border_w=1.5)
+                tb = slide.shapes.add_textbox(bx + Inches(0.20), Inches(3.72), w2 - Inches(0.40), Inches(3.10))
                 tf = tb.text_frame
-                tf.word_wrap = True
+                _pad(tf, l=2, r=2, t=2, b=2)
                 p0 = tf.paragraphs[0]
-                p0.text = t_box
+                p0.text = t_box.upper()
                 r0 = p0.runs[0]
+                r0.font.name = FONT
                 r0.font.bold = True
                 r0.font.size = Pt(12)
                 r0.font.color.rgb = C[c_border]
+
                 for line in b_text.split("\n"):
                     p = tf.add_paragraph()
-                    p.space_before = Pt(4)
-                    p.text = line
-                    r = p.runs[0]
-                    r.font.size = Pt(10)
-                    r.font.color.rgb = C["WHITE"]
+                    p.space_before = Pt(6)
+                    colon = line.find(":")
+                    if 0 < colon < 35:
+                        r_head = p.add_run()
+                        r_head.text = line[: colon + 1] + " "
+                        r_head.font.name = FONT
+                        r_head.font.bold = True
+                        r_head.font.size = Pt(10)
+                        r_head.font.color.rgb = C[c_border]
+                        r_body = p.add_run()
+                        r_body.text = line[colon + 1 :].strip()
+                        r_body.font.name = FONT
+                        r_body.font.size = Pt(10)
+                        r_body.font.color.rgb = C["TEXT_MAIN"]
+                    else:
+                        r = p.add_run()
+                        r.text = line
+                        r.font.name = FONT
+                        r.font.size = Pt(10)
+                        r.font.color.rgb = C["TEXT_MAIN"]
 
         # ─── Slide 3: Hardware Co-Design ───
         elif stype == "hardware":
-            tbl_w = Inches(7.6)
-            tbl_h = Inches(4.8)
+            tbl_w = Inches(7.7)
+            tbl_h = Inches(5.1)
             t_info = s["table"]
             nc = len(t_info["headers"])
             nr = len(t_info["rows"])
-            ts = slide.shapes.add_table(
-                nr + 1, nc, ML, Inches(1.68), tbl_w, tbl_h
-            )
+            ts = slide.shapes.add_table(nr + 1, nc, ML, Inches(1.62), tbl_w, tbl_h)
             tbl = ts.table
             tbl.columns[0].width = Inches(1.8)
-            tbl.columns[1].width = Inches(2.3)
-            tbl.columns[2].width = Inches(3.5)
+            tbl.columns[1].width = Inches(2.2)
+            tbl.columns[2].width = Inches(3.7)
 
             for ci, h in enumerate(t_info["headers"]):
                 c = tbl.cell(0, ci)
                 c.fill.solid()
                 c.fill.fore_color.rgb = C["COBALT"]
+                c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                c.margin_left = Pt(6); c.margin_right = Pt(6); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                 p = c.text_frame.paragraphs[0]
                 p.text = h
                 p.alignment = PP_ALIGN.CENTER
                 r = p.runs[0]
+                r.font.name = FONT
                 r.font.bold = True
-                r.font.size = Pt(9.5)
+                r.font.size = Pt(10)
                 r.font.color.rgb = C["WHITE"]
 
             for ri, row in enumerate(t_info["rows"]):
@@ -1859,111 +1938,136 @@ def generate_pptx(output_path):
                     c = tbl.cell(ri + 1, ci)
                     c.fill.solid()
                     c.fill.fore_color.rgb = bg
+                    c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                    c.margin_left = Pt(6); c.margin_right = Pt(6); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                     p = c.text_frame.paragraphs[0]
                     p.text = val
                     r = p.runs[0]
-                    r.font.size = Pt(9)
-                    r.font.color.rgb = C["WHITE"]
+                    r.font.name = FONT
+                    r.font.size = Pt(9.5)
+                    if ci == 0:
+                        r.font.bold = True
+                        r.font.color.rgb = C["WHITE"]
+                    elif ci == 1:
+                        r.font.color.rgb = C["TEXT_LIGHT"]
+                    else:
+                        r.font.color.rgb = C["TEXT_MAIN"]
 
-            # Right: HUD image and callout card
+            # Right: Telemetry HUD image and HP Smart Sense card
             rx = ML + tbl_w + Inches(0.25)
             rw = BW - tbl_w - Inches(0.25)
             if os.path.isfile(s["image"]):
                 ih = rw * (150 / 1920)
-                slide.shapes.add_picture(s["image"], rx, Inches(1.68), rw, ih)
+                _add_card(slide, rx - Pt(2), Inches(1.62) - Pt(2), rw + Pt(4), ih + Pt(4), bg="DARK", border="COBALT", border_w=1)
+                slide.shapes.add_picture(s["image"], rx, Inches(1.62), rw, ih)
 
-            card_h = slide.shapes.add_shape(
-                1, rx, Inches(2.8), rw, Inches(3.7)
-            )
-            card_h.fill.solid()
-            card_h.fill.fore_color.rgb = C["CARD"]
-            card_h.line.color.rgb = C["COBALT"]
-            card_h.line.width = Pt(1.5)
-            tb_h = slide.shapes.add_textbox(
-                rx + Inches(0.15), Inches(2.9), rw - Inches(0.3), Inches(3.5)
-            )
+            card_y = Inches(2.70)
+            card_h = Inches(4.02)
+            _add_card(slide, rx, card_y, rw, card_h, bg="CARD", border="COBALT", border_w=1.5)
+            tb_h = slide.shapes.add_textbox(rx + Inches(0.18), card_y + Inches(0.12), rw - Inches(0.36), card_h - Inches(0.24))
             tf_h = tb_h.text_frame
-            tf_h.word_wrap = True
+            _pad(tf_h, l=2, r=2, t=2, b=2)
 
             p1 = tf_h.paragraphs[0]
             p1.text = "HP SMART SENSE DYNAMIC PROFILES"
             r1 = p1.runs[0]
+            r1.font.name = FONT
             r1.font.bold = True
             r1.font.size = Pt(11)
             r1.font.color.rgb = C["CYAN"]
 
             items = [
-                (
-                    "Performance Mode (45 TOPS):",
-                    "Maximum NPU throughput for emergency STEMI & arrhythmia digitization.",
-                ),
-                (
-                    "Balanced Mode (32 TOPS):",
-                    "Optimal clinical day workload with whisper-quiet fan operation.",
-                ),
-                (
-                    "Eco Mode (20 TOPS):",
-                    "26+ hours off-grid battery endurance for remote primary care camps.",
-                ),
-                (
-                    "Acoustic Floor <20 dBA:",
-                    "Silent fan profile eliminates microphone interference during stethoscopy.",
-                ),
+                ("Performance Mode (45 TOPS):", "Maximum NPU throughput for emergency STEMI & arrhythmia digitization."),
+                ("Balanced Mode (32 TOPS):",    "Optimal clinical day workload with whisper-quiet fan operation."),
+                ("Eco Mode (20 TOPS / 26+ hrs):","26+ hours off-grid battery endurance for remote primary care camps."),
+                ("Acoustic Floor <20 dBA:",      "Silent fan profile eliminates microphone interference during stethoscopy."),
             ]
             for head, desc in items:
                 p = tf_h.add_paragraph()
-                p.space_before = Pt(4)
+                p.space_before = Pt(6)
                 r_a = p.add_run()
                 r_a.text = head + " "
+                r_a.font.name = FONT
                 r_a.font.bold = True
-                r_a.font.size = Pt(9)
+                r_a.font.size = Pt(9.5)
                 r_a.font.color.rgb = C["WHITE"]
                 r_b = p.add_run()
                 r_b.text = desc
-                r_b.font.size = Pt(8.5)
-                r_b.font.color.rgb = C["GRAY"]
+                r_b.font.name = FONT
+                r_b.font.size = Pt(9)
+                r_b.font.color.rgb = C["TEXT_LIGHT"]
 
-        # ─── Slide 4: Cockpit Feature ───
+        # ─── Slide 4: Cockpit Feature (Side-by-Side Hero Layout) ───
         elif stype == "cockpit_feature":
-            img_w = Inches(10.5)
-            img_h = img_w * (1080 / 1920)
-            img_x = (W - img_w) / 2
-            img_y = Inches(1.65)
+            # Left: Hero Clinical Cockpit Screenshot
+            img_x = ML
+            img_w = Inches(7.6)
+            img_h = img_w * (1080 / 1920)  # ~4.275 in
+            img_y = Inches(1.62)
             if os.path.isfile(s["image"]):
+                _add_card(slide, img_x - Pt(2), img_y - Pt(2), img_w + Pt(4), img_h + Pt(4), bg="DARK", border="COBALT", border_w=1.5)
                 slide.shapes.add_picture(s["image"], img_x, img_y, img_w, img_h)
 
-            # 4 Chips Below
-            n_callouts = len(s["callouts"])
-            cw = int(BW / n_callouts)
-            for ci, (c_title, c_desc) in enumerate(s["callouts"]):
-                cx = ML + ci * cw
-                chip = slide.shapes.add_shape(
-                    1, cx + Pt(3), Inches(6.05), cw - Pt(6), Inches(0.95)
-                )
-                chip.fill.solid()
-                chip.fill.fore_color.rgb = C["CARD"]
-                chip.line.color.rgb = C["COBALT"]
-                chip.line.width = Pt(1.2)
-                tb = slide.shapes.add_textbox(
-                    cx + Pt(5), Inches(6.08), cw - Pt(10), Inches(0.9)
-                )
-                tf = tb.text_frame
-                tf.word_wrap = True
-                p1 = tf.paragraphs[0]
-                p1.text = c_title
-                p1.alignment = PP_ALIGN.CENTER
-                r1 = p1.runs[0]
-                r1.font.bold = True
-                r1.font.size = Pt(9)
-                r1.font.color.rgb = C["CYAN"]
-                p2 = tf.add_paragraph()
-                p2.text = c_desc
-                p2.alignment = PP_ALIGN.CENTER
-                r2 = p2.runs[0]
-                r2.font.size = Pt(7.5)
-                r2.font.color.rgb = C["WHITE"]
+                # Hero Caption Box underneath screenshot
+                cap_y = img_y + img_h + Inches(0.10)
+                cap_h = Inches(0.85)
+                _add_card(slide, img_x, cap_y, img_w, cap_h, bg="CARD", border="COBALT", border_w=1.2)
+                tb_cap = slide.shapes.add_textbox(img_x + Inches(0.15), cap_y + Inches(0.06), img_w - Inches(0.3), cap_h - Inches(0.12))
+                tf_cap = tb_cap.text_frame
+                _pad(tf_cap, l=2, r=2, t=2, b=2)
+                p_c1 = tf_cap.paragraphs[0]
+                p_c1.text = "Live Clinical Cockpit: 6 Concurrent On-Device AI Diagnostic Engines"
+                r_c1 = p_c1.runs[0]
+                r_c1.font.name = FONT
+                r_c1.font.bold = True
+                r_c1.font.size = Pt(11)
+                r_c1.font.color.rgb = C["CYAN"]
 
-        # ─── Slide 5: Table & 2x2 Image ───
+                p_c2 = tf_cap.add_paragraph()
+                p_c2.space_before = Pt(3)
+                p_c2.text = "Snapdragon® X Elite 45 TOPS Hexagon NPU  •  HP Smart Sense Governor  •  100% Offline Edge Resilience"
+                r_c2 = p_c2.runs[0]
+                r_c2.font.name = FONT
+                r_c2.font.bold = True
+                r_c2.font.size = Pt(9.5)
+                r_c2.font.color.rgb = C["GREEN"]
+
+            # Right: 4 Vertically Stacked Callout Cards
+            rx = ML + img_w + Inches(0.25)
+            rw = BW - img_w - Inches(0.25)
+            n_callouts = len(s["callouts"])
+            ch = Inches(1.15)
+            gap = Inches(0.14)
+            for ci, (c_title, c_desc) in enumerate(s["callouts"]):
+                cy = Inches(1.62) + ci * (ch + gap)
+                _add_card(slide, rx, cy, rw, ch, bg="CARD", border="COBALT", border_w=1.2)
+
+                # Left Cyan Accent Stripe on Callout Card
+                c_stripe = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, rx, cy, Inches(0.08), ch)
+                c_stripe.fill.solid()
+                c_stripe.fill.fore_color.rgb = C["CYAN"]
+                c_stripe.line.fill.background()
+
+                tb_chip = slide.shapes.add_textbox(rx + Inches(0.16), cy + Inches(0.08), rw - Inches(0.26), ch - Inches(0.16))
+                tf_chip = tb_chip.text_frame
+                _pad(tf_chip, l=2, r=2, t=2, b=2)
+                p1 = tf_chip.paragraphs[0]
+                p1.text = c_title
+                r1 = p1.runs[0]
+                r1.font.name = FONT
+                r1.font.bold = True
+                r1.font.size = Pt(11)
+                r1.font.color.rgb = C["CYAN"]
+
+                p2 = tf_chip.add_paragraph()
+                p2.space_before = Pt(3)
+                p2.text = c_desc
+                r2 = p2.runs[0]
+                r2.font.name = FONT
+                r2.font.size = Pt(9.5)
+                r2.font.color.rgb = C["TEXT_MAIN"]
+
+        # ─── Slide 5 & 6: Table & 2x2 Image ───
         elif stype == "table_and_image":
             tbl_w = Inches(7.5)
             tbl_h = Inches(5.1)
@@ -1972,26 +2076,27 @@ def generate_pptx(output_path):
             if t_info:
                 nc = len(t_info["headers"])
                 nr = len(t_info["rows"])
-                ts = slide.shapes.add_table(
-                    nr + 1, nc, ML, Inches(1.68), tbl_w, tbl_h
-                )
+                ts = slide.shapes.add_table(nr + 1, nc, ML, Inches(1.62), tbl_w, tbl_h)
                 tbl = ts.table
                 tbl.columns[0].width = Inches(1.7)
                 tbl.columns[1].width = Inches(1.8)
-                tbl.columns[2].width = Inches(0.9)
-                tbl.columns[3].width = Inches(0.9)
+                tbl.columns[2].width = Inches(0.85)
+                tbl.columns[3].width = Inches(0.95)
                 tbl.columns[4].width = Inches(2.2)
 
                 for ci, h in enumerate(t_info["headers"]):
                     c = tbl.cell(0, ci)
                     c.fill.solid()
                     c.fill.fore_color.rgb = C["COBALT"]
+                    c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                    c.margin_left = Pt(5); c.margin_right = Pt(5); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                     p = c.text_frame.paragraphs[0]
                     p.text = h
                     p.alignment = PP_ALIGN.CENTER
                     r = p.runs[0]
+                    r.font.name = FONT
                     r.font.bold = True
-                    r.font.size = Pt(9)
+                    r.font.size = Pt(9.5)
                     r.font.color.rgb = C["WHITE"]
 
                 for ri, row in enumerate(t_info["rows"]):
@@ -2000,47 +2105,62 @@ def generate_pptx(output_path):
                         c = tbl.cell(ri + 1, ci)
                         c.fill.solid()
                         c.fill.fore_color.rgb = bg
+                        c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                        c.margin_left = Pt(5); c.margin_right = Pt(5); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                         p = c.text_frame.paragraphs[0]
                         p.text = val
                         r = p.runs[0]
-                        r.font.size = Pt(8)
-                        r.font.color.rgb = C["WHITE"]
+                        r.font.name = FONT
+                        r.font.size = Pt(9)
+                        if ci == 0:
+                            r.font.bold = True
+                            r.font.color.rgb = C["WHITE"]
+                        elif ci == 2:
+                            r.font.bold = True
+                            r.font.color.rgb = C["CYAN"]
+                        elif ci == 3:
+                            r.font.bold = True
+                            r.font.color.rgb = C["GREEN"]
+                        else:
+                            r.font.color.rgb = C["TEXT_MAIN"]
+
             elif s.get("bullets"):
-                # Render bullets box on left
-                b_card = slide.shapes.add_shape(
-                    1, ML, Inches(1.68), tbl_w, tbl_h
-                )
-                b_card.fill.solid()
-                b_card.fill.fore_color.rgb = C["CARD"]
-                b_card.line.color.rgb = C["COBALT"]
-                b_card.line.width = Pt(1.5)
-                tb_b = slide.shapes.add_textbox(
-                    ML + Inches(0.2),
-                    Inches(1.8),
-                    tbl_w - Inches(0.4),
-                    tbl_h - Inches(0.3),
-                )
-                tf_b = tb_b.text_frame
-                tf_b.word_wrap = True
+                # Render 4 distinct safety cards on left
+                b_card_h = Inches(1.15)
+                b_gap = Inches(0.14)
                 for bi, b in enumerate(s["bullets"]):
-                    p = tf_b.paragraphs[0] if bi == 0 else tf_b.add_paragraph()
-                    p.space_before = Pt(8)
+                    by = Inches(1.62) + bi * (b_card_h + b_gap)
+                    _add_card(slide, ML, by, tbl_w, b_card_h, bg="CARD", border="COBALT", border_w=1.2)
+
+                    b_stripe = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, ML, by, Inches(0.08), b_card_h)
+                    b_stripe.fill.solid()
+                    b_stripe.fill.fore_color.rgb = C["CYAN"] if bi % 2 == 0 else C["GREEN"]
+                    b_stripe.line.fill.background()
+
+                    tb_b = slide.shapes.add_textbox(ML + Inches(0.18), by + Inches(0.08), tbl_w - Inches(0.30), b_card_h - Inches(0.16))
+                    tf_b = tb_b.text_frame
+                    _pad(tf_b, l=2, r=2, t=2, b=2)
+                    p = tf_b.paragraphs[0]
                     colon = b.find(":")
-                    if 0 < colon < 45:
+                    if 0 < colon < 50:
                         r1 = p.add_run()
-                        r1.text = b[: colon + 1] + " "
+                        r1.text = b[: colon + 1] + "\n"
+                        r1.font.name = FONT
                         r1.font.bold = True
                         r1.font.size = Pt(11)
-                        r1.font.color.rgb = C["CYAN"]
+                        r1.font.color.rgb = C["CYAN"] if bi % 2 == 0 else C["GREEN"]
+
                         r2 = p.add_run()
                         r2.text = b[colon + 1 :].strip()
-                        r2.font.size = Pt(10.5)
-                        r2.font.color.rgb = C["WHITE"]
+                        r2.font.name = FONT
+                        r2.font.size = Pt(9.5)
+                        r2.font.color.rgb = C["TEXT_MAIN"]
                     else:
                         r = p.add_run()
                         r.text = b
-                        r.font.size = Pt(10.5)
-                        r.font.color.rgb = C["WHITE"]
+                        r.font.name = FONT
+                        r.font.size = Pt(10)
+                        r.font.color.rgb = C["TEXT_MAIN"]
 
             # Right: Image
             rx = ML + tbl_w + Inches(0.25)
@@ -2048,86 +2168,88 @@ def generate_pptx(output_path):
             if os.path.isfile(s["image"]):
                 img = Image.open(s["image"])
                 ih = rw * (img.height / img.width)
-                if ih > Inches(4.7):
-                    ih = Inches(4.7)
+                if ih > Inches(4.5):
+                    ih = Inches(4.5)
                     rw = ih * (img.width / img.height)
-                slide.shapes.add_picture(s["image"], rx, Inches(1.68), rw, ih)
-                tb_c = slide.shapes.add_textbox(
-                    rx, Inches(1.68) + ih + Pt(2), rw, Inches(0.4)
-                )
+                _add_card(slide, rx - Pt(2), Inches(1.62) - Pt(2), rw + Pt(4), ih + Pt(4), bg="DARK", border="COBALT", border_w=1.2)
+                slide.shapes.add_picture(s["image"], rx, Inches(1.62), rw, ih)
+
+                cap_y = Inches(1.62) + ih + Inches(0.08)
+                cap_h = Inches(0.48)
+                _add_card(slide, rx, cap_y, rw, cap_h, bg="CARD", border="COBALT", border_w=1)
+                tb_c = slide.shapes.add_textbox(rx, cap_y + Pt(2), rw, cap_h - Pt(4))
                 p_c = tb_c.text_frame.paragraphs[0]
                 p_c.text = s["image_caption"]
                 p_c.alignment = PP_ALIGN.CENTER
                 r_c = p_c.runs[0]
-                r_c.font.size = Pt(8)
-                r_c.font.italic = True
+                r_c.font.name = FONT
+                r_c.font.bold = True
+                r_c.font.size = Pt(8.5)
                 r_c.font.color.rgb = C["CYAN"]
 
         # ─── Slide 7: Advancements Grid ───
         elif stype == "advancements_grid":
             col_w = (BW - Inches(0.3)) / 2
             lh = Inches(0.92)
-            gap = Inches(0.12)
+            gap = Inches(0.10)
             for ci, cards in enumerate([s["cards_col1"], s["cards_col2"]]):
                 cx = ML + ci * (col_w + Inches(0.3))
+                col_accent = "CYAN" if ci == 0 else "GREEN"
                 for ri, (c_title, c_desc) in enumerate(cards):
-                    cy = Inches(1.68) + ri * (lh + gap)
-                    card = slide.shapes.add_shape(1, cx, cy, col_w, lh)
-                    card.fill.solid()
-                    card.fill.fore_color.rgb = C["CARD"]
-                    card.line.color.rgb = C["COBALT"]
-                    card.line.width = Pt(1.2)
-                    badge = slide.shapes.add_shape(
-                        1, cx, cy, Inches(0.1), lh
-                    )  # Accent bar
+                    cy = Inches(1.62) + ri * (lh + gap)
+                    _add_card(slide, cx, cy, col_w, lh, bg="CARD", border="CARD_BORDER", border_w=1.2)
+
+                    # Accent bar on left
+                    badge = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, cx, cy, Inches(0.08), lh)
                     badge.fill.solid()
-                    badge.fill.fore_color.rgb = C["CYAN"]
+                    badge.fill.fore_color.rgb = C[col_accent]
                     badge.line.fill.background()
 
-                    tb = slide.shapes.add_textbox(
-                        cx + Inches(0.18), cy + Inches(0.08), col_w - Inches(0.3), lh - Inches(0.15)
-                    )
+                    tb = slide.shapes.add_textbox(cx + Inches(0.16), cy + Inches(0.06), col_w - Inches(0.24), lh - Inches(0.12))
                     tf = tb.text_frame
-                    tf.word_wrap = True
+                    _pad(tf, l=2, r=2, t=2, b=2)
                     p1 = tf.paragraphs[0]
                     p1.text = f"ADV-{(ci*5 + ri + 1):02d}:  {c_title}"
                     r1 = p1.runs[0]
+                    r1.font.name = FONT
                     r1.font.bold = True
                     r1.font.size = Pt(10.5)
-                    r1.font.color.rgb = C["CYAN"]
+                    r1.font.color.rgb = C[col_accent]
                     p2 = tf.add_paragraph()
                     p2.space_before = Pt(2)
                     p2.text = c_desc
                     r2 = p2.runs[0]
-                    r2.font.size = Pt(9)
-                    r2.font.color.rgb = C["WHITE"]
+                    r2.font.name = FONT
+                    r2.font.size = Pt(9.5)
+                    r2.font.color.rgb = C["TEXT_MAIN"]
 
         # ─── Slide 8: Security & Compliance ───
         elif stype == "security_and_compliance":
-            tbl_w = Inches(7.8)
-            tbl_h = Inches(4.9)
+            tbl_w = Inches(7.7)
+            tbl_h = Inches(5.0)
             t_info = s["table"]
             nc = len(t_info["headers"])
             nr = len(t_info["rows"])
-            ts = slide.shapes.add_table(
-                nr + 1, nc, ML, Inches(1.68), tbl_w, tbl_h
-            )
+            ts = slide.shapes.add_table(nr + 1, nc, ML, Inches(1.62), tbl_w, tbl_h)
             tbl = ts.table
-            tbl.columns[0].width = Inches(1.8)
-            tbl.columns[1].width = Inches(1.3)
-            tbl.columns[2].width = Inches(1.2)
+            tbl.columns[0].width = Inches(1.7)
+            tbl.columns[1].width = Inches(1.2)
+            tbl.columns[2].width = Inches(1.3)
             tbl.columns[3].width = Inches(3.5)
 
             for ci, h in enumerate(t_info["headers"]):
                 c = tbl.cell(0, ci)
                 c.fill.solid()
                 c.fill.fore_color.rgb = C["COBALT"]
+                c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                c.margin_left = Pt(5); c.margin_right = Pt(5); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                 p = c.text_frame.paragraphs[0]
                 p.text = h
                 p.alignment = PP_ALIGN.CENTER
                 r = p.runs[0]
+                r.font.name = FONT
                 r.font.bold = True
-                r.font.size = Pt(9)
+                r.font.size = Pt(9.5)
                 r.font.color.rgb = C["WHITE"]
 
             for ri, row in enumerate(t_info["rows"]):
@@ -2136,164 +2258,130 @@ def generate_pptx(output_path):
                     c = tbl.cell(ri + 1, ci)
                     c.fill.solid()
                     c.fill.fore_color.rgb = bg
+                    c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                    c.margin_left = Pt(5); c.margin_right = Pt(5); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                     p = c.text_frame.paragraphs[0]
                     p.text = val
                     r = p.runs[0]
-                    r.font.size = Pt(8.5)
-                    if any(
-                        kw in val
-                        for kw in [
-                            "COMPLIANT",
-                            "ALIGNED",
-                            "INTEGRATED",
-                            "ARCHITECTED",
-                        ]
-                    ):
+                    r.font.name = FONT
+                    r.font.size = Pt(9)
+                    if ci == 0:
+                        r.font.bold = True
+                        r.font.color.rgb = C["WHITE"]
+                    elif ci == 2 and any(kw in val for kw in ["COMPLIANT", "ALIGNED", "INTEGRATED"]):
                         r.font.bold = True
                         r.font.color.rgb = C["GREEN"]
                     else:
-                        r.font.color.rgb = C["WHITE"]
+                        r.font.color.rgb = C["TEXT_MAIN"]
 
             # Right: Enclave Card
             rx = ML + tbl_w + Inches(0.25)
             rw = BW - tbl_w - Inches(0.25)
-            card_v = slide.shapes.add_shape(
-                1, rx, Inches(1.68), rw, Inches(4.9)
-            )
-            card_v.fill.solid()
-            card_v.fill.fore_color.rgb = C["CARD"]
-            card_v.line.color.rgb = C["GREEN"]
-            card_v.line.width = Pt(1.5)
-            tb_v = slide.shapes.add_textbox(
-                rx + Inches(0.18), Inches(1.8), rw - Inches(0.36), Inches(4.6)
-            )
+            _add_card(slide, rx, Inches(1.62), rw, Inches(5.0), bg="CARD", border="GREEN", border_w=1.5)
+            # Green accent strip on enclave card
+            e_strip = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, rx, Inches(1.62), rw, Inches(0.04))
+            e_strip.fill.solid()
+            e_strip.fill.fore_color.rgb = C["GREEN"]
+            e_strip.line.fill.background()
+
+            tb_v = slide.shapes.add_textbox(rx + Inches(0.18), Inches(1.75), rw - Inches(0.36), Inches(4.7))
             tf_v = tb_v.text_frame
-            tf_v.word_wrap = True
+            _pad(tf_v, l=2, r=2, t=2, b=2)
             p0 = tf_v.paragraphs[0]
             p0.text = "HP WOLF SECURITY ENCLAVE"
             r0 = p0.runs[0]
+            r0.font.name = FONT
             r0.font.bold = True
-            r0.font.size = Pt(11.5)
+            r0.font.size = Pt(12)
             r0.font.color.rgb = C["GREEN"]
 
             for line in s["vault_card"].split("\n"):
+                if "HP Wolf" in line:
+                    continue
                 p = tf_v.add_paragraph()
-                p.space_before = Pt(6)
-                p.text = line
-                r = p.runs[0]
-                r.font.size = Pt(9.5)
-                r.font.color.rgb = C["WHITE"]
+                p.space_before = Pt(8)
+                r_bullet = p.add_run()
+                r_bullet.text = "✓ "
+                r_bullet.font.name = FONT
+                r_bullet.font.bold = True
+                r_bullet.font.size = Pt(10)
+                r_bullet.font.color.rgb = C["GREEN"]
+                r_text = p.add_run()
+                clean_text = line.lstrip("•").strip()
+                r_text.text = clean_text
+                r_text.font.name = FONT
+                r_text.font.size = Pt(10)
+                r_text.font.color.rgb = C["TEXT_MAIN"]
 
         # ─── Slide 9: Architecture Diagram ───
         elif stype == "arch_diagram":
             layers = [
-                (
-                    "PRESENTATION TIER",
-                    "Clinical Cockpit (frontend/index.html)  |  Showcase Portal (showcase/index.html)  |  Interactive Pitch Deck",
-                    "COBALT",
-                ),
-                (
-                    "APPLICATION TIER",
-                    "FastAPI Async Edge Server  |  HP Smart Sense Governor API  |  25-Endpoint RESTful API",
-                    "COBALT2",
-                ),
-                (
-                    "AI INTELLIGENCE",
-                    "6 Diagnostic AI Engines (Hexagon NPU)  |  Clinical AI Agents  |  CMO Consensus Arbiter",
-                    "CYAN",
-                ),
-                (
-                    "SECURITY LAYER",
-                    "HP Wolf AES-256-GCM Vault  |  SHA-256 Merkle Audit  |  ABDM FHIR R4 Export  |  DPDP 2023",
-                    "GREEN",
-                ),
+                ("PRESENTATION TIER", "Clinical Cockpit (frontend/index.html)  |  Showcase Portal (showcase/index.html)  |  Interactive Pitch Deck", "COBALT"),
+                ("APPLICATION TIER",  "FastAPI Async Edge Server  |  HP Smart Sense Governor API  |  25-Endpoint RESTful Edge API", "COBALT2"),
+                ("AI INTELLIGENCE",   "6 Diagnostic AI Engines (Hexagon NPU)  |  Clinical AI Specialist Agents  |  CMO Consensus Arbiter", "CYAN"),
+                ("SECURITY LAYER",    "HP Wolf AES-256-GCM Vault  |  SHA-256 Merkle Audit Trail  |  ABDM FHIR R4 Bundle  |  DPDP Act 2023", "GREEN"),
             ]
-            lh = Inches(1.05)
-            y0 = Inches(1.82)
-            gap = Inches(0.18)
-            diag_w = BW - Inches(2.5)
+            lh = Inches(1.10)
+            y0 = Inches(1.70)
+            gap = Inches(0.16)
+            diag_w = BW - Inches(2.6)
 
             for i, (l_title, detail, col) in enumerate(layers):
                 y = y0 + i * (lh + gap)
-                bg = slide.shapes.add_shape(1, ML, y, diag_w, lh)
-                bg.fill.solid()
-                bg.fill.fore_color.rgb = C["CARD"]
-                bg.line.color.rgb = C[col]
-                bg.line.width = Pt(2)
+                _add_card(slide, ML, y, diag_w, lh, bg="CARD", border=col, border_w=1.5)
 
-                badge = slide.shapes.add_shape(1, ML, y, Inches(2.2), lh)
+                badge = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, ML, y, Inches(2.2), lh)
                 badge.fill.solid()
                 badge.fill.fore_color.rgb = C[col]
                 badge.line.fill.background()
 
-                tb_b = slide.shapes.add_textbox(
-                    ML + Inches(0.06), y + Inches(0.32), Inches(2.08), Inches(0.44)
-                )
+                tb_b = slide.shapes.add_textbox(ML + Inches(0.06), y + Inches(0.34), Inches(2.08), Inches(0.44))
                 tf_b = tb_b.text_frame
-                tf_b.word_wrap = False
+                _pad(tf_b, l=2, r=2, t=2, b=2)
                 p_b = tf_b.paragraphs[0]
                 p_b.text = l_title
                 p_b.alignment = PP_ALIGN.CENTER
                 r_b = p_b.runs[0]
-                r_b.font.name = "Calibri"
-                r_b.font.size = Pt(9)
+                r_b.font.name = FONT
+                r_b.font.size = Pt(9.5)
                 r_b.font.bold = True
                 r_b.font.color.rgb = C["WHITE"]
 
-                tb_d = slide.shapes.add_textbox(
-                    ML + Inches(2.35),
-                    y + Inches(0.28),
-                    diag_w - Inches(2.5),
-                    Inches(0.55),
-                )
+                tb_d = slide.shapes.add_textbox(ML + Inches(2.35), y + Inches(0.24), diag_w - Inches(2.5), Inches(0.62))
                 tf_d = tb_d.text_frame
-                tf_d.word_wrap = True
+                _pad(tf_d, l=2, r=2, t=2, b=2)
                 p_d = tf_d.paragraphs[0]
                 p_d.text = detail
                 r_d = p_d.runs[0]
-                r_d.font.name = "Calibri"
-                r_d.font.size = Pt(11)
-                r_d.font.color.rgb = C["WHITE"]
+                r_d.font.name = FONT
+                r_d.font.size = Pt(10.5)
+                r_d.font.bold = True
+                r_d.font.color.rgb = C["TEXT_MAIN"]
 
             # NPU Accelerator Box on Right
-            npu_x = W - ML - Inches(2.2)
-            npu = slide.shapes.add_shape(
-                1, npu_x, y0 - Inches(0.02), Inches(2.2), Inches(4.74)
-            )
-            npu.fill.solid()
-            npu.fill.fore_color.rgb = C["NAVY"]
-            npu.line.color.rgb = C["CYAN"]
-            npu.line.width = Pt(2.5)
-            tb_n = slide.shapes.add_textbox(
-                npu_x + Inches(0.1), y0 + Inches(0.15), Inches(2.0), Inches(4.4)
-            )
+            npu_x = W - ML - Inches(2.35)
+            _add_card(slide, npu_x, y0 - Inches(0.02), Inches(2.35), Inches(4.88), bg="NAVY", border="CYAN", border_w=2.0)
+            tb_n = slide.shapes.add_textbox(npu_x + Inches(0.1), y0 + Inches(0.20), Inches(2.15), Inches(4.4))
             tf_n = tb_n.text_frame
-            tf_n.word_wrap = True
-            for txt, sz, bold, col in [
-                ("QUALCOMM", 9, True, "CYAN"),
-                ("HEXAGON NPU", 12, True, "WHITE"),
-                ("HTP v73", 9.5, False, "GRAY"),
-                (" ", 6, False, "WHITE"),
-                ("45.0 TOPS", 24, True, "CYAN"),
-                ("INT8 / INT4", 10, False, "WHITE"),
+            _pad(tf_n, l=2, r=2, t=2, b=2)
+            npu_items = [
+                ("QUALCOMM", 9.5, True, "CYAN"),
+                ("HEXAGON NPU", 13, True, "WHITE"),
+                ("HTP v73 Coprocessor", 9.5, False, "TEXT_LIGHT"),
                 (" ", 8, False, "WHITE"),
-                ("Zero Cloud", 10, True, "GREEN"),
-                ("Egress", 10, True, "GREEN"),
-                ("100% Offline", 9, False, "WHITE"),
-            ]:
-                p = (
-                    tf_n.paragraphs[0]
-                    if txt == "QUALCOMM"
-                    else tf_n.add_paragraph()
-                )
+                ("45.0 TOPS", 26, True, "CYAN"),
+                ("INT8 / INT4 Multi-Modal", 9.5, True, "WHITE"),
+                (" ", 8, False, "WHITE"),
+                ("Zero Cloud Egress", 10.5, True, "GREEN"),
+                ("100% Offline Edge", 10, False, "TEXT_MAIN"),
+                ("Sub-15ms Latency", 10, True, "CYAN"),
+            ]
+            for txt, sz, bold, col in npu_items:
+                p = tf_n.paragraphs[0] if txt == "QUALCOMM" else tf_n.add_paragraph()
                 p.text = txt
                 p.alignment = PP_ALIGN.CENTER
-                if p.runs:
-                    r = p.runs[0]
-                else:
-                    r = p.add_run()
-                    r.text = txt
-                r.font.name = "Calibri"
+                r = p.runs[0] if p.runs else p.add_run()
+                r.font.name = FONT
                 r.font.size = Pt(sz)
                 r.font.bold = bold
                 r.font.color.rgb = C[col]
@@ -2303,27 +2391,29 @@ def generate_pptx(output_path):
             t_info = s["table"]
             nc = len(t_info["headers"])
             nr = len(t_info["rows"])
-            ts = slide.shapes.add_table(
-                nr + 1, nc, ML, Inches(1.68), BW, Inches(5.1)
-            )
+            ts = slide.shapes.add_table(nr + 1, nc, ML, Inches(1.62), BW, Inches(5.2))
             tbl = ts.table
-            tbl.columns[0].width = Inches(2.2)
-            tbl.columns[1].width = Inches(3.1)
-            tbl.columns[2].width = Inches(3.1)
-            tbl.columns[3].width = Inches(3.633)
+            tbl.columns[0].width = Inches(2.0)
+            tbl.columns[1].width = Inches(3.0)
+            tbl.columns[2].width = Inches(3.0)
+            tbl.columns[3].width = Inches(4.033)
 
             for ci, h in enumerate(t_info["headers"]):
                 c = tbl.cell(0, ci)
                 c.fill.solid()
-                c.fill.fore_color.rgb = (
-                    C["COBALT"] if ci < 3 else C["COBALT2"]
-                )
+                c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                c.margin_left = Pt(6); c.margin_right = Pt(6); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
+                if ci < 3:
+                    c.fill.fore_color.rgb = C["COBALT_DARK"]
+                else:
+                    c.fill.fore_color.rgb = C["COBALT"]
                 p = c.text_frame.paragraphs[0]
                 p.text = h
                 p.alignment = PP_ALIGN.CENTER
                 r = p.runs[0]
+                r.font.name = FONT
                 r.font.bold = True
-                r.font.size = Pt(10)
+                r.font.size = Pt(10.5)
                 r.font.color.rgb = C["WHITE"] if ci < 3 else C["CYAN"]
 
             for ri, row in enumerate(t_info["rows"]):
@@ -2331,27 +2421,31 @@ def generate_pptx(output_path):
                 for ci, val in enumerate(row):
                     c = tbl.cell(ri + 1, ci)
                     c.fill.solid()
-                    c.fill.fore_color.rgb = bg
+                    c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                    c.margin_left = Pt(6); c.margin_right = Pt(6); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
+                    if ci == 3:
+                        c.fill.fore_color.rgb = C["CARD2"] if ri % 2 == 0 else C["COBALT_DARK"]
+                    else:
+                        c.fill.fore_color.rgb = bg
                     p = c.text_frame.paragraphs[0]
                     p.text = val
                     r = p.runs[0]
+                    r.font.name = FONT
                     r.font.size = Pt(9.5)
-                    if ci == 3:  # OmniCare AI column
+                    if ci == 3:
                         r.font.bold = True
                         r.font.color.rgb = C["CYAN"]
                     else:
-                        r.font.color.rgb = C["WHITE"]
+                        r.font.color.rgb = C["TEXT_MAIN"]
 
         # ─── Slide 11: Verification & Paths ───
         elif stype == "verification_and_paths":
             tbl_w = Inches(6.8)
-            tbl_h = Inches(5.0)
+            tbl_h = Inches(5.1)
             t_info = s["table"]
             nc = len(t_info["headers"])
             nr = len(t_info["rows"])
-            ts = slide.shapes.add_table(
-                nr + 1, nc, ML, Inches(1.68), tbl_w, tbl_h
-            )
+            ts = slide.shapes.add_table(nr + 1, nc, ML, Inches(1.62), tbl_w, tbl_h)
             tbl = ts.table
             tbl.columns[0].width = Inches(3.2)
             tbl.columns[1].width = Inches(1.1)
@@ -2362,12 +2456,15 @@ def generate_pptx(output_path):
                 c = tbl.cell(0, ci)
                 c.fill.solid()
                 c.fill.fore_color.rgb = C["COBALT"]
+                c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                c.margin_left = Pt(5); c.margin_right = Pt(5); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                 p = c.text_frame.paragraphs[0]
                 p.text = h
                 p.alignment = PP_ALIGN.CENTER
                 r = p.runs[0]
+                r.font.name = FONT
                 r.font.bold = True
-                r.font.size = Pt(9)
+                r.font.size = Pt(9.5)
                 r.font.color.rgb = C["WHITE"]
 
             for ri, row in enumerate(t_info["rows"]):
@@ -2376,54 +2473,53 @@ def generate_pptx(output_path):
                     c = tbl.cell(ri + 1, ci)
                     c.fill.solid()
                     c.fill.fore_color.rgb = bg
+                    c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                    c.margin_left = Pt(5); c.margin_right = Pt(5); c.margin_top = Pt(4); c.margin_bottom = Pt(4)
                     p = c.text_frame.paragraphs[0]
                     p.text = val
                     r = p.runs[0]
-                    r.font.size = Pt(8.5)
-                    if val == "PASSED":
+                    r.font.name = FONT
+                    r.font.size = Pt(9)
+                    if ci == 0:
+                        r.font.bold = True
+                        r.font.color.rgb = C["WHITE"]
+                    elif val == "PASSED":
                         r.font.bold = True
                         r.font.color.rgb = C["GREEN"]
                     else:
-                        r.font.color.rgb = C["WHITE"]
+                        r.font.color.rgb = C["TEXT_MAIN"]
 
-            # Right: 3 Paths
+            # Right: 3 Fast-Track Evaluation Paths
             rx = ML + tbl_w + Inches(0.25)
             rw = BW - tbl_w - Inches(0.25)
-            ph = Inches(1.55)
+            ph = Inches(1.58)
             gap = Inches(0.18)
             for pi, (p_title, p_desc) in enumerate(s["paths"]):
-                py = Inches(1.68) + pi * (ph + gap)
-                p_box = slide.shapes.add_shape(1, rx, py, rw, ph)
-                p_box.fill.solid()
-                p_box.fill.fore_color.rgb = C["CARD"]
-                p_box.line.color.rgb = C["COBALT"]
-                p_box.line.width = Pt(1.5)
+                py = Inches(1.62) + pi * (ph + gap)
+                _add_card(slide, rx, py, rw, ph, bg="CARD", border="COBALT", border_w=1.5)
 
-                strip = slide.shapes.add_shape(1, rx, py, rw, Inches(0.04))
+                strip = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, rx, py, rw, Inches(0.04))
                 strip.fill.solid()
                 strip.fill.fore_color.rgb = C["CYAN"]
                 strip.line.fill.background()
 
-                tb_p = slide.shapes.add_textbox(
-                    rx + Inches(0.15),
-                    py + Inches(0.08),
-                    rw - Inches(0.3),
-                    ph - Inches(0.15),
-                )
+                tb_p = slide.shapes.add_textbox(rx + Inches(0.18), py + Inches(0.10), rw - Inches(0.36), ph - Inches(0.18))
                 tf_p = tb_p.text_frame
-                tf_p.word_wrap = True
+                _pad(tf_p, l=2, r=2, t=2, b=2)
                 p1 = tf_p.paragraphs[0]
                 p1.text = p_title
                 r1 = p1.runs[0]
+                r1.font.name = FONT
                 r1.font.bold = True
-                r1.font.size = Pt(11)
+                r1.font.size = Pt(11.5)
                 r1.font.color.rgb = C["CYAN"]
                 p2 = tf_p.add_paragraph()
                 p2.space_before = Pt(4)
                 p2.text = p_desc
                 r2 = p2.runs[0]
-                r2.font.size = Pt(9.5)
-                r2.font.color.rgb = C["WHITE"]
+                r2.font.name = FONT
+                r2.font.size = Pt(10)
+                r2.font.color.rgb = C["TEXT_MAIN"]
 
         # ─── Slide 12: Impact & CTA ───
         elif stype == "impact_cta":
@@ -2431,56 +2527,54 @@ def generate_pptx(output_path):
             cw = int(BW / n_cards)
             for ci, (val, desc, col, sub) in enumerate(s["stat_cards"]):
                 x = ML + ci * cw
-                card = slide.shapes.add_shape(
-                    1, x + Pt(4), Inches(1.68), cw - Pt(8), Inches(1.9)
-                )
-                card.fill.solid()
-                card.fill.fore_color.rgb = C["CARD"]
-                card.line.color.rgb = C[col]
-                card.line.width = Pt(1.5)
-                tb = slide.shapes.add_textbox(
-                    x + Pt(6), Inches(1.75), cw - Pt(12), Inches(1.75)
-                )
+                _add_card(slide, x + Pt(3), Inches(1.62), cw - Pt(6), Inches(1.85), bg="CARD", border=col, border_w=1.5)
+                tb = slide.shapes.add_textbox(x + Pt(5), Inches(1.68), cw - Pt(10), Inches(1.70))
                 tf = tb.text_frame
-                tf.word_wrap = True
+                _pad(tf, l=4, r=4, t=4, b=4)
                 p1 = tf.paragraphs[0]
                 p1.text = val
                 p1.alignment = PP_ALIGN.CENTER
                 r1 = p1.runs[0]
+                r1.font.name = FONT
                 r1.font.bold = True
                 r1.font.size = Pt(24)
                 r1.font.color.rgb = C[col]
                 p2 = tf.add_paragraph()
+                p2.space_before = Pt(3)
                 p2.text = desc
                 p2.alignment = PP_ALIGN.CENTER
                 r2 = p2.runs[0]
-                r2.font.size = Pt(9.5)
+                r2.font.name = FONT
+                r2.font.bold = True
+                r2.font.size = Pt(10)
                 r2.font.color.rgb = C["WHITE"]
                 p3 = tf.add_paragraph()
+                p3.space_before = Pt(2)
                 p3.text = sub
                 p3.alignment = PP_ALIGN.CENTER
                 r3 = p3.runs[0]
-                r3.font.size = Pt(8.5)
+                r3.font.name = FONT
                 r3.font.italic = True
-                r3.font.color.rgb = C["GRAY"]
+                r3.font.size = Pt(8.5)
+                r3.font.color.rgb = C["TEXT_LIGHT"]
 
-            box_c = slide.shapes.add_shape(1, ML, Inches(3.8), BW, Inches(3.05))
-            box_c.fill.solid()
-            box_c.fill.fore_color.rgb = C["CARD"]
-            box_c.line.color.rgb = C["COBALT"]
-            box_c.line.width = Pt(1.5)
+            # Closing Vision Box below
+            _add_card(slide, ML, Inches(3.68), BW, Inches(3.25), bg="CARD", border="COBALT", border_w=1.5)
+            v_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, ML, Inches(3.68), BW, Inches(0.04))
+            v_line.fill.solid()
+            v_line.fill.fore_color.rgb = C["CYAN"]
+            v_line.line.fill.background()
 
-            tb_c = slide.shapes.add_textbox(
-                ML + Inches(0.3), Inches(3.95), BW - Inches(0.6), Inches(2.7)
-            )
+            tb_c = slide.shapes.add_textbox(ML + Inches(0.3), Inches(3.82), BW - Inches(0.6), Inches(2.95))
             tf_c = tb_c.text_frame
-            tf_c.word_wrap = True
+            _pad(tf_c, l=2, r=2, t=2, b=2)
 
             p0 = tf_c.paragraphs[0]
             p0.text = "CLOSING VISION & DEPLOYMENT COMMITMENT"
             r0 = p0.runs[0]
+            r0.font.name = FONT
             r0.font.bold = True
-            r0.font.size = Pt(13)
+            r0.font.size = Pt(12.5)
             r0.font.color.rgb = C["CYAN"]
 
             for line in s["body"].split("\n\n"):
@@ -2488,8 +2582,13 @@ def generate_pptx(output_path):
                 p.space_before = Pt(8)
                 p.text = line
                 r = p.runs[0]
-                r.font.size = Pt(11)
-                r.font.color.rgb = C["WHITE"]
+                r.font.name = FONT
+                r.font.size = Pt(10.5)
+                if "github.com" in line:
+                    r.font.bold = True
+                    r.font.color.rgb = C["CYAN"]
+                else:
+                    r.font.color.rgb = C["TEXT_MAIN"]
 
     prs.save(output_path)
     print(
